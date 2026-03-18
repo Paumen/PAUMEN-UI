@@ -212,7 +212,118 @@
 
 
   <!-- ══════════════════════════════════════════════
-       CARD 8 — Freeform Escape Hatch
+       CARD 8 — Color Test Controls
+       Live-tweak OKLCH variables + light/dark toggle
+       ══════════════════════════════════════════════ -->
+
+  <article>
+    <h3>Color Test Controls</h3>
+
+    <section>
+      <label for="mode-toggle" data-colspan="9">Dark mode</label>
+      <input type="checkbox" id="mode-toggle" data-colspan="3" />
+    </section>
+
+    <section>
+      <label for="accent-hue" data-colspan="3">Accent hue</label>
+      <input type="range" id="accent-hue" min="0" max="360" value="250" data-colspan="7" />
+      <input type="number" id="accent-hue-num" min="0" max="360" value="250" data-colspan="2" />
+    </section>
+
+    <section>
+      <label for="accent-chroma" data-colspan="3">Accent chroma</label>
+      <input type="range" id="accent-chroma" min="0" max="0.4" step="0.005" value="0.14" data-colspan="7" />
+      <input type="number" id="accent-chroma-num" min="0" max="0.4" step="0.005" value="0.14" data-colspan="2" />
+    </section>
+
+    <section>
+      <label for="surface-hue" data-colspan="3">Surface hue</label>
+      <input type="range" id="surface-hue" min="0" max="360" value="250" data-colspan="7" />
+      <input type="number" id="surface-hue-num" min="0" max="360" value="250" data-colspan="2" />
+    </section>
+
+    <section>
+      <label for="jump-val" data-colspan="3">Jump (step)</label>
+      <input type="range" id="jump-val" min="0" max="0.2" step="0.005" value="0.07" data-colspan="7" />
+      <input type="number" id="jump-val-num" min="0" max="0.2" step="0.005" value="0.07" data-colspan="2" />
+    </section>
+
+    <footer>
+      <button data-colspan="6" data-skin="ghost" id="color-reset">Reset to defaults</button>
+      <button data-colspan="6" data-skin="emphasis" id="color-copy">Copy CSS vars</button>
+    </footer>
+  </article>
+
+  <script>
+  (() => {
+    const root = document.documentElement;
+
+    // Slider ↔ number sync helper
+    function linkPair(sliderId, numId, cssProp, fmt) {
+      const slider = document.getElementById(sliderId);
+      const num    = document.getElementById(numId);
+      const update = (v) => {
+        root.style.setProperty(cssProp, fmt ? fmt(v) : v);
+        slider.value = v;
+        num.value    = v;
+      };
+      slider.addEventListener('input', () => update(slider.value));
+      num.addEventListener('input',    () => update(num.value));
+    }
+
+    linkPair('accent-hue',    'accent-hue-num',    '--accent-hue');
+    linkPair('accent-chroma', 'accent-chroma-num', '--accent-chroma');
+    linkPair('surface-hue',   'surface-hue-num',   '--surface-hue');
+    linkPair('jump-val',      'jump-val-num',      '--jump');
+
+    // Light / dark toggle
+    const toggle = document.getElementById('mode-toggle');
+    toggle.addEventListener('change', () => {
+      root.style.colorScheme = toggle.checked ? 'dark' : 'light';
+    });
+    // init: match system preference
+    if (matchMedia('(prefers-color-scheme: dark)').matches) {
+      toggle.checked = true;
+      root.style.colorScheme = 'dark';
+    }
+
+    // Reset
+    document.getElementById('color-reset').addEventListener('click', () => {
+      ['--accent-hue','--accent-chroma','--surface-hue','--jump'].forEach(p =>
+        root.style.removeProperty(p)
+      );
+      root.style.removeProperty('color-scheme');
+      document.getElementById('accent-hue').value = 250;
+      document.getElementById('accent-hue-num').value = 250;
+      document.getElementById('accent-chroma').value = 0.14;
+      document.getElementById('accent-chroma-num').value = 0.14;
+      document.getElementById('surface-hue').value = 250;
+      document.getElementById('surface-hue-num').value = 250;
+      document.getElementById('jump-val').value = 0.07;
+      document.getElementById('jump-val-num').value = 0.07;
+      toggle.checked = matchMedia('(prefers-color-scheme: dark)').matches;
+    });
+
+    // Copy CSS vars
+    document.getElementById('color-copy').addEventListener('click', () => {
+      const vars = [
+        `--accent-hue: ${document.getElementById('accent-hue').value};`,
+        `--accent-chroma: ${document.getElementById('accent-chroma').value};`,
+        `--surface-hue: ${document.getElementById('surface-hue').value};`,
+        `--jump: ${document.getElementById('jump-val').value};`,
+      ].join('\n');
+      navigator.clipboard.writeText(vars).then(() => {
+        const btn = document.getElementById('color-copy');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy CSS vars', 1500);
+      });
+    });
+  })();
+  </script>
+
+
+  <!-- ══════════════════════════════════════════════
+       CARD 9 — Freeform Escape Hatch
        Pattern: data-skin="freeform" on a card
        ══════════════════════════════════════════════ -->
 
