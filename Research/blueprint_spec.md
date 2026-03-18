@@ -142,7 +142,7 @@ Space-separated. Applied to any element. Selected via `[data-skin~="value"]`.
 | `ghost`    | Transparent bg + border. Interactive elements: hover shows mute bg. Others: static. |
 | `mute`     | text-mute color.                                                                  |
 | `elevated` | box-shadow for visual lift.                                                       |
-| `freeform` | Escape hatch. Removes system constraints from card interior.                      |
+| `freeform` | Escape hatch. Removes system constraints from card interior. Cards only.          |
 
 **Skin conflict groups** (mutually exclusive): emphasis | ghost (pick at most one).
 
@@ -389,3 +389,30 @@ Selectors are global (not scoped to row wrapper children) — flat specificity. 
 ### No Redundant Native Styling
 
 Removed: text-decoration on `<a>`, font-weight 700 on headings, cursor:pointer on `<a>`. Kept cursor:pointer on `<button>` (browsers default to cursor:default on buttons).
+
+---
+
+## 8. Post Article/Section Flip — Sanity Check Results
+
+After flipping article (→ card) and section (→ row wrapper) from their original roles, a systematic sanity check was conducted across all subsystems. Key decisions incorporated into this spec:
+
+- **S1:** No article inside article (no nested cards). Cards are flat, body-level only.
+- **S2:** form = always `display: contents`, never a visual container.
+- **S3:** details = card-level container (collapsible card). summary acts as built-in header row wrapper.
+- **S4:** dialog interior = same rules as any card. LLM learns one interior pattern for all card types.
+- **S5:** fieldset cut from element set. Depth conflicts, cross-browser legend styling pain, marginal value.
+- **S6:** img, table family, ul/ol/li, hr cut. Lists break depth (li at depth 5).
+- **S7:** Inline formatting (strong, em, code) implicit, not spec-listed.
+- **S8:** Keep date/time inputs. Native behavior is worth the styling inconsistency.
+- **S9:** Cut `half` skin. Redundant with colspan grid system.
+- **S10:** Merge ghost + transparent → `ghost`. Hover behavior determined by element type.
+- **S11:** Add `elevated` skin (box-shadow). Common card pattern.
+- **S12:** Add `freeform` skin (escape hatch). Removes all PAUMEN constraints from card interior.
+- **S13:** Document skin conflict groups (see §3).
+- **S14:** Drop `data-colcount` attribute. Always 12, never varies.
+- **S15:** Body: `max-inline-size: 800px; margin-inline: auto`.
+- **S16:** Dropdown menu: `<nav popover>` (was `<section popover>`).
+- **S17:** summary = row wrapper (12-col grid, like header). 5th row wrapper element.
+- **S18:** Escape hatch via `data-skin="freeform"` on cards.
+
+Element count: ~21 unique tag names. ~25 total entries counting input type variants and h1–h4.
