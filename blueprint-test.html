@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blueprint Test — Defaults + Skins</title>
+  <style>
+
+/* ============================================================
+   BLUEPRINT
+   ============================================================ */
+
+@layer reset, default, skin;
+
+/* ——— RESET ——— */
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  body, h1, h2, h3, h4, p { margin: 0; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+}
+
+/* ——— TOKENS ——— */
+:root {
+  color-scheme: light dark;
+
+  --accent-hue: 250;
+  --accent-chroma: 0.14;
+  --surface-hue: 250;
+  --jump: 0.07;
+
+  --accent:       oklch(58% var(--accent-chroma) var(--accent-hue));
+  --accent-up:    oklch(calc(58% + var(--jump)) var(--accent-chroma) var(--accent-hue));
+  --accent-dn:    oklch(calc(58% - var(--jump)) var(--accent-chroma) var(--accent-hue));
+
+  --neutral:      light-dark(oklch(96% 0.01 var(--surface-hue)), oklch(16% 0.01 var(--surface-hue)));
+  --neutral-mute: light-dark(oklch(92% 0.01 var(--surface-hue)), oklch(20% 0.01 var(--surface-hue)));
+  --neutral-edge: light-dark(oklch(85% 0.02 var(--surface-hue)), oklch(30% 0.02 var(--surface-hue)));
+
+  --text:      light-dark(oklch(20% 0.01 var(--surface-hue)), oklch(92% 0.01 var(--surface-hue)));
+  --text-mute: light-dark(oklch(40% 0.01 var(--surface-hue)), oklch(72% 0.01 var(--surface-hue)));
+
+  --text-on-accent-a: oklch(98% 0.01 var(--accent-hue));
+  --text-on-accent-b: oklch(from var(--accent) calc(1 - l) 0.01 h);
+
+  --0:  0;
+  --xs: clamp(0.2rem, 0.4vw, 0.4rem);
+  --s:  clamp(0.4rem, 1vw, 0.8rem);
+  --m:  clamp(0.8rem, 2vw, 1.6rem);
+  --l:  clamp(1.2rem, 4vw, 2.4rem);
+
+  --ease: cubic-bezier(0.25, 0, 0.3, 1);
+}
+
+/* ——— DEFAULTS ——— */
+@layer default {
+
+  body {
+    font-family: system-ui, sans-serif;
+    font-size: var(--m);
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--neutral);
+    padding: var(--m);
+    display: grid;
+    gap: var(--l);
+  }
+
+  /* block containers — card + grid */
+  section, details, dialog, [popover] {
+    background: var(--neutral-mute);
+    border: 1px solid var(--neutral-edge);
+    border-radius: var(--s);
+    padding: var(--s);
+    display: grid;
+    gap: var(--s);
+  }
+
+  form {
+    display: grid;
+    gap: var(--s);
+  }
+
+  dialog {
+    padding: var(--m);
+    max-inline-size: min(90vw, 40rem);
+  }
+
+  dialog::backdrop {
+    background: oklch(0% 0 0 / 0.4);
+  }
+
+  /* headings — card header */
+  h1, h2, h3, h4 {
+    line-height: 1.2;
+    padding-block-end: var(--xs);
+    border-block-end: 1px solid var(--neutral-edge);
+  }
+
+  h1 { font-size: var(--l); }
+  h2 { font-size: calc(var(--l) * 0.85); }
+  h3 { font-size: calc(var(--m) * 1.15); }
+  h4 { font-size: var(--m); }
+
+  /* block content */
+  p { max-inline-size: 65ch; }
+
+  /* inline content */
+  small { color: var(--text-mute); }
+  label { cursor: pointer; }
+
+  a {
+    color: var(--accent);
+    text-underline-offset: 0.15em;
+    transition: color 0.15s var(--ease);
+  }
+  a:hover { color: var(--accent-dn); }
+
+  svg { fill: currentColor; }
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  output { color: var(--text); }
+
+  /* shared control base */
+  button, input, textarea, select {
+    border: 1px solid var(--neutral-edge);
+    border-radius: var(--xs);
+    background: var(--neutral);
+    color: var(--text);
+    padding: var(--xs) var(--s);
+    transition: border-color 0.15s var(--ease),
+                background 0.15s var(--ease);
+  }
+
+  /* focus ring */
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  a:focus-visible,
+  summary:focus-visible {
+    outline: var(--xs) solid var(--accent);
+    outline-offset: var(--xs);
+  }
+
+  /* disabled */
+  button:disabled,
+  input:disabled,
+  textarea:disabled,
+  select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* button */
+  button {
+    cursor: pointer;
+    font-weight: 600;
+    background: var(--neutral-mute);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--xs);
+  }
+  button:hover:not(:disabled) { background: var(--neutral-edge); }
+  button:active:not(:disabled) { scale: 0.98; }
+
+  /* textarea */
+  textarea { resize: vertical; }
+
+  /* select */
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='gray' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--s) center;
+    padding-inline-end: calc(var(--s) * 3);
+  }
+
+  /* range */
+  input[type="range"] {
+    border: none;
+    padding: var(--0);
+    background: transparent;
+  }
+
+  /* checkbox / radio */
+  input[type="checkbox"],
+  input[type="radio"] {
+    inline-size: var(--m);
+    block-size: var(--m);
+    padding: var(--0);
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+
+  /* date / time */
+  input[type="date"],
+  input[type="time"] {
+    cursor: pointer;
+  }
+}
+
+/* ——— SKINS ——— */
+@layer skin {
+
+  /* emphasis — accent background, for primary actions */
+  [data-skin~="emphasis"] {
+    background: var(--accent);
+    color: var(--text-on-accent-a);
+    border-color: var(--accent);
+  }
+  [data-skin~="emphasis"]:hover:not(:disabled) {
+    background: var(--accent-dn);
+    border-color: var(--accent-dn);
+  }
+  [data-skin~="emphasis"]:active:not(:disabled) {
+    background: var(--accent-dn);
+  }
+  /* emphasis on containers */
+  section[data-skin~="emphasis"],
+  details[data-skin~="emphasis"] {
+    background: var(--accent);
+    color: var(--text-on-accent-a);
+    border-color: var(--accent);
+  }
+
+  /* ghost — no background, no border, text only */
+  [data-skin~="ghost"] {
+    background: transparent;
+    border-color: transparent;
+  }
+  [data-skin~="ghost"]:hover:not(:disabled) {
+    background: var(--neutral-mute);
+    border-color: transparent;
+  }
+
+  /* transparent — transparent bg/border, keeps padding and shape */
+  [data-skin~="transparent"] {
+    background: transparent;
+    border-color: transparent;
+  }
+
+  /* square — 1:1 aspect ratio, equal padding */
+  [data-skin~="square"] {
+    aspect-ratio: 1;
+    padding: var(--xs);
+  }
+
+  /* half — max half width */
+  [data-skin~="half"] {
+    max-inline-size: 50%;
+  }
+
+  /* full — stretch to full width */
+  [data-skin~="full"] {
+    inline-size: 100%;
+  }
+
+  /* mute — secondary/subdued text */
+  [data-skin~="mute"] {
+    color: var(--text-mute);
+  }
+
+  /* flat — no border-radius */
+  [data-skin~="flat"] {
+    border-radius: var(--0);
+  }
+
+  /* round — pill shape */
+  [data-skin~="round"] {
+    border-radius: 999px;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- ============ DEFAULTS ============ -->
+
+  <section>
+    <h2>Headings</h2>
+    <h1>Heading 1</h1>
+    <h2>Heading 2</h2>
+    <h3>Heading 3</h3>
+    <h4>Heading 4</h4>
+  </section>
+
+  <section>
+    <h2>Block Content</h2>
+    <p>Paragraph with max-inline-size of 65ch for readability. Extra text to show wrapping on narrow viewports.</p>
+    <p><small>Small text — muted color, browser default smaller size.</small></p>
+    <p>A <a href="#">link looks like this</a> and <label>this is a label</label>.</p>
+  </section>
+
+  <section>
+    <h2>SVG</h2>
+    <p>Inline icon
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      next to text.
+    </p>
+  </section>
+
+  <section>
+    <h2>Default Controls</h2>
+    <p>
+      <button>Default</button>
+      <button disabled>Disabled</button>
+      <button>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        With Icon
+      </button>
+    </p>
+    <p>
+      <input type="text" placeholder="Text">
+      <input type="number" placeholder="Number">
+      <input type="search" placeholder="Search">
+    </p>
+    <p>
+      <input type="password" placeholder="Password">
+      <input type="email" placeholder="Email">
+      <input type="text" disabled placeholder="Disabled">
+    </p>
+    <textarea placeholder="Type something..." rows="3"></textarea>
+    <p>
+      <select>
+        <option>Option one</option>
+        <option>Option two</option>
+        <option>Option three</option>
+      </select>
+      <select disabled><option>Disabled</option></select>
+    </p>
+    <input type="range" min="0" max="100" value="50">
+    <p>
+      <label><input type="checkbox"> Check A</label>
+      <label><input type="checkbox" checked> Check B</label>
+      <label><input type="checkbox" disabled> Disabled</label>
+    </p>
+    <p>
+      <label><input type="radio" name="r1"> Radio A</label>
+      <label><input type="radio" name="r1" checked> Radio B</label>
+      <label><input type="radio" name="r1" disabled> Disabled</label>
+    </p>
+    <p>
+      <input type="date">
+      <input type="time">
+    </p>
+  </section>
+
+  <section>
+    <h2>Form</h2>
+    <form onsubmit="event.preventDefault(); alert('submitted!');">
+      <p>
+        <label for="req">Required:</label>
+        <input id="req" type="text" required placeholder="Can't be empty">
+      </p>
+      <p>
+        <button type="submit">Submit</button>
+        <button type="reset">Reset</button>
+      </p>
+    </form>
+  </section>
+
+  <section>
+    <h2>Details + Summary</h2>
+    <details>
+      <summary>Click to expand</summary>
+      <p>Hidden content. Native disclosure triangle.</p>
+    </details>
+    <details open>
+      <summary>Already open</summary>
+      <p>Starts expanded.</p>
+    </details>
+  </section>
+
+  <section>
+    <h2>Dialog</h2>
+    <p><button onclick="document.getElementById('d1').showModal()">Open Modal</button></p>
+    <dialog id="d1">
+      <h3>Modal Dialog</h3>
+      <p>Focus trapped. Escape or button to close.</p>
+      <p><button onclick="document.getElementById('d1').close()">Close</button></p>
+    </dialog>
+  </section>
+
+  <section>
+    <h2>Popovers</h2>
+    <p>
+      <button id="tipBtn">Tooltip (aside)</button>
+      <button id="toastBtn">Toast (output)</button>
+      <button id="menuBtn">Menu (section)</button>
+    </p>
+    <aside id="tip1" popover style="display:none">
+      <p>Supplementary info via aside.</p>
+    </aside>
+    <output id="toast1" popover style="display:none">Action completed.</output>
+    <section id="menu1" popover style="display:none">
+      <button>Edit</button>
+      <button>Duplicate</button>
+      <button>Delete</button>
+    </section>
+  </section>
+
+  <!-- ============ SKINS ============ -->
+
+  <section>
+    <h2>Skin: emphasis</h2>
+    <p>
+      <button data-skin="emphasis">Primary Action</button>
+      <button data-skin="emphasis" disabled>Disabled</button>
+      <button>Default</button>
+    </p>
+    <p>
+      <input data-skin="emphasis" type="text" placeholder="Accent input">
+      <select data-skin="emphasis"><option>Accent select</option></select>
+    </p>
+  </section>
+
+  <section>
+    <h2>Skin: ghost</h2>
+    <p>
+      <button data-skin="ghost">Ghost</button>
+      <button>Default</button>
+      <button data-skin="emphasis">Emphasis</button>
+    </p>
+  </section>
+
+  <section>
+    <h2>Skin: transparent</h2>
+    <p>
+      <button data-skin="transparent">Transparent</button>
+      <input data-skin="transparent" type="text" placeholder="Transparent input">
+    </p>
+  </section>
+
+  <section>
+    <h2>Skin: square (icon buttons)</h2>
+    <p>
+      <button data-skin="square">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <button data-skin="emphasis square">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <button data-skin="ghost square">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </p>
+  </section>
+
+  <section>
+    <h2>Skin: round</h2>
+    <p>
+      <button data-skin="round">Pill Button</button>
+      <button data-skin="emphasis round">Accent Pill</button>
+      <input data-skin="round" type="text" placeholder="Round input">
+    </p>
+  </section>
+
+  <section>
+    <h2>Skin: half + full</h2>
+    <button data-skin="emphasis half">Half Width</button>
+    <button data-skin="emphasis full">Full Width</button>
+    <input data-skin="full" type="text" placeholder="Full width input">
+  </section>
+
+  <section>
+    <h2>Skin: flat</h2>
+    <p>
+      <button data-skin="flat">Flat</button>
+      <button data-skin="emphasis flat">Accent Flat</button>
+      <input data-skin="flat" type="text" placeholder="Flat input">
+    </p>
+  </section>
+
+  <section>
+    <h2>Skin: mute</h2>
+    <p>
+      <button data-skin="mute">Muted Action</button>
+      <small data-skin="mute">Already muted, but explicit.</small>
+    </p>
+  </section>
+
+  <section data-skin="emphasis">
+    <h2>Skin: emphasis on section</h2>
+    <p>An accent-colored card. Content inside inherits the light text.</p>
+    <p><button data-skin="ghost">Ghost inside accent</button></p>
+  </section>
+
+  <section data-skin="transparent">
+    <h2>Skin: transparent on section</h2>
+    <p>No card chrome — just grouped content.</p>
+  </section>
+
+  <section>
+    <h2>Composing skins</h2>
+    <p>
+      <button data-skin="emphasis round">emphasis + round</button>
+      <button data-skin="ghost square">ghost + square
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
+      </button>
+      <button data-skin="emphasis square round">emphasis + square + round</button>
+    </p>
+    <p>
+      <input data-skin="emphasis round full" type="text" placeholder="emphasis + round + full">
+    </p>
+  </section>
+
+  <section>
+    <h2>Text-on-Accent A/B</h2>
+    <p>
+      <button style="background: var(--accent); color: var(--text-on-accent-a);">A (fixed)</button>
+      <button style="background: var(--accent); color: var(--text-on-accent-b);">B (invert)</button>
+    </p>
+  </section>
+
+  <script>
+    // Popover JS fallback for viewers that don't support popover attribute
+    function togglePop(btnId, popId) {
+      const btn = document.getElementById(btnId);
+      const pop = document.getElementById(popId);
+      if (!btn || !pop) return;
+
+      // If native popover works, use it
+      if (pop.showPopover) {
+        pop.removeAttribute('style');
+        btn.setAttribute('popovertarget', popId);
+        return;
+      }
+
+      // Fallback: toggle display
+      btn.addEventListener('click', () => {
+        const visible = pop.style.display !== 'none';
+        pop.style.display = visible ? 'none' : 'grid';
+      });
+    }
+
+    togglePop('tipBtn', 'tip1');
+    togglePop('toastBtn', 'toast1');
+    togglePop('menuBtn', 'menu1');
+  </script>
+
+</body>
+</html>

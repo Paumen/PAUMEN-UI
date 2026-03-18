@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blueprint — Flattened Column Grid Test</title>
+  <style>
+
+@layer reset, default, skin;
+
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  body, h1, h2, h3, h4, p { margin: 0; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+}
+
+:root {
+  color-scheme: light dark;
+
+  --accent-hue: 250;
+  --accent-chroma: 0.14;
+  --surface-hue: 250;
+  --jump: 0.07;
+
+  --accent:       oklch(58% var(--accent-chroma) var(--accent-hue));
+  --accent-up:    oklch(calc(58% + var(--jump)) var(--accent-chroma) var(--accent-hue));
+  --accent-dn:    oklch(calc(58% - var(--jump)) var(--accent-chroma) var(--accent-hue));
+
+  --neutral:      light-dark(oklch(96% 0.01 var(--surface-hue)), oklch(16% 0.01 var(--surface-hue)));
+  --neutral-mute: light-dark(oklch(92% 0.01 var(--surface-hue)), oklch(20% 0.01 var(--surface-hue)));
+  --neutral-edge: light-dark(oklch(85% 0.02 var(--surface-hue)), oklch(30% 0.02 var(--surface-hue)));
+
+  --text:      light-dark(oklch(20% 0.01 var(--surface-hue)), oklch(92% 0.01 var(--surface-hue)));
+  --text-mute: light-dark(oklch(40% 0.01 var(--surface-hue)), oklch(72% 0.01 var(--surface-hue)));
+
+  --text-on-accent: oklch(98% 0.01 var(--accent-hue));
+
+  --0:  0;
+  --xs: clamp(0.2rem, 0.4vw, 0.4rem);
+  --s:  clamp(0.4rem, 1vw, 0.8rem);
+  --m:  clamp(0.8rem, 2vw, 1.6rem);
+  --l:  clamp(1.2rem, 4vw, 2.4rem);
+
+  --ease: cubic-bezier(0.25, 0, 0.3, 1);
+}
+
+@layer default {
+
+  body {
+    font-family: system-ui, sans-serif;
+    font-size: var(--m);
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--neutral);
+    padding: var(--m);
+    display: grid;
+    gap: var(--l);
+  }
+
+  section, details, dialog, [popover] {
+    background: var(--neutral-mute);
+    border: 1px solid var(--neutral-edge);
+    border-radius: var(--s);
+    padding: var(--s);
+    display: grid;
+    gap: var(--s);
+  }
+
+  form {
+    display: grid;
+    gap: var(--s);
+  }
+
+  dialog {
+    padding: var(--m);
+    max-inline-size: min(90vw, 40rem);
+  }
+
+  dialog::backdrop {
+    background: oklch(0% 0 0 / 0.4);
+  }
+
+  h1, h2, h3, h4 {
+    line-height: 1.2;
+    padding-block-end: var(--xs);
+    border-block-end: 1px solid var(--neutral-edge);
+  }
+
+  h1 { font-size: var(--l); }
+  h2 { font-size: calc(var(--l) * 0.85); }
+  h3 { font-size: calc(var(--m) * 1.15); }
+  h4 { font-size: var(--m); }
+
+  p { max-inline-size: 65ch; }
+
+  small { color: var(--text-mute); }
+  label { cursor: pointer; }
+
+  a {
+    color: var(--accent);
+    text-underline-offset: 0.15em;
+    transition: color 0.15s var(--ease);
+  }
+  a:hover { color: var(--accent-dn); }
+
+  svg { fill: currentColor; }
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  output { color: var(--text); }
+
+  button, input, textarea, select {
+    border: 1px solid var(--neutral-edge);
+    border-radius: var(--xs);
+    background: var(--neutral);
+    color: var(--text);
+    padding: var(--xs) var(--s);
+    transition: border-color 0.15s var(--ease),
+                background 0.15s var(--ease);
+  }
+
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  a:focus-visible,
+  summary:focus-visible {
+    outline: var(--xs) solid var(--accent);
+    outline-offset: var(--xs);
+  }
+
+  button:disabled,
+  input:disabled,
+  textarea:disabled,
+  select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  button {
+    cursor: pointer;
+    font-weight: 600;
+    background: var(--neutral-mute);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--xs);
+  }
+  button:hover:not(:disabled) { background: var(--neutral-edge); }
+  button:active:not(:disabled) { scale: 0.98; }
+
+  textarea { resize: vertical; }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='gray' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--s) center;
+    padding-inline-end: calc(var(--s) * 3);
+  }
+
+  input[type="range"] {
+    border: none;
+    padding: var(--0);
+    background: transparent;
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    inline-size: var(--m);
+    block-size: var(--m);
+    padding: var(--0);
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+
+  input[type="date"],
+  input[type="time"] {
+    cursor: pointer;
+  }
+}
+
+@layer skin {
+
+  [data-skin~="emphasis"] {
+    background: var(--accent);
+    color: var(--text-on-accent);
+    border-color: var(--accent);
+  }
+  [data-skin~="emphasis"]:hover:not(:disabled) {
+    background: var(--accent-dn);
+    border-color: var(--accent-dn);
+  }
+  [data-skin~="emphasis"]:active:not(:disabled) {
+    background: var(--accent-dn);
+  }
+  section[data-skin~="emphasis"],
+  details[data-skin~="emphasis"] {
+    background: var(--accent);
+    color: var(--text-on-accent);
+    border-color: var(--accent);
+  }
+
+  [data-skin~="ghost"] {
+    background: transparent;
+    border-color: transparent;
+  }
+  [data-skin~="ghost"]:hover:not(:disabled) {
+    background: var(--neutral-mute);
+    border-color: transparent;
+  }
+
+  [data-skin~="transparent"] {
+    background: transparent;
+    border-color: transparent;
+  }
+
+  [data-skin~="square"] {
+    aspect-ratio: 1;
+    padding: var(--xs);
+  }
+
+  [data-skin~="half"] {
+    max-inline-size: 50%;
+  }
+
+  [data-skin~="full"] {
+    inline-size: 100%;
+  }
+
+  [data-skin~="mute"] {
+    color: var(--text-mute);
+  }
+
+  [data-skin~="flat"] {
+    border-radius: var(--0);
+  }
+
+  [data-skin~="round"] {
+    border-radius: 999px;
+  }
+
+  [data-skin~="cols-2"] {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  [data-skin~="cols-4"] {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  [data-skin~="cols-6"] {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  [data-skin~="cols-8"] {
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  [data-skin~="span-full"] {
+    grid-column: 1 / -1;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Test 1: Settings (default 1-col) — depth 3 -->
+  <section>
+    <h2>Settings (default 1-col)</h2>
+    <label>Username</label>
+    <input type="text" placeholder="Enter username">
+    <label>Email</label>
+    <input type="email" placeholder="you@example.com">
+    <label>Bio</label>
+    <textarea rows="3" placeholder="Tell us about yourself..."></textarea>
+    <button data-skin="emphasis">Save Profile</button>
+  </section>
+
+  <!-- Test 2a: Actions (cols-2) — depth 3 -->
+  <section data-skin="cols-2">
+    <h2 data-skin="span-full">Actions (cols-2)</h2>
+    <button>Cancel</button>
+    <button data-skin="emphasis">Save</button>
+  </section>
+
+  <!-- Test 2b: Login (cols-2) — depth 3 -->
+  <section data-skin="cols-2">
+    <h2 data-skin="span-full">Login (cols-2)</h2>
+    <input type="text" placeholder="Username" data-skin="span-full">
+    <input type="password" placeholder="Password" data-skin="span-full">
+    <button data-skin="ghost">Forgot password</button>
+    <button data-skin="emphasis">Sign in</button>
+  </section>
+
+  <!-- Test 3a: Toolbar (cols-4) — depth 3 (svg at 4) -->
+  <section data-skin="cols-4">
+    <h2 data-skin="span-full">Toolbar (cols-4)</h2>
+    <button data-skin="square">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <button data-skin="square">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
+    </button>
+    <button data-skin="square">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg>
+    </button>
+    <button data-skin="emphasis square">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+    </button>
+  </section>
+
+  <!-- Test 3b: Stats (cols-4, flattened) — depth 3 -->
+  <section data-skin="cols-4">
+    <h2 data-skin="span-full">Stats (cols-4)</h2>
+    <small>Users</small>
+    <small>Revenue</small>
+    <small>Growth</small>
+    <small>Errors</small>
+    <h3>1,204</h3>
+    <h3>€42k</h3>
+    <h3>+18%</h3>
+    <h3>3</h3>
+  </section>
+
+  <!-- Test 4: Preferences (cols-2) — depth 3 -->
+  <section data-skin="cols-2">
+    <h2 data-skin="span-full">Preferences (cols-2)</h2>
+    <label>Theme</label>
+    <select>
+      <option>Light</option>
+      <option>Dark</option>
+      <option>Auto</option>
+    </select>
+    <label>Language</label>
+    <select>
+      <option>English</option>
+      <option>Dutch</option>
+      <option>German</option>
+    </select>
+    <label>Notifications</label>
+    <label><input type="checkbox" checked> Enabled</label>
+    <button data-skin="emphasis span-full">Update</button>
+  </section>
+
+  <!-- Test 5: Color Picker (cols-6) — depth 3 -->
+  <section data-skin="cols-6">
+    <h2 data-skin="span-full">Color Picker (cols-6)</h2>
+    <button data-skin="square" style="background: oklch(60% 0.2 30)"> </button>
+    <button data-skin="square" style="background: oklch(70% 0.2 80)"> </button>
+    <button data-skin="square" style="background: oklch(60% 0.2 150)"> </button>
+    <button data-skin="square" style="background: oklch(55% 0.2 250)"> </button>
+    <button data-skin="square" style="background: oklch(55% 0.2 310)"> </button>
+    <button data-skin="square" style="background: oklch(50% 0.1 0)"> </button>
+  </section>
+
+  <!-- Test 6: Chess row (cols-8) — depth 3 -->
+  <section data-skin="cols-8">
+    <h2 data-skin="span-full">8-col Grid (game board row)</h2>
+    <button data-skin="square flat">♜</button>
+    <button data-skin="square flat emphasis">♞</button>
+    <button data-skin="square flat">♝</button>
+    <button data-skin="square flat emphasis">♛</button>
+    <button data-skin="square flat">♚</button>
+    <button data-skin="square flat emphasis">♝</button>
+    <button data-skin="square flat">♞</button>
+    <button data-skin="square flat emphasis">♜</button>
+  </section>
+
+  <!-- Test 7: Contact Form (flattened) — depth 4 (form mandated) -->
+  <section>
+    <h2>Contact Form</h2>
+    <form data-skin="cols-2" onsubmit="event.preventDefault()">
+      <input type="text" placeholder="Your name" data-skin="span-full">
+      <input type="email" placeholder="Your email" data-skin="span-full">
+      <textarea rows="4" placeholder="Message..." data-skin="span-full"></textarea>
+      <button type="reset" data-skin="ghost">Clear</button>
+      <button type="submit" data-skin="emphasis">Send</button>
+    </form>
+  </section>
+
+  <!-- Test 8: Dashboard (flattened, cols-2) — depth 3 -->
+  <section data-skin="cols-2">
+    <h2 data-skin="span-full">Dashboard (cols-2)</h2>
+    <h3>Recent Activity</h3>
+    <h3>Quick Actions</h3>
+    <small>3 min ago — File uploaded</small>
+    <button data-skin="emphasis">New Project</button>
+    <small>1 hour ago — Settings changed</small>
+    <button>Import Data</button>
+    <small>Yesterday — New user joined</small>
+    <button data-skin="ghost">View Docs</button>
+  </section>
+
+</body>
+</html>
