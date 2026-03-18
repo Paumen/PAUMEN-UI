@@ -317,19 +317,13 @@
     F3-SPECIFIC: default spans for section[data-colcount="12"] children.
     Full-width elements get span 12 by default so they don't need
     explicit data-colspan. Only non-default widths need the attribute.
+
+    Wrapped in :where() to give zero specificity — ensures any explicit
+    [data-colspan="N"] always wins regardless of selector complexity.
   */
-  section[data-colcount="12"] > h1,
-  section[data-colcount="12"] > h2,
-  section[data-colcount="12"] > h3,
-  section[data-colcount="12"] > h4,
-  section[data-colcount="12"] > p,
-  section[data-colcount="12"] > label,
-  section[data-colcount="12"] > small,
-  section[data-colcount="12"] > input:not([type="checkbox"]):not([type="radio"]),
-  section[data-colcount="12"] > textarea,
-  section[data-colcount="12"] > select,
-  section[data-colcount="12"] > output,
-  section[data-colcount="12"] > a {
+  :where(section[data-colcount="12"]) > :where(h1, h2, h3, h4, p, label, small,
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea, select, output, a) {
     grid-column: span 12;
   }
 
