@@ -4,11 +4,9 @@
 
 Started from the project brief (theoretical framework) and built the first working CSS prototype. Went from ~70 candidate elements to 21, established a token system, wrote default styles, tested on device, and drafted 9 composable skins.
 
-
 ## Session 2 (March 16, 2026): Flat DOM & Column Grids
 
 Challenged the blueprint toward minimal DOM depth. Discovered that nested sections add structural overhead with zero visual benefit. Introduced column grid skins to replace the p-as-wrapper pattern and eliminate section-inside-section nesting. Conducted cross-domain modularity research. Identified a critical LLM blind spot around flat DOM patterns and developed a framing strategy for the skill file.
-
 
 ## Session 3 (March 17, 2026): Grid Architecture Decision
 
@@ -25,7 +23,6 @@ Critiqued F3 and F4 layout candidates with a focus on DOM self-description and L
 
 ---
 
-
 ## Element Selection (Session 1)
 
 Started with ~70 native HTML elements, cut progressively:
@@ -36,11 +33,7 @@ Started with ~70 native HTML elements, cut progressively:
 
 Final list: 21 elements + article row wrapper. See blueprint_v4 §5 for current catalog.
 
-
-@Research/Blueprint_expirement_1.html
-
 ---
-
 
 ## DOM Depth Constraint (Session 2)
 
@@ -63,7 +56,6 @@ Session 3 revealed that row wrappers (F4) require depth 4 for multi-element rows
 
 ---
 
-
 ## Grid Architecture Analysis (Session 3)
 
 ### Three Base Approaches Compared
@@ -75,6 +67,7 @@ Session 3 revealed that row wrappers (F4) require depth 4 for multi-element rows
 ### Key Finding: B Breaks, A Taxes, C Mixes Problems
 
 Built 13 test patterns in 2 sections across all three approaches. Results:
+
 - **A:** 31 data-span attributes. Every element taxed. Single-column content (checklist, text, labels) pays for multi-column's existence.
 - **B:** Zero child attrs for uniform grids. But forces 8 inner sections with inline style overrides for mixed-width rows. Breaks depth-3 rule.
 - **C:** 14 child attrs in multi-col section, clean in 1-col section. 2 inner sections as workaround.
@@ -82,6 +75,7 @@ Built 13 test patterns in 2 sections across all three approaches. Results:
 ### Refinement Options Explored (R0–R6, R2+)
 
 Explored 8 refinement strategies. Key findings:
+
 - **R1 (default spans):** Halves attrs (31→14) but only helps elements with stable widths. Buttons remain contextual — no single default works.
 - **R2 (optional row wrappers):** Zero child attrs. Rows only for multi-element lines. Reintroduces div/article as constrained layout primitive.
 - **R2+ (named row patterns):** Same as R2 but semantic names ("button-pair") instead of numbers. Better linguistics, worse adaptivity.
@@ -91,6 +85,7 @@ Explored 8 refinement strategies. Key findings:
 ### Variable Reduction
 
 Reduced the decision space from R-options to 5 independent variables:
+
 1. DOM depth: 3 only / mixed 3–4 / always 4
 2. Column attribute on section: yes / no
 3. Row wrapper with attribute: yes / no
@@ -99,16 +94,15 @@ Reduced the decision space from R-options to 5 independent variables:
 
 ### Nine combinations mapped, four eliminated as contradictory/redundant. Five viable:
 
-| F-variant | Depth | Section cols | Rows | Span | Description |
-|---|---|---|---|---|---|
-| F1 | 3 | no | none | no | Single column only |
-| F3 | 3 | yes | none | yes | Section cols + child spans (with CSS defaults) |
-| F4 | 3–4 | no | optional | no | Row wrappers only, no span |
-| F5 | 3–4 | no | optional | yes | Row wrappers + span within rows |
-| F8 | 4 | no | mandatory | no | Every element in a row wrapper |
+| F-variant | Depth | Section cols | Rows      | Span | Description                                    |
+| --------- | ----- | ------------ | --------- | ---- | ---------------------------------------------- |
+| F1        | 3     | no           | none      | no   | Single column only                             |
+| F3        | 3     | yes          | none      | yes  | Section cols + child spans (with CSS defaults) |
+| F4        | 3–4   | no           | optional  | no   | Row wrappers only, no span                     |
+| F5        | 3–4   | no           | optional  | yes  | Row wrappers + span within rows                |
+| F8        | 4     | no           | mandatory | no   | Every element in a row wrapper                 |
 
 **F5 eliminated:** Tested across 7 LLMs, consistently ranked worst (avg 3.6/5). Mixed paradigm (rows AND spans) confuses all readers.
-
 
 ### LLM Readability Survey (7 LLMs + 1 additional)
 
@@ -116,23 +110,23 @@ Tested DOM readability of F1/F3/F4/F5/F8 across Claude Opus, Claude Sonnet (via 
 
 **LLM-readability rankings (1=best):**
 
-| | DeepSeek | Gemini Fast | Gemini Pro | GPT | Perplexity | Sonnet | GLM | Opus | Avg |
-|---|---|---|---|---|---|---|---|---|---|
-| F3 | 2 | 3 | 1 | 4 | 1 | 2 | 2 | 2 | **2.1** |
-| F4 | 4 | 2 | 2 | 2 | 3 | 1 | 3 | 1 | **2.3** |
-| F8 | 5 | 1 | 1 | 1 | 5 | 3 | 5 | 3 | **3.1** |
-| F1 | 1 | 5 | 5 | 5 | 2 | 5 | 1 | 5 | **3.4** |
-| F5 | 3 | 4 | 4 | 3 | 4 | 4 | 4 | 3 | **3.6** |
+|     | DeepSeek | Gemini Fast | Gemini Pro | GPT | Perplexity | Sonnet | GLM | Opus | Avg     |
+| --- | -------- | ----------- | ---------- | --- | ---------- | ------ | --- | ---- | ------- |
+| F3  | 2        | 3           | 1          | 4   | 1          | 2      | 2   | 2    | **2.1** |
+| F4  | 4        | 2           | 2          | 2   | 3          | 1      | 3   | 1    | **2.3** |
+| F8  | 5        | 1           | 1          | 1   | 5          | 3      | 5   | 3    | **3.1** |
+| F1  | 1        | 5           | 5          | 5   | 2          | 5      | 1   | 5    | **3.4** |
+| F5  | 3        | 4           | 4          | 3   | 4          | 4      | 4   | 3    | **3.6** |
 
 **F3 and F4 are the top two.** F3 edges slightly (2.1 vs 2.3). Both get multiple 1st and 2nd place votes. Neither is ever worst.
 
 **Key insight from spatial reasoning research:** LLMs struggle with "combinatorial planning, layout perturbation, and spatiotemporal geometry." F3 requires span accumulation to find row boundaries (sequential spatial state tracking). F4 makes boundaries explicit via row wrappers. This suggests F4's advantage is architecturally durable — it converts a spatial reasoning problem into a pattern matching problem.
 
 **Counter-insight from ARIA/web platform analysis:** Both patterns exist in the web platform:
+
 - CSS Grid: 2-level (grid → cells), implicit rows = F3
 - HTML tables / ARIA grid: 3-level (grid → row → cell), explicit rows = F4
 - The platform itself doesn't resolve this — it uses both.
-
 
 ### Evaluation Framework (Session 3)
 
@@ -152,13 +146,13 @@ Tested DOM readability of F1/F3/F4/F5/F8 across Claude Opus, Claude Sonnet (via 
 
 #### Weights
 
-| Aspect | Weight | Rationale |
-|---|---|---|
-| 1. Compression | ×3 | IS the problem statement |
-| 4. Determinism | ×3 | Other face of same problem |
-| 2. Linguistic parity | ×2 | Quality of human-LLM loop |
-| 3. Contextual gravity | ×2 | Quality of dev workflow |
-| 5. Adaptivity | ×2 | Adoption cost — every point below vanilla is friction |
+| Aspect                | Weight | Rationale                                             |
+| --------------------- | ------ | ----------------------------------------------------- |
+| 1. Compression        | ×3     | IS the problem statement                              |
+| 4. Determinism        | ×3     | Other face of same problem                            |
+| 2. Linguistic parity  | ×2     | Quality of human-LLM loop                             |
+| 3. Contextual gravity | ×2     | Quality of dev workflow                               |
+| 5. Adaptivity         | ×2     | Adoption cost — every point below vanilla is friction |
 
 Adaptivity floor: must score 3+ (can build target apps). Measured against what users actually need, not against unlimited CSS (the IKEA-vs-carpenter framing).
 
@@ -172,15 +166,16 @@ Reframed via modularity research: adaptivity isn't "can the user do anything" �
 
 Late in the session, challenged the grid-based row wrapper model. Observation: most "ratio" layouts are actually "one thing is fixed, the rest fills":
 
-| Pattern | Real intent |
-|---|---|
-| Title + chevron | Title fills, icon is fixed |
-| Search bar | Icon fixed, button fixed, input fills |
-| Checkbox row | Checkbox fixed, label fills, number fixed |
+| Pattern         | Real intent                               |
+| --------------- | ----------------------------------------- |
+| Title + chevron | Title fills, icon is fixed                |
+| Search bar      | Icon fixed, button fixed, input fills     |
+| Checkbox row    | Checkbox fixed, label fills, number fixed |
 
 A flexbox row with `data-row` (bare, no value) sets `display: flex`. Children use existing skins for fixed sizing (`square`, etc.) and `flex: 1` to fill. No ratio catalog needed. No `data-row="7-1"`.
 
 This eliminates:
+
 - The entire row-value catalog
 - CSS rules per ratio value
 - The naming confusion (row defining columns)
