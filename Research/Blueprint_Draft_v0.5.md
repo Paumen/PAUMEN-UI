@@ -32,7 +32,7 @@ Build a minimal, reusable blueprint (design system + conventions + tooling) for 
 
 **Architectural goals — the IKEA principle (constraint enables, not limits):**
 
-- **Contextual Gravity:** Section/Card is the primary unit of modularity. Each card is a self-contained file that can be debugged, cloned, and moved between apps. Card = file = context boundary for the LLM. Bug = open one file. Convention learning = read one card. New features by duplicating existing cards.
+- **Contextual Gravity:** Article/Card is the primary unit of modularity. Each card is a self-contained file that can be debugged, cloned, and moved between apps. Card = file = context boundary for the LLM. Bug = open one file. Convention learning = read one card. New features by duplicating existing cards.
 - **Adaptivity/Differentiation:** Allow user freedom of choice. Modern, responsive, customizable (change one hue to change the whole theme). The system constrains _how_ you build but not _what_ you build.
 
 **Hard constraints:**
@@ -85,9 +85,9 @@ The most directly relevant prior art. Key insights:
 
 Deep research into modularity across manufacturing, logistics, biology, and software. Key findings relevant to blueprint:
 
-- **Herbert Simon (1962):** Hierarchical systems with stable intermediate forms assemble exponentially faster. Nearly-decomposable systems have strong intra-module and weak inter-module linkages. The section (grid container) is the stable intermediate form.
+- **Herbert Simon (1962):** Hierarchical systems with stable intermediate forms assemble exponentially faster. Nearly-decomposable systems have strong intra-module and weak inter-module linkages. The card (article) is the stable intermediate form.
 - **Baldwin & Clark (2000):** Modularity creates real options — ability to replace parts independently increases system value. Row wrappers are modular layout options.
-- **LEGO system:** 1.6mm unit grid IS the governance. ±10 micron tolerance, 18 per million rejection rate. The constraint makes proposals obviously compatible or not. Blueprint's depth constraint + 21 elements do the same.
+- **LEGO system:** 1.6mm unit grid IS the governance. ±10 micron tolerance, 18 per million rejection rate. The constraint makes proposals obviously compatible or not. Blueprint's depth constraint + ~21 tags do the same.
 - **Toyota TNGA:** 80% parts sharing by standardizing what doesn't differentiate. 20% cost reduction. Same logic: standardize grid structure, differentiate content.
 - **Project Ara (Google):** 25% physical bulk penalty killed modular phones. In CSS, equivalent "penalty" (padding, gaps, whitespace) is actually good UX. Digital modularity tax can be negative.
 - **Boeing 787:** Modularizing immature technology fails. Complex widgets need tight integration (escape hatch), not grid constraints.
@@ -241,7 +241,7 @@ The system has 4–5 identifiable aspects, but coupling rules ensure only 1–3 
 
 1. **HTML Element** — which tag (`<button>`, `<input>`, `<section>`, `<dialog>`, etc.). Determines behavior and accessibility.
 2. **Skin** — the composable visual modification (`data-skin="emphasis round"`). Overrides default appearance. Multiple skins compose via space-separation.
-3. **Placement** — whether the element is a direct section child (full width) or inside a row wrapper (shared width). The primary free variable per element.
+3. **Placement** — whether the element is a direct card child (full width) or inside a row wrapper (shared width). The primary free variable per element.
 4. **Content** — text, icon, image. Irreducible — always unique.
 5. **Context** — inherited from parent. Gap, alignment, density, tone inheritance. Zero decisions.
 
@@ -251,9 +251,11 @@ The brief's three-tier model (container/component/content) maps directly to CSS 
 
 | Category  | Display      | Role                                 | Elements                                                                           |
 | --------- | ------------ | ------------------------------------ | ---------------------------------------------------------------------------------- |
-| Container | block        | Holds and arranges children via grid | section, form, details, dialog, [popover]                                          |
+| Card      | grid         | Holds and arranges children          | article, details, dialog, [popover]                                                |
+| Wrapper   | grid (12-col)| Groups elements into horizontal rows | section, header, footer, nav, summary                                              |
+| Transparent| contents    | Submission scope only                | form                                                                               |
 | Component | inline-block | Self-contained interactive unit      | button, text inputs, textarea, select, range                                       |
-| Content   | inline       | Leaf-level text/graphic              | h1–h4, p, small, label, a, svg, summary, checkbox, radio, date/time, output, aside |
+| Content   | inline       | Leaf-level text/graphic              | h1–h4, p, small, label, a, svg, checkbox, radio, date/time, output, aside          |
 
 This is not a data-attribute — it's inherent in the native display model. No need for `data-category`.
 
@@ -261,8 +263,8 @@ This is not a data-attribute — it's inherent in the native display model. No n
 
 - For interactive elements: state styling is always derived — hover always darkens, focus always shows ring, disabled always reduces opacity. Zero decisions.
 - For color: everything is derived from 5 token inputs. Zero decisions.
-- For sizing: content elements fill section width (direct children) or fill their row cell (inside article row wrapper).
-- For layout: sections are single-column stacks. Multi-element rows are handled by article row wrappers. Leaf elements never create internal grids.
+- For sizing: content elements fill card width (direct children) or fill their row cell (inside row wrapper).
+- For layout: cards are single-column stacks. Multi-element rows are handled by row wrappers (section, header, footer, nav, summary). Leaf elements never create internal grids.
 
 ### Analogies from Other Domains
 
@@ -278,100 +280,127 @@ This is not a data-attribute — it's inherent in the native display model. No n
 
 ## 5. Implementation Surface
 
-### HTML Elements — ~20 Entries
+### HTML Elements — ~21 Tags
 
 Native semantic HTML only. No custom elements. No div.
 
-**Containers **
+**Cards** (body children, depth 2 — display: grid, gap --s, single-column stack):
 
-- `<article>` — generic container / card. Also serves as dropdown popover host.
-- `<form>` — submission boundary, validation scope. Grid layout, no visual styling.
-- `<details>` + `<summary>` — collapsible section with native toggle.
-- `<dialog>` — modal overlay with backdrop, focus trap, Escape-to-close.
+- `<article>` — standard card. The primary structural unit.
+- `<details>` + `<summary>` — collapsible card with native toggle. Summary acts as built-in header row wrapper.
+- `<dialog>` — modal overlay card with backdrop, focus trap, Escape-to-close. Interior follows same rules as any card.
 
-**Row wrapper:**
+**Transparent wrapper** (display: contents — no visual chrome, no depth):
 
-- `<section>` — groups multiple elements into a horizontal row within a section. Defines its own column structure. No visual chrome. Only used when 2+ elements share a row. Single elements are direct section children.
-- <header> or <summary>containing "<h1-h6> and usually chevron
-- <footer> for bottom row buttons on card
-- <nav> for top row button on card with tabs.
+- `<form>` — submission scope only. Wraps inputs inside any card type. Never a visual container.
 
-**Components (inline-block):**
+**Row wrappers** (inside cards, depth 3 — display: grid, 12-column, gap --xs, no visual chrome):
+
+- `<section>` — generic multi-element row. Only used when 2+ elements share a horizontal row. Single elements are direct card children.
+- `<header>` — title row (typically h1–h4 + optional icon/action).
+- `<footer>` — action row (typically buttons at card bottom).
+- `<nav>` — navigation row (tabs, links). Also serves as dropdown popover host.
+- `<summary>` — details header row (inside `<details>` only). Clickable toggle target.
+
+**Interactive elements:**
 
 - `<button>` — actions, toggles, triggers.
 - `<input>` text cluster — text, number, search, password, email, url, tel. Same visual, different keyboards/validation.
 - `<input type="range">` — slider. Native styling only.
+- `<input type="date">` / `<input type="time">` — native pickers. Kept for native behavior despite cross-browser styling limits.
+- `<input type="checkbox">` / `<input type="radio">` — binary/exclusive toggles.
 - `<textarea>` — multi-line text.
-- `<select>` — dropdown choice
-- `<h1>` through `<h4>` — heading hierarchy. h5/h6 dropped (smaller than body text is awkward). 
+- `<select>` — dropdown choice.
 
-**Content (inline/inline-block):**
+**Headings:**
 
+- `<h1>` through `<h4>` — heading hierarchy. h5/h6 dropped (smaller than body text is awkward).
+
+**Content/text:**
 
 - `<p>` — paragraph text only. NOT used for layout wrapping.
 - `<small>` — secondary/fine text.
 - `<label>` — ties text to a control. Click focuses associated control.
 - `<a>` — link / navigation.
 - `<svg>` — icon / graphic. Inherits text color via `fill: currentColor`.
-- `<input type="checkbox">` / `<input type="radio">` — binary/exclusive toggles.
-- `<input type="date">` / `<input type="time">` — native pickers. Hard to style cross-browser.
 - `<output>` — computed result / toast host. Has native `aria-live="polite"`.
 - `<aside>` — supplementary info / tooltip host.
+
+**Implicit inline formatting** (not spec-listed, assumed allowed within text elements): `<strong>`, `<em>`, `<code>`, etc.
+
+**Cut elements:** `<fieldset>` (depth/styling complexity), `<img>` (out of scope), `<table>` family (out of scope), `<ul>`/`<ol>`/`<li>` (depth conflicts), `<hr>` (marginal).
 
 **Popover hosts (semantic element + popover attribute):**
 
 - Tooltip → `<aside popover>` — supplementary info
 - Toast/notification → `<output popover>` — announced result (native aria-live)
-- Dropdown menu → `<section popover>` — container with buttons/links
+- Dropdown menu → `<nav popover>` — container with buttons/links
 
 ### DOM Structure
 
 ```
-body                              depth 1
- └ article                        depth 2  (1-col stack, display:grid)
-    ├ header
-    │ ├ h3                          depth 3  (direct child, full width)
-    ├ input                       depth 3  (direct child, full width)
-    ├ section [row definition]    depth 3  (row wrapper, multi-element)
-    │  ├ button                   depth 4  (row child, fills cell)
-    │  └ button                   depth 4  (row child, fills cell)
-    └ textarea                    depth 3  (direct child, full width)
+body                              depth 1  (grid, gap --l, max 800px centered)
+ └ article                        depth 2  (card, 1-col stack, grid, gap --s)
+    ├ header [row wrapper]        depth 3  (12-col grid, gap --xs)
+    │  ├ h3                       depth 4  (row child, fills cell)
+    │  └ svg                      depth 4  (row child, fills cell)
+    ├ form                        ----     (display:contents, transparent)
+    │  ├ input                    depth 3  (direct card child, full width)
+    │  ├ section [row wrapper]    depth 3  (12-col grid, gap --xs)
+    │  │  ├ button                depth 4  (row child, fills cell)
+    │  │  └ button                depth 4  (row child, fills cell)
+    │  └ textarea                 depth 3  (direct card child, full width)
+    └ footer [row wrapper]        depth 3  (12-col grid, gap --xs)
+       ├ button                   depth 4  (row child)
+       └ button                   depth 4  (row child)
 ```
 
-Max structural depth: 3 (body → section → content). Depth 4 allowed for article row wrappers and HTML-mandated nesting (svg inside button, small inside p, input inside form inside section).
+Max structural depth: 3 (body → article → content). Depth 4 allowed for row wrapper children and HTML-mandated nesting (svg inside button, small inside p). Form is `display: contents` — transparent to the depth model.
+
+**Rules:**
+- No article inside article (no nested cards).
+- No form inside form (HTML forbids this).
+- Cards are body-level only. Row wrappers are card-level only.
+- Single elements are direct card children — never wrapped in a row wrapper.
 
 ### Data Attributes
 
 **data-skin** — composable visual modifications. Space-separated. Applied to any element.
 
-| Skin          | Effect                                                       |
-| ------------- | ------------------------------------------------------------ |
-| `emphasis`    | Accent background, light text, accent border. Hover darkens. |
-| `ghost`       | Transparent bg + border. Hover shows mute bg.                |
-| `transparent` | Transparent bg + border. Static.                             |
-| `square`      | aspect-ratio 1:1, equal padding. For icon buttons.           |
-| `half`        | max-inline-size 50%.                                         |
-| `full`        | inline-size 100%.                                            |
-| `mute`        | text-mute color.                                             |
-| `round`       | border-radius 999px (pill shape).                            |
-| `flat`        | border-radius 0.                                             |
+| Skin          | Effect                                                                                  |
+| ------------- | --------------------------------------------------------------------------------------- |
+| `emphasis`    | Accent background, light text, accent border. Hover darkens.                            |
+| `ghost`       | Transparent bg + border. On interactive elements: hover shows mute bg. On others: static. |
+| `square`      | aspect-ratio 1:1, equal padding. For icon buttons.                                      |
+| `full`        | inline-size 100%.                                                                       |
+| `mute`        | text-mute color.                                                                        |
+| `round`       | border-radius 999px (pill shape).                                                       |
+| `flat`        | border-radius 0.                                                                        |
+| `elevated`    | box-shadow for visual lift. `box-shadow: 0 var(--xs) var(--s) oklch(0% 0 0 / 0.12)`.   |
+| `freeform`    | Escape hatch. Removes PAUMEN constraints from card interior. Freeform CSS inside.       |
 
-Total: 9 skins. Column skins (cols-2/4/6/8, span-full) removed in session 3 — superseded by row wrapper architecture.
+Total: 9 skins. `half` removed (redundant with colspan). `transparent` merged into `ghost` (hover determined by element interactivity). `elevated` and `freeform` added.
 
-Composable examples: `data-skin="emphasis round"` = accent pill button. `data-skin="ghost square"` = borderless icon button. `data-skin="emphasis square round"` = accent circle icon button.
+**Skin conflict groups** (mutually exclusive within group):
+1. **Visual:** emphasis | ghost (pick at most one)
+2. **Radius:** round | flat (pick at most one)
 
-**data-colcount on article** — defines the column grid for the row. Fixed at `12` (the only supported value). 12 is maximally divisible (by 2, 3, 4, 6), covering all common split ratios with a single grid definition.
+Composable examples: `data-skin="emphasis round"` = accent pill button. `data-skin="ghost square"` = borderless icon button. `data-skin="elevated flat"` = sharp shadow card.
+
+**data-colspan on row wrapper children** — how many of the 12 columns a child occupies. Row wrappers (section, header, footer, nav, summary) always use a 12-column grid — no attribute needed on the wrapper, CSS handles it. Children without `data-colspan` default to `span 1` via CSS grid auto-placement.
 
 ```html
-<article data-colcount="12">
-  <input type="text" placeholder="Search…" data-colspan="10" />
-  <button data-skin="square">×</button>
-  <!-- no data-colspan needed: auto-spans 1 -->
-  <button data-skin="emphasis square">⌕</button>
+<article>
+  <section>
+    <input type="text" placeholder="Search…" data-colspan="10" />
+    <button data-skin="square">×</button>
+    <!-- no data-colspan needed: auto-spans 1 -->
+    <button data-skin="emphasis square">⌕</button>
+  </section>
 </article>
 ```
 
-**data-colspan on row children** — how many of the 12 columns a child occupies. Children without `data-colspan` default to `span 1` via CSS grid auto-placement. Common values:
+Common colspan patterns:
 
 | Split        | Colspan values | Use case                            |
 | ------------ | -------------- | ----------------------------------- |
@@ -455,7 +484,14 @@ color-scheme: light dark; /* light/dark mode toggle */
 
 ### Visual Depth Model
 
-Containers (article, section, header, footer, summary, details, dialog, popover) get `--neutral-mute` background. Controls inside (button, input, textarea, select) get `--neutral` (body color). Creates card-on-surface depth without extra tokens.
+Cards (article, details, dialog, [popover]) get `--neutral-mute` background. Row wrappers (section, header, footer, nav, summary) are transparent — they inherit the card background. Controls inside (button, input, textarea, select) get `--neutral` (body color). Creates body → card → control depth without extra tokens.
+
+| Layer | Background | Elements |
+|-------|-----------|----------|
+| Body | `--neutral` | body |
+| Card | `--neutral-mute` | article, details, dialog, [popover] |
+| Row wrapper | transparent (inherits card) | section, header, footer, nav, summary |
+| Control | `--neutral` | button, input, textarea, select |
 
 ### Signal Hues (not yet implemented)
 
@@ -477,32 +513,30 @@ Used for: spacing (gap, padding), font-size (--m base), border-radius (--xs subt
 
 ## 7. Layout Model
 
-### Article as Single-Column Stack (F4 Architecture)
+### Cards as Single-Column Stacks (F4 Architecture)
 
-Articles are always single-column grids. Every direct child of a Articles occupies a full-width row. This is the default — no attribute needed.
+Cards (article, details, dialog) are always single-column grids. Every direct child of a card occupies a full-width row. This is the default — no attribute needed.
 
 ```css
-section {
+article, details, dialog {
   display: grid;
   gap: var(--s);
 }
 ```
 
-Multi-element rows are handled by `<section>` row wrappers that define their own column structure internally. Single elements are direct section children.
+Multi-element rows are handled by row wrappers (section, header, footer, nav, summary) that define a 12-column grid internally. Single elements are direct card children.
 
 This architecture was chosen (session 3) after systematic comparison of 5 alternatives (F1–F8) across 8 LLMs, 5 evaluation criteria, and 13 test patterns. Key factors:
 
-- Article are self-contained (layout internal, not dependent on parent)
+- Cards are self-contained (layout internal, not dependent on parent)
 - Single-column content (60% of rows) requires zero attributes
 - Multi-element rows are explicit (row wrappers, not implicit span accumulation)
 - LLMs struggle with spatial state tracking needed by span-based alternatives
 - Easier to migrate away from than alternatives (row wrappers encode explicit grouping information that can be mechanically converted)
 
-### Row Wrappers
-
 ### Row Wrappers (12-Column Grid)
 
-`<section data-colcount="12">` wraps 2+ elements that share a horizontal row. No visual chrome. Children claim columns via `data-colspan="N"`. Children without `data-colspan` auto-span 1 column.
+Row wrappers (`<section>`, `<header>`, `<footer>`, `<nav>`, `<summary>`) wrap 2+ elements that share a horizontal row. No visual chrome — transparent background, no border. All row wrappers use a 12-column grid via CSS (no attribute needed). Children claim columns via `data-colspan="N"`. Children without `data-colspan` auto-span 1 column.
 
 The 12-column grid was chosen after testing 6/8/10/12-column variants on a ~470px mobile viewport. Key findings:
 
@@ -511,43 +545,43 @@ The 12-column grid was chosen after testing 6/8/10/12-column variants on a ~470p
 - **10-col:** Best visual proportions for search-bar pattern. Buttons well-sized.
 - **12-col:** Near-identical to 10-col visually, but maximally divisible (2, 3, 4, 6) — covers every common split ratio without needing multiple grid definitions.
 
-Decision: **12 is the only supported `data-colcount` value.** One grid definition covers all cases. This avoids a catalog of grid sizes and means Claude only needs to choose colspan values, not grid granularity.
+Decision: **12-column grid on all row wrappers, handled entirely by CSS.** `data-colcount` attribute removed — it was always 12 and never varied. Claude only chooses colspan values, not grid granularity.
 
 ```html
-<section>
+<article>
   <h3>Settings</h3>
-  <!-- direct child, full width -->
-  <article data-colcount="12">
-    <!-- row wrapper, 12-col grid -->
+  <!-- direct card child, full width -->
+  <section>
+    <!-- row wrapper, 12-col grid (CSS) -->
     <button data-colspan="6">Cancel</button>
     <!-- half width -->
     <button data-colspan="6" data-skin="emphasis">Save</button>
-  </article>
+  </section>
   <input type="text" placeholder="Name" />
-  <!-- direct child, full width -->
-</section>
+  <!-- direct card child, full width -->
+</article>
 ```
 
-Single elements are always direct section children — never wrapped in an article.
+Single elements are always direct card children — never wrapped in a row wrapper.
 
 ### Body Grid
 
-Body is a grid with `gap: var(--l)`. Children are sections.
+Body is a grid with `gap: var(--l)`, `max-inline-size: 800px`, `margin-inline: auto`. Children are cards (article, details).
 
 ### Two-Layer System
 
-**Layer 1 — In-flow grid:** All normal page content. Sections stacked in body grid. Content stacked in section grid. Multi-element rows in article wrappers.
+**Layer 1 — In-flow grid:** All normal page content. Cards stacked in body grid. Content stacked in card grid. Multi-element rows in row wrappers.
 
 **Layer 2 — Out-of-flow overlays:** Implemented via `popover` attribute on semantic elements:
 
 - `<aside popover>` — tooltip (supplementary info)
 - `<output popover>` — toast/notification (announced result, native aria-live)
-- `<section popover>` — dropdown menu (container with buttons/links)
+- `<nav popover>` — dropdown menu (container with buttons/links)
 - `<dialog>` — modal (separate mechanism, backdrop + focus trap + Escape)
 
 ### Escape Hatch
 
-One special "freeform" container type where anything goes inside (for widgets, complex internals, third-party embeds, special features). Must fit onto the section stack externally, but internally unconstrained. Can be achieved via `data-skin="transparent"` on section + internal freeform CSS. Use for anything requiring non-row layout (game canvases, data visualizations, complex widgets).
+`data-skin="freeform"` on any card removes PAUMEN constraints from its interior. Externally the card fits normally into the body stack; internally it's unconstrained — freeform CSS inside. Use for anything requiring non-row layout (game canvases, data visualizations, complex widgets, third-party embeds).
 
 ---
 
@@ -559,7 +593,7 @@ Claude never writes state styles. All states are derived from the element defaul
 
 ### Interactive States (implemented via pseudo-classes)
 
-- **Hover:** button darkens to --neutral-edge. Emphasis skin darkens to --accent-dn. Ghost shows --neutral-mute.
+- **Hover:** button darkens to --neutral-edge. Emphasis skin darkens to --accent-dn. Ghost shows --neutral-mute on interactive elements only (non-interactive ghost elements are static).
 - **Active:** scale 0.98.
 - **Focus-visible:** --xs solid --accent ring, --xs offset. Consistent across all interactive elements.
 - **Disabled:** opacity 0.5, cursor not-allowed. All controls.
@@ -612,10 +646,10 @@ select {
 
 ### Default Layer
 
-- Body: grid, gap --l, system font, --m base size, --text color, --neutral bg.
-- Containers: shared card rule (`section, details, dialog, [popover]`): --neutral-mute bg, border, radius --s, padding --s, display grid, gap --s.
-- Article (row wrapper): display grid, gap --xs, align-items center, no visual styling. Column structure set by `data-colcount` in grid layer.
-- Form: grid + gap only, no visual styling.
+- Body: grid, gap --l, max-inline-size 800px, margin-inline auto, system font, --m base size, --text color, --neutral bg.
+- Cards: shared card rule (`article, details, dialog, [popover]`): --neutral-mute bg, border, radius --s, padding --s, display grid, gap --s.
+- Row wrappers (`section, header, footer, nav, summary`): display grid, grid-template-columns repeat(12, 1fr), gap --xs, align-items center, no visual styling (transparent bg, no border).
+- Form: display contents (transparent to layout).
 - Dialog: larger padding --m, max-inline-size, backdrop.
 - Headings h1–h4: card header style (border-bottom, padding-bottom --xs, scale-based sizes).
 - Shared control base (`button, input, textarea, select`): border, radius --xs, --neutral bg, --text color, padding, transition.
@@ -630,25 +664,20 @@ select {
 
 Composable via `[data-skin~="value"]` selector (tilde matches space-separated values):
 
-- **Appearance:** emphasis, ghost, transparent, mute.
+- **Visual:** emphasis, ghost, mute.
 - **Shape:** square, round, flat.
+- **Size:** full.
+- **Elevation:** elevated.
+- **Escape:** freeform.
 
+Conflict groups: emphasis|ghost (visual), round|flat (radius).
 
 ### Grid Layer
 
-Row wrapper mechanism via `data-colcount` and `data-colspan` attributes:
+Row wrapper colspan mechanism via `data-colspan` attribute:
 
 ```css
 @layer grid {
-  [data-colcount] {
-    display: grid;
-    gap: var(--xs);
-    align-items: center;
-  }
-  [data-colcount="12"] {
-    grid-template-columns: repeat(12, 1fr);
-  }
-
   [data-colspan="2"] {
     grid-column: span 2;
   }
@@ -678,11 +707,11 @@ Row wrapper mechanism via `data-colcount` and `data-colspan` attributes:
 
 Design notes:
 
-- Only `data-colcount="12"` is defined. One grid, maximum divisibility.
+- Row wrappers always use 12-column grid — defined in the default layer, not here. `data-colcount` attribute removed (it was always 12).
 - Children without `data-colspan` auto-span 1 column via CSS grid auto-placement — no attribute needed for icon buttons or other 1-col elements.
 - `data-colspan` selectors trimmed to values that divide meaningfully into 12: 2, 3, 4, 6, 8, 9, 10, 12. Values 1 (auto-placement default), 5, 7, 11 omitted — they don't produce clean ratios and haven't appeared in any test pattern.
-- `data-colspan` selectors are global (not scoped to `[data-colcount]` children) to keep specificity flat. They only have effect inside a grid parent.
-- Gap is `--xs` (tighter than section's `--s`) because row children are siblings in a single line, not stacked cards.
+- `data-colspan` selectors are global (not scoped to row wrapper children) to keep specificity flat. They only have effect inside a grid parent.
+- Gap is `--xs` (tighter than card's `--s`) because row children are siblings in a single line, not stacked content.
 
 ### No Redundant Native Styling
 
@@ -709,32 +738,43 @@ Removed: text-decoration on `<a>` (native), font-weight 700 on headings (native)
 | 25  | Flat global stylesheet with @layer (reset, default, skin, grid)                                    | ✅ Updated S4  |
 | 26  | Composable skins via data-skin                                                                     | ✅ Locked      |
 | 27  | Zero CSS classes — element selectors + attribute selectors only                                    | ✅ Locked      |
-| 28  | No div — section is generic container, article is row wrapper                                      | ✅ Updated S3  |
-| 29  | Popover hosts: aside (tooltip), output (toast), section (dropdown)                                 | ✅ Locked      |
-| 30  | 21 base elements + article row wrapper, h1–h4 only                                                 | ✅ Updated S3  |
+| 28  | No div — article is card, section is row wrapper                                                   | ✅ Updated S5  |
+| 29  | Popover hosts: aside (tooltip), output (toast), nav (dropdown)                                     | ✅ Updated S5  |
+| 30  | ~21 base tags, h1–h4 only. Cut: fieldset, img, table, lists, hr.                                   | ✅ Updated S5  |
 | 31  | Scale: --0, --xs, --s, --m, --l. --m is base font-size + spacing                                   | ✅ Locked      |
-| 32  | Visual depth: containers --neutral-mute, controls --neutral                                        | ✅ Locked      |
+| 32  | Visual depth: cards --neutral-mute, row wrappers transparent, controls --neutral                   | ✅ Updated S5  |
 | 33  | Open Props — not used. Own token system.                                                           | ✅ Locked      |
 | 34  | text-on-accent: fixed near-white                                                                   | ✅ Locked      |
 | 35  | --m double duty (font-size + spacing): keep as-is                                                  | ✅ Locked      |
 | 36  | Scale stops at --l, no --xl needed                                                                 | ✅ Locked      |
 | 37  | Emphasis skin on inputs: keep accent bg                                                            | ✅ Locked S3   |
 | 39  | Skins follow defaults for undefined states; skins can explicitly override                          | ✅ Reframed S3 |
-| 43  | Max depth 3 for structure, depth 4 allowed for article row wrappers                                | ✅ Amended S3  |
-| 44  | No section inside section                                                                          | ✅ Locked      |
+| 43  | Max depth 3 for structure, depth 4 allowed for row wrapper children                                | ✅ Updated S5  |
+| 44  | No article inside article (no nested cards)                                                        | ✅ Updated S5  |
 | 45  | p is for text only, not layout wrapping                                                            | ✅ Locked      |
 | 49  | Skill file framing: engineered constraint, not prototype simplicity                                | ✅ Locked      |
 | 51  | Grid architecture: F4 (1-col section + optional article row wrappers)                              | ✅ Locked S3   |
-| 52  | Row wrapper tag: article                                                                           | ✅ Locked S3   |
+| 52  | Row wrapper tags: section, header, footer, nav, summary                                            | ✅ Updated S5  |
 | 57  | Add strategic goals (portability, context windowing, cloning) to blueprint                         | ✅ Locked S3   |
-| 53  | Row mechanism: `data-colcount="12"` on article + `data-colspan` on children. Grid, not flexbox.    | ✅ Locked S4   |
-| 55  | 9 skins unchanged. Column skins (cols-2/4/6/8, span-full) stay removed — grid layer replaces them. | ✅ Locked S4   |
+| 53  | Row mechanism: 12-col grid via CSS on row wrappers + `data-colspan` on children. `data-colcount` removed. | ✅ Updated S5  |
+| 55  | 9 skins: emphasis, ghost, square, full, mute, round, flat, elevated, freeform. half/transparent removed, elevated/freeform added. | ✅ Updated S5  |
+
+| 58  | form = display:contents, always transparent, never a visual container                              | ✅ Locked S5   |
+| 59  | details = card-level collapsible container, summary = row wrapper                                  | ✅ Locked S5   |
+| 60  | dialog interior follows same rules as any card                                                     | ✅ Locked S5   |
+| 61  | Body: max-inline-size 800px, margin-inline auto                                                    | ✅ Locked S5   |
+| 62  | Ghost skin merges old ghost + transparent. Hover on interactive only.                              | ✅ Locked S5   |
+| 63  | Skin conflict groups: emphasis\|ghost (visual), round\|flat (radius)                               | ✅ Locked S5   |
+| 64  | Escape hatch via data-skin="freeform" on cards                                                     | ✅ Locked S5   |
+| 65  | Dropdown menu popover: nav[popover] (was section[popover])                                         | ✅ Locked S5   |
+| 66  | Cut elements: fieldset, img, table family, ul/ol/li, hr                                            | ✅ Locked S5   |
+| 67  | Inline formatting (strong, em, code) implicit, not spec-listed                                     | ✅ Locked S5   |
 
 ### Open
 
 | #   | Decision                                                                    | Depends on |
 | --- | --------------------------------------------------------------------------- | ---------- |
-| 54  | Partial-width single elements (sizing skins vs article row with empty cols) | Prototype  |
+| 54  | Partial-width single elements (sizing skins vs row wrapper with empty cols) | Prototype  |
 
 ---
 
@@ -782,7 +822,7 @@ If the blueprint doesn't have a pattern for something (drag-and-drop reorder, co
 
 **Mitigations:**
 
-- Escape hatch: `data-skin="transparent"` on section + internal freeform CSS for complex widgets.
+- Escape hatch: `data-skin="freeform"` on any card + internal freeform CSS for complex widgets.
 - Explicit rule: if something doesn't fit, Claude stops and proposes a new skin rather than improvising. This is a workflow rule, not a technical constraint.
 - The system is designed to be extended: adding a new skin value is a small, deliberate change, not a redesign.
 
@@ -792,7 +832,7 @@ If the number of skins and combinations grows, the system risks becoming as comp
 
 **Mitigations:**
 
-- Current count: 9 skins. Column skins (5) were added in session 2 and removed in session 3 — validates that the system can shrink as well as grow.
+- Current count: 9 skins. Column skins were removed in session 3, half/transparent removed in session 5, elevated/freeform added — validates that the system evolves through both addition and removal.
 - Composability reduces the need for new skins — combinations cover many cases.
 - Regular review: if a new skin is proposed, challenge whether it can be achieved by composing existing skins.
 
@@ -812,7 +852,7 @@ Not all UI patterns fit strict grid flow. Dense data tables, freeform canvases, 
 **Mitigations:**
 
 - These live inside the escape hatch container.
-- The section stack + row wrappers govern page-level and section-level composition (covering ~80% of typical app UI). Internal widget layout is a separate, smaller concern.
+- The card stack + row wrappers govern page-level and card-level composition (covering ~80% of typical app UI). Internal widget layout is a separate, smaller concern.
 
 ### Risk 8: LLM Cannot Think in Flat Grids (HIGH PRIORITY)
 
@@ -823,7 +863,7 @@ Claude's training data is overwhelmingly nested DOM (Bootstrap div soup, React c
 **Failure modes:**
 
 - **Silent regression:** follows rules for 3 sessions, reverts to nesting under complex prompt pressure.
-- **Hostile compliance:** avoids section-in-section but invents worse workarounds.
+- **Hostile compliance:** avoids article-in-article but invents worse workarounds.
 - **Prompt misinterpretation:** "put these side by side" only maps to nested containers in Claude's model.
 - **Self-correction loops:** generates flat HTML, "reviews" it, decides it looks wrong, refactors into nested structure.
 - **"Improvement" instinct:** if system reads as prototype/MVP, Claude suggests "graduating" to a real framework.
@@ -863,7 +903,7 @@ Row wrappers with semantic names (`data-row="button-pair"`, `data-row="label-inp
 | Lego Technic                            | Typed connection interfaces (pin, axle, hole) make compatibility checkable.                                                                                                                                           |
 | Car dashboard / cockpit                 | Physical UI with roles (button, toggle, dial), tones (red=danger, amber=warning, green=ok), states (on/off/blinking), parent-child nesting (gauge cluster contains gauges), and content (labels). Full analogy holds. |
 | Form / Fit / Function (engineering)     | Form ≈ skin + placement. Fit ≈ context + relationships. Function ≈ HTML element + behavior.                                                                                                                           |
-| LEGO brick system (modularity research) | 1.6mm unit grid IS the governance — makes proposals obviously compatible or not. Blueprint's depth constraint + 21 elements do the same.                                                                              |
+| LEGO brick system (modularity research) | 1.6mm unit grid IS the governance — makes proposals obviously compatible or not. Blueprint's depth constraint + ~21 tags do the same.                                                                              |
 | Toyota TNGA platform                    | Standardize what doesn't differentiate (pedal-to-axle = grid cell), preserve what does (interior = content).                                                                                                          |
 | Project Ara failure                     | Modularity tax (25% bulk) killed it physically. In CSS, equivalent "tax" (padding, gaps) is actually good UX.                                                                                                         |
 | Boeing 787 failure                      | Don't modularize immature technology. Complex widgets get escape hatch.                                                                                                                                               |
