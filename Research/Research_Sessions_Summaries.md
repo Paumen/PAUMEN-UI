@@ -1,4 +1,4 @@
-# Blueprint Session Summary — Sessions 1, 2 & 3
+# Blueprint Session Summary — Sessions 1, 2, 3, 4 & 5
 
 ## Session 1 (March 15, 2026): Foundation
 
@@ -11,6 +11,15 @@ Challenged the blueprint toward minimal DOM depth. Discovered that nested sectio
 ## Session 3 (March 17, 2026): Grid Architecture Decision
 
 Systematically compared grid approaches and row-handling strategies. Built visual prototypes and DOM trees. Identified missing evaluation criteria from strategic notes and modularity research. Tested 5 LLM-readable DOM variants (F1–F8) across 7 different LLMs. Chose F4 (1-col section + optional article row wrappers). Key open decisions remaining on row wrapper attribute and values.
+
+## Session 4 (March 18, 2026): Flexbox vs. Grid Resolution
+
+Resolved the row wrapper mechanism (Decision #53) through visual testing of grid densities (6–12 cols) on mobile viewports. Selected a 12-column universal grid standard to replace the legacy column-skin catalog, ensuring maximal divisibility and layout flexibility. Formalized the CSS architecture into four distinct layers and updated the blueprint to v5.
+
+
+## Session 5 (March 18, 2026): Layout Architecture & LLM Evaluation
+
+Critiqued F3 and F4 layout candidates with a focus on DOM self-description and LLM readability. Discovered that LLMs tend to hallucinate "obvious defaults" in implicit (F3) systems, reinforcing the need for explicit (F4) attribute-based layout to prevent architectural drift. Reaffirmed structural determinism as the primary driver for human-LLM linguistic parity.
 
 ---
 
@@ -42,6 +51,8 @@ body (1) → section (2) → article row wrapper (3) → content element (4)
 Depth 4 also allowed when HTML mandates it: form children, svg inside button, small inside p.
 
 Session 3 revealed that row wrappers (F4) require depth 4 for multi-element rows. This is content grouping, not structural nesting. Decision #43 amended: "Max depth 3 for structure, depth 4 allowed for article row wrappers and HTML-mandated nesting."
+
+@Research/Blueprint_expirement_2.html
 
 ---
 
@@ -149,6 +160,8 @@ Adaptivity floor: must score 3+ (can build target apps). Measured against what u
 
 Reframed via modularity research: adaptivity isn't "can the user do anything" — it's "can the system handle unanticipated layout needs without architectural change." Carnegie Unit risk: if the system can't evolve, it ossifies. Henderson & Clark: architectural knowledge embeds into structure, making change harder over time.
 
+@Research/blueprint_expirement_3.jsx
+
 ### Flexbox Row Discovery (End of Session 3)
 
 Late in the session, challenged the grid-based row wrapper model. Observation: most "ratio" layouts are actually "one thing is fixed, the rest fills":
@@ -168,4 +181,41 @@ This eliminates:
 - The naming confusion (row defining columns)
 - Empty placeholder elements
 
-**Not yet resolved.** Needs prototyping. The equal-split case and partial-width-single-element case still need solutions.
+@Research/blueprint_expirement_4.html
+
+## Session 4 (March 18, 2026): Grid Proposal
+
+**Goal:** Resolve the row wrapper mechanism — determining how article rows partition space between children.
+
+### Process & Discovery
+
+1. Evaluated a `data-colcount` / `data-colspan` attribute system as an alternative to the existing `data-skin` column approach (`cols-2`, `cols-4`, etc.). Tradeoff noted: more powerful (arbitrary splits) but requires 24 attribute selectors versus the established handful of skin combos.
+2. Built a test HTML with a search-bar pattern (text input + 2 icon buttons) utilizing 6, 8, 10, and 12 column grids. Each row featured the input filling leading columns, with two 1-col icon buttons at the end.
+3. Tested on a mobile viewport (~470px) and verified with a grid overlay screenshot. The visual analysis revealed:
+   - **6-col:** Buttons too large (`aspect-ratio:1` on wide `1fr` tracks).
+   - **8-col:** Buttons remained chunky.
+   - **10-col:** Optimal visual proportions.
+   - **12-col:** Near-identical to 10-col, but maximally divisible (2, 3, 4, 6).
+4. Selected 12 as the sole supported `colcount` value, allowing one grid definition to cover all required split ratios without a separate grid-size catalog.
+
+- **Test Artifact:** `@Research/blueprint_experiment_5.html`
+
+---
+
+
+## Session 5 (March 18, 2026): Layout Architecture & LLM Evaluation
+
+Conducted a comprehensive review and research discussion concerning the PAUMEN-UI layout model, specifically evaluating competing layout architecture candidates.
+
+### Key Topics
+
+- **F3 vs. F4 Layout Architecture:** Systematically compared two opposing approaches for the grid/layout system:
+    - **F3:** Utilizes `data-cols` on sections and `data-span` on children, relying on implicit defaults for elements lacking explicit `data-span` definitions.
+    - **F4:** Utilizes `<article data-row="N-M">` wrapper rows where children receive explicit column assignments governed by the encompassing row pattern.
+- **DOM Self-Description:** Established that the F4 architecture yields a fully self-describing DOM (element widths are explicitly readable strictly from DOM attributes). Conversely, F3 introduces implicit gaps where elements without `data-span` rely on CSS conventions invisible within the DOM hierarchy.
+- **LLM Evaluation Critique:** Re-examined the methodology where LLMs previously evaluated DOM readability. Noted that LLMs favored F3 because they processed isolated DOM text rather than rendered output. Consequently, the models failed to flag F3’s ambiguous width data as a deficit, instead hallucinating assumptions to fill the implicit gaps.
+
+### Core Insight
+- **Evaluation Methodology Adjusted:** Recognized that LLMs inherently treat the absence of explicit information as an "obvious default" rather than identifying missing information. This confirms that a non-self-describing DOM undermines the primary objective of an LLM-assisted development framework.
+ 
+@Research/Blueprint_expirement_6.html 
