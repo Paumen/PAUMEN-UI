@@ -278,20 +278,23 @@ This is not a data-attribute — it's inherent in the native display model. No n
 
 ## 5. Implementation Surface
 
-### HTML Elements — 21 Entries + Row Wrapper
+### HTML Elements — ~20 Entries
 
 Native semantic HTML only. No custom elements. No div.
 
-**Containers (block, display:grid):**
+**Containers **
 
-- `<section>` — generic container / card. Single-column stack. Also serves as dropdown popover host.
+- `<article>` — generic container / card. Also serves as dropdown popover host.
 - `<form>` — submission boundary, validation scope. Grid layout, no visual styling.
 - `<details>` + `<summary>` — collapsible section with native toggle.
 - `<dialog>` — modal overlay with backdrop, focus trap, Escape-to-close.
 
 **Row wrapper:**
 
-- `<article>` — groups multiple elements into a horizontal row within a section. Defines its own column structure. No visual chrome. Only used when 2+ elements share a row. Single elements are direct section children.
+- `<section>` — groups multiple elements into a horizontal row within a section. Defines its own column structure. No visual chrome. Only used when 2+ elements share a row. Single elements are direct section children.
+- <header> or <summary>containing "<h1-h6> and usually chevron
+- <footer> for bottom row buttons on card
+- <nav> for top row button on card with tabs.
 
 **Components (inline-block):**
 
@@ -299,17 +302,17 @@ Native semantic HTML only. No custom elements. No div.
 - `<input>` text cluster — text, number, search, password, email, url, tel. Same visual, different keyboards/validation.
 - `<input type="range">` — slider. Native styling only.
 - `<textarea>` — multi-line text.
-- `<select>` — dropdown choice.
+- `<select>` — dropdown choice
+- `<h1>` through `<h4>` — heading hierarchy. h5/h6 dropped (smaller than body text is awkward). 
 
 **Content (inline/inline-block):**
 
-- `<h1>` through `<h4>` — heading hierarchy. h5/h6 dropped (smaller than body text is awkward).
+
 - `<p>` — paragraph text only. NOT used for layout wrapping.
 - `<small>` — secondary/fine text.
 - `<label>` — ties text to a control. Click focuses associated control.
 - `<a>` — link / navigation.
 - `<svg>` — icon / graphic. Inherits text color via `fill: currentColor`.
-- `<summary>` — disclosure label inside `<details>`.
 - `<input type="checkbox">` / `<input type="radio">` — binary/exclusive toggles.
 - `<input type="date">` / `<input type="time">` — native pickers. Hard to style cross-browser.
 - `<output>` — computed result / toast host. Has native `aria-live="polite"`.
