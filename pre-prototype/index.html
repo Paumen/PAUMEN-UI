@@ -299,8 +299,8 @@
        Popovers work via popovertarget attribute above.
        ══════════════════════════════════════════════ -->
   <script>
-    document.getElementById('open-modal').onclick  = () => document.getElementById('modal').showModal();
-    document.getElementById('close-modal').onclick = () => document.getElementById('modal').close();
+    document.getElementById('open-modal').addEventListener('click', () => document.getElementById('modal').showModal());
+    document.getElementById('close-modal').addEventListener('click', () => document.getElementById('modal').close());
   </script>
 
 </body>
