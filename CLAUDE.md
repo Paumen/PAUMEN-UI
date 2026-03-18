@@ -4,61 +4,90 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PAUMEN-UI is a highly constrained design system / CSS blueprint optimized for LLM-assisted web app development. The core idea: instead of maximizing flexibility (like typical CSS frameworks), maximize constraint so that ~124 of 134 UI properties are deterministic — leaving only placement, size, and content as free variables per element.
+PAUMEN-UI is a highly constrained design system / blueprint for building web apps with LLM-assisted development. The core idea: instead of maximizing flexibility (like traditional CSS frameworks), maximize constraint so that ~124 of 134 UI properties are deterministic — leaving only ~10 actual decisions per element (where, how big, what content).
 
-**Target apps:** Single/few-page tools, mostly client-side — productivity tools, dashboards, games, forms, converters.
+Target apps: single or few-page tools, mostly client-side. Productivity tools, dashboards, forms, games, converters.
 
 ## Current State
 
-This project is in the research/design phase. The `Research/` directory contains:
-- `Blueprint_Draft_v0.5.md` — the main design specification (element catalog, color system, layout model, skin definitions)
-- `Research_Report_Modularity.md` — cross-domain modularity research informing architectural decisions
-- `Research_Sessions_Summaries.md` — session-by-session decision log
-- `blueprint_experiment_*.html/.jsx` — visual prototypes testing grid approaches
+**Pre-spec / research phase.** Everything under `Research/` is draft material — experiments, prototypes, working notes. The goal is to arrive at the first real specification through further experimentation and iteration. There is no build system, package manager, or test suite yet.
 
-There is no build system, package.json, or test suite yet. No dependencies.
+**Priority:** Core architecture first (layout model, element set, skin system, color system). Details like signal states/hues come later.
 
-## Architecture Decisions (Locked)
+**No tooling scaffolding yet.** Skills, hooks, linters, permissions, workflows — all far future. The blueprint itself must be strong enough to work without soft enforcement. If it needs guardrails to function, that's a design smell.
 
-### DOM Structure — Max Depth 3 (4 for row wrappers)
-```
-body (1) → section (2) → content element (3)
-body (1) → section (2) → article row wrapper (3) → content element (4)
-```
+## Architecture — The Blueprint
 
-### 21 HTML Elements + Article Row Wrapper
-No custom elements. No divs. No CSS classes. All styling via element selectors and `data-*` attribute selectors.
+### Hard Rules
 
-**Containers:** `section`, `form`, `details`+`summary`, `dialog`
-**Row wrapper:** `article` (groups 2+ elements horizontally within a section)
-**Components:** `button`, text `input`s, `textarea`, `select`, `range`
-**Content:** `h1`–`h4`, `p`, `small`, `label`, `a`, `svg`, `checkbox`, `radio`, `date/time`, `output`, `aside`
+- **Zero dependencies.** Full control over source code. Single CSS file.
+- **Zero CSS classes.** All styling via element selectors, attribute selectors (`[data-skin~="emphasis"]`), and pseudo-classes.
+- **21 HTML elements + article row wrapper.** Native semantic HTML only. No custom elements. No div.
+- **Max DOM depth 3** (body → section → content). Depth 4 allowed for `<article>` row wrappers and HTML-mandated nesting (svg inside button, small inside p).
+- **Claude never writes custom CSS.** All styling comes from the system. If something can't be built, propose a new skin — do not improvise.
 
 ### Layout Model (F4 Architecture)
-- Sections are always **single-column grids** (`display: grid`)
-- Direct section children occupy full width — no attributes needed
-- Multi-element rows use `<article data-colcount="12">` wrappers
-- Children inside articles claim columns via `data-colspan="N"`
-- Single elements are **never** wrapped in an article
 
-### Skin System — 9 Composable Skins via `data-skin`
-Space-separated, composable: `emphasis`, `ghost`, `transparent`, `square`, `half`, `full`, `mute`, `round`, `flat`
+Sections are always single-column grids. Every direct child occupies a full-width row. Multi-element rows use `<article data-colcount="12">` wrappers with `data-colspan="N"` on children.
 
-Example: `data-skin="emphasis round"` = accent pill button
-
-### Color System — 5 Inputs Derive Everything
-```css
---accent-hue, --accent-chroma, --surface-hue, --jump, color-scheme
 ```
-Uses OKLCH color space with `light-dark()` for automatic dark mode. Zero per-element color decisions.
+body                              depth 1
+ └ section                        depth 2  (1-col stack, display:grid)
+    ├ h3                          depth 3  (direct child, full width)
+    ├ article data-colcount="12"  depth 3  (row wrapper)
+    │  ├ button data-colspan="6"  depth 4
+    │  └ button data-colspan="6"  depth 4
+    └ input                       depth 3  (direct child, full width)
+```
 
-### Scale — 4 Fluid Tokens
-`--xs`, `--s`, `--m` (base), `--l` using `clamp()`. Used for spacing, font-size, border-radius.
+Single elements are always direct section children — never wrapped in an article.
 
-## Key Design Principles
+### 5 Aspects Per Element
 
-- **Zero CSS classes** — all styling via element + `[data-skin~="value"]` selectors
-- **Claude never writes custom CSS** — if something can't be built with existing elements + skins, propose a new skin instead of improvising
-- **Section = Card = File** — each section is a self-contained, debuggable unit
-- **Escape hatch** exists for complex widgets: `data-skin="transparent"` section with freeform internals
-- **Popover-based overlays:** tooltip=`<aside popover>`, toast=`<output popover>`, dropdown=`<section popover>`, modal=`<dialog>`
+1. **HTML Element** — which tag. Determines behavior + accessibility.
+2. **Skin** — `data-skin="emphasis round"`. Composable visual modifications (space-separated).
+3. **Placement** — direct section child (full width) or inside article row wrapper.
+4. **Content** — text, icon, image. Always unique.
+5. **Context** — inherited from parent. Zero decisions.
+
+### Element Categories
+
+| Category | Display | Elements |
+|----------|---------|----------|
+| Container | block/grid | section, form, details, dialog, [popover] |
+| Component | inline-block | button, text inputs, textarea, select, range |
+| Content | inline | h1–h4, p, small, label, a, svg, summary, checkbox, radio, date/time, output, aside |
+
+### 9 Skins
+
+`emphasis`, `ghost`, `transparent`, `square`, `half`, `full`, `mute`, `round`, `flat`
+
+### Color System — 5 Inputs
+
+`--accent-hue`, `--accent-chroma`, `--surface-hue`, `--jump`, `color-scheme: light dark`. Everything else is derived via OKLCH. Change one hue to retheme the entire app.
+
+### CSS Architecture — 4 Layers
+
+`@layer reset, default, skin, grid;`
+
+### Overlay System (Layer 2)
+
+- Tooltip: `<aside popover>`
+- Toast: `<output popover>`
+- Dropdown menu: `<section popover>`
+- Modal: `<dialog>` (separate mechanism)
+
+### Escape Hatch
+
+For complex widgets (game canvases, data viz), use `data-skin="transparent"` on section + freeform CSS inside. Must fit the section stack externally. Exact scoping behavior (whether color tokens/scale variables are inherited) is TBD.
+
+### Naming Decisions
+
+`data-colcount` / `data-colspan` are locked for now but open for revision if real-world usage surfaces problems or trade-offs. See `Research/blueprint_expirement_5.html` for related exploration.
+
+## Key Research Documents
+
+- `Research/Blueprint_Draft_v0.5.md` — Full specification draft (elements, skins, color system, layout, CSS architecture)
+- `Research/Research_Sessions_Summaries.md` — Session-by-session decisions and rationale
+- `Research/Research_Report_Modularity_Notes.md` — Strategic notes on Section/Card framework and LLM optimization
+- `Research/blueprint_experiment_*.html` / `.jsx` — Visual prototypes testing the system
