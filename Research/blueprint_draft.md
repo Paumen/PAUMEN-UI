@@ -240,7 +240,7 @@ The system has 4–5 identifiable aspects, but coupling rules ensure only 1–3 
 ### The Aspects
 
 1. **HTML Element** — which tag (`<button>`, `<input>`, `<section>`, `<dialog>`, etc.). Determines behavior and accessibility.
-2. **Skin** — the composable visual modification (`data-skin="emphasis round"`). Overrides default appearance. Multiple skins compose via space-separation.
+2. **Skin** — the composable visual modification (`data-skin="emphasis"`). Overrides default appearance. Multiple skins compose via space-separation.
 3. **Placement** — whether the element is a direct card child (full width) or inside a row wrapper (shared width). The primary free variable per element.
 4. **Content** — text, icon, image. Irreducible — always unique.
 5. **Context** — inherited from parent. Gap, alignment, density, tone inheritance. Zero decisions.
@@ -371,8 +371,7 @@ Max structural depth: 3 (body → article → content). Depth 4 allowed for row 
 | ------------- | --------------------------------------------------------------------------------------- |
 | `emphasis`    | Accent background, light text, accent border. Hover darkens.                            |
 | `ghost`       | Transparent bg + border. On interactive elements: hover shows mute bg. On others: static. |
-| `square`      | aspect-ratio 1:1, equal padding. For icon buttons.                                      |
-| `full`        | inline-size 100%.                                                                       |
+| `aspect`      | aspect-ratio 1:1, equal padding. For icon buttons.                                      |
 | `mute`        | text-mute color.                                                                        |
 | `round`       | border-radius 999px (pill shape).                                                       |
 | `flat`        | border-radius 0.                                                                        |
@@ -393,9 +392,9 @@ Composable examples: `data-skin="emphasis round"` = accent pill button. `data-sk
 <article>
   <section>
     <input type="text" placeholder="Search…" data-colspan="10" />
-    <button data-skin="square">×</button>
+    <button>×</button>
     <!-- no data-colspan needed: auto-spans 1 -->
-    <button data-skin="emphasis square">⌕</button>
+    <button data-skin="emphasis">⌕</button>
   </section>
 </article>
 ```
@@ -659,14 +658,13 @@ select {
 - Select: custom dropdown arrow (SVG data URI), appearance:none.
 - Range: stripped to native (transparent bg, no border/padding).
 - Checkbox/radio: sized to --m, accent-color.
+- Shape of buttons, tags, icons is always same radius, eg 999
 
 ### Skin Layer
 
 Composable via `[data-skin~="value"]` selector (tilde matches space-separated values):
 
 - **Visual:** emphasis, ghost, mute.
-- **Shape:** square, round, flat.
-- **Size:** full.
 - **Elevation:** elevated.
 - **Escape:** freeform.
 
@@ -915,3 +913,23 @@ Row wrappers with semantic names (`data-row="button-pair"`, `data-row="label-inp
 
 ---
 
+Details = Card
+Article = Card
+Dialog = Card
+
+Section = Grid-row
+Summary = Grid-row (first)
+Header = Grid-row (first)
+Nav = Grid-row (button group)
+Footer = Grid-row (last)
+
+---
+
+Open:
+Can we further simplify?
+- Always radius round for buttons, tags, etc?
+- Always use details summary instead of article?
+- Drop aspect ratios 1:1 for grid span 1?
+- Reuse/borrow commom attribue names from existing syystems. 
+
+---
