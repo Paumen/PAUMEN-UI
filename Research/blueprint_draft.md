@@ -371,20 +371,15 @@ Max structural depth: 3 (body → article → content). Depth 4 allowed for row 
 | ------------- | --------------------------------------------------------------------------------------- |
 | `emphasis`    | Accent background, light text, accent border. Hover darkens.                            |
 | `ghost`       | Transparent bg + border. On interactive elements: hover shows mute bg. On others: static. |
-| `aspect`      | aspect-ratio 1:1, equal padding. For icon buttons.                                      |
 | `mute`        | text-mute color.                                                                        |
-| `round`       | border-radius 999px (pill shape).                                                       |
-| `flat`        | border-radius 0.                                                                        |
 | `elevated`    | box-shadow for visual lift. `box-shadow: 0 var(--xs) var(--s) oklch(0% 0 0 / 0.12)`.   |
 | `freeform`    | Escape hatch. Removes PAUMEN constraints from card interior. Freeform CSS inside.       |
 
-Total: 9 skins. `half` removed (redundant with colspan). `transparent` merged into `ghost` (hover determined by element interactivity). `elevated` and `freeform` added.
+Total: 9 skins. `half` removed (redundant with colspan). `transparent` merged into `ghost` (hover determined by element interactivity). `round`/`flat`/`squate` removed, elevated` and `freeform` added.
 
 **Skin conflict groups** (mutually exclusive within group):
-1. **Visual:** emphasis | ghost (pick at most one)
-2. **Radius:** round | flat (pick at most one)
+**Visual:** emphasis | ghost (pick at most one)
 
-Composable examples: `data-skin="emphasis round"` = accent pill button. `data-skin="ghost square"` = borderless icon button. `data-skin="elevated flat"` = sharp shadow card.
 
 **data-colspan on row wrapper children** — how many of the 12 columns a child occupies. Row wrappers (section, header, footer, nav, summary) always use a 12-column grid — no attribute needed on the wrapper, CSS handles it. Children without `data-colspan` default to `span 1` via CSS grid auto-placement.
 
@@ -539,7 +534,7 @@ Row wrappers (`<section>`, `<header>`, `<footer>`, `<nav>`, `<summary>`) wrap 2+
 
 The 12-column grid was chosen after testing 6/8/10/12-column variants on a ~470px mobile viewport. Key findings:
 
-- **6-col:** Icon buttons too large (1fr is wide, `aspect-ratio:1` makes them tall). Wastes space.
+- **6-col:** Icon buttons too large (1fr is wide, makes them tall). Wastes space.
 - **8-col:** Buttons still slightly oversized. Input-to-button ratio awkward.
 - **10-col:** Best visual proportions for search-bar pattern. Buttons well-sized.
 - **12-col:** Near-identical to 10-col visually, but maximally divisible (2, 3, 4, 6) — covers every common split ratio without needing multiple grid definitions.
@@ -925,11 +920,3 @@ Footer = Grid-row (last)
 
 ---
 
-Open:
-Can we further simplify?
-- Always radius round for buttons, tags, etc?
-- Always use details summary instead of article?
-- Drop aspect ratios 1:1 for grid span 1?
-- Reuse/borrow commom attribue names from existing syystems. 
-
----
