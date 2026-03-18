@@ -210,77 +210,13 @@ Files go experiment_1, experiment_3, experiment_4, experiment_5. There is no exp
 ### 13. Experiment 4 Contains Two Concatenated HTML Documents
 blueprint_experiment_4.html has a complete HTML document (lines 1-485) immediately followed by a second `<!DOCTYPE html>` and another complete document (lines 487-959). This appears to be an accidental concatenation. The second document is nearly identical to the first but with structural differences (the second is missing `<body>` tags, has a slightly different F1 Section Y).
 
-### 14. The Modularity Notes File Is Wrapped in a Markdown Code Block
-Research_Report_Modularity_Notes.md wraps its entire content in triple-backtick markdown fences. This means it renders as a code block rather than as formatted markdown. Remove the outer fences.
 
-### 15. Session Summaries Stop at Session 3
-Blueprint_Draft_v0.5 references decisions made in "S4" (decisions #25, #53, #55, and the flexbox rejection in §12). But Research_Sessions_Summaries.md only covers sessions 1-3. Session 4's decisions are embedded in the draft but not in the summary file.
 
-### 16. The `--ease` Token Is Defined but Underdocumented
-`--ease: cubic-bezier(0.25, 0, 0.3, 1)` appears in every experiment but isn't mentioned in the blueprint draft's token section. It's used for transitions but isn't listed alongside the spacing/color tokens.
 
-### 17. Experiment 3 HTML Uses `cols-N` Skins That Were Removed
-The flattened column grid test uses `data-skin="cols-2"`, `data-skin="cols-4"` etc. — skins that were explicitly removed in Session 3 (Decision #55). This experiment is now misleading about the system's API.
+
+
+
+
 
 ---
 
-## V. STRATEGIC OBSERVATIONS
-
-### The Real Risk Is Not Technical — It's Velocity
-
-The research quality is high. The decisions are well-reasoned. But three sessions have produced:
-- 42K of modularity theory
-- 50K of blueprint specification
-- 5 experiments totaling 88K, most of which are now outdated
-- Zero lines of production CSS
-- Zero reference applications
-
-The CLAUDE.md correctly identifies this: "Priority: Core architecture first. Details like signal states/hues come later." But the architecture IS decided (F4, colcount/colspan, 9 skins, OKLCH). What's needed now is a single, clean CSS file that implements the locked decisions, and one realistic app that proves it works.
-
-The modularity research (42K) is valuable but may be encouraging deep exploration at the expense of shipping. The research correctly identifies the Carnegie Unit risk (architectures ossify) — but the counter-risk is also real: over-researching before implementing means the architecture calcifies around theoretical arguments rather than practical testing.
-
-### The `data-colcount="12"` Decision May Be Premature
-
-It's locked as Decision #53, but:
-- Only one experiment (experiment_5) tests it, and that experiment uses `<div>` instead of `<article>`
-- That experiment tests only a single pattern (search bar with icon buttons)
-- The flexbox alternative was "not yet resolved" at end of Session 3, then appears rejected in S4 without documented comparison
-- The ratio approach (`data-row="7-1"`) from Session 3 had zero child attributes for most patterns
-
-This is a high-impact decision (it determines the attribute cost of every multi-element row in every app built with the system). It deserves the same rigor as F3 vs F4. Consider un-locking it until a full comparison experiment exists.
-
-### The Skill File Is the Most Important Unwritten Artifact
-
-The blueprint correctly identifies that CLAUDE.md should be <200 lines with the detailed catalog in a skill file. But the skill file doesn't exist yet, and it's the artifact that will actually determine whether LLMs can use the system. The skill file needs:
-- The definitive element table (21 categories with actual tags)
-- The skin interaction matrix
-- 10-15 before/after examples per layout type
-- The precise rules for when to use article wrappers vs. direct children
-
-This should be a near-term priority — earlier than signal states, earlier than a validator script.
-
----
-
-## VI. SUMMARY OF RECOMMENDATIONS
-
-**Immediate (before next experiment):**
-1. Write Session 4 summary documenting the colcount/colspan decision and flexbox rejection rationale
-2. Fix experiment_5: change `<div>` to `<article>`, fix filename typo
-3. Fix experiment_4: add header comment noting outdated attribute names, fix duplicate HTML document
-
-**Before spec v1.0:**
-4. Create experiment_6: full reference section using the complete locked spec
-5. Resolve the half/full skin vs. grid sizing tension (Decision #54)
-6. Add definitive numbered element table
-7. Create skin interaction matrix (9×9, valid/invalid/untested)
-8. Separate spec from design history in the blueprint document
-9. Quantify attribute cost: 12-col grid vs. ratio rows vs. flexbox across 10 real layouts
-
-**Near-term priorities:**
-10. Write the first production CSS file implementing all locked decisions
-11. Write the skill file with examples
-12. Build one reference app
-
----
-
-*This review is based on reading every file in the repository. It is intended to be constructive — the project's foundations are strong and the research methodology is rigorous. The issues identified are fixable and the strategic direction is sound.*
