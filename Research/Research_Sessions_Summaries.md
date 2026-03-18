@@ -175,3 +175,36 @@ This eliminates:
 
 **Not yet resolved.** Needs prototyping. The equal-split case and partial-width-single-element case still need solutions.
 
+## Session 4 Summary
+
+**Goal:** Resolve the row wrapper mechanism (open decision #53) — how article rows split space between children.
+
+**What happened:**
+
+1. You proposed a `data-colcount` / `data-colspan` attribute system as an alternative to the existing `data-skin` column approach (`cols-2`, `cols-4`, etc.). I noted the tradeoff: more powerful (arbitrary splits) but 24 attribute selectors vs the handful of skin combos that already covered common cases.
+
+2. I built a test HTML with a search-bar pattern (text input + 2 icon buttons) at 6, 8, 10, and 12 column grids. Each row: input fills leading cols, two 1-col icon buttons at the end.
+
+3. You tested on your OnePlus 8T (~470px viewport) and confirmed with a grid overlay screenshot. The visual comparison showed:
+   - **6-col:** buttons too large (aspect-ratio:1 on wide 1fr tracks)
+   - **8-col:** buttons still chunky
+   - **10-col:** best visual proportions
+   - **12-col:** near-identical to 10, but maximally divisible (2, 3, 4, 6)
+
+4. You chose **12 as the only supported colcount value** — one grid definition covers all split ratios. No catalog of grid sizes needed.
+
+5. I updated the blueprint (v4 → v5) accordingly.
+
+**Decisions locked:**
+- **#53:** `data-colcount="12"` on article + `data-colspan` on children. Grid, not flexbox.
+- **#55:** 9 skins unchanged. Grid layer replaces old column skins.
+- **#25:** CSS layers updated to four: `reset, default, skin, grid`
+
+**CSS additions:**
+- Grid layer with 1 colcount rule + 8 colspan selectors (trimmed to values that divide cleanly into 12: 2, 3, 4, 6, 8, 9, 10, 12)
+- Row gap set to `--xs` (tighter than section's `--s`)
+
+**Still open:** #54 — partial-width single elements.
+
+**Test artifact:** `@Research/blueprint_experiment_5.html`
+
