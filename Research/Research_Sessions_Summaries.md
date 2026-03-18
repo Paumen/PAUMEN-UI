@@ -1,4 +1,4 @@
-# Blueprint Session Summary — Sessions 1, 2 & 3
+# Blueprint Session Summary — Sessions 1, 2, 3, 4 & 5
 
 ## Session 1 (March 15, 2026): Foundation
 
