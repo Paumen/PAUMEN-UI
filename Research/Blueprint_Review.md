@@ -172,31 +172,6 @@ The count of "21" likely means 21 *categories* (where "input text cluster" = 1 a
 
 **Recommendation:** Add a definitive numbered table: one row per element/category, with the actual HTML tag(s), display category, and a one-line description. This is the single most important reference artifact for LLM use.
 
-### 9. Skin Interaction Matrix Not Documented
-
-The 9 skins are composable (`data-skin="emphasis round"`), but not all combinations are meaningful or tested. The blueprint doesn't document:
-- Which combinations are *intended* (emphasis + round = accent pill)
-- Which are *contradictory* (ghost + emphasis — both set background)
-- Which are *redundant* (transparent + ghost — similar effect)
-- Which are *untested* (mute + emphasis — does mute override emphasis text color?)
-
-Experiment 1 tests a few compositions (emphasis+round, ghost+square, emphasis+square+round) but not systematically.
-
-**Recommendation:** Create a 9×9 matrix showing which skin combinations are valid, which are meaningless, and which produce unexpected results. This is essential for the skill file — without it, an LLM will inevitably try `data-skin="ghost emphasis"` and produce unpredictable output.
-
-### 10. The `half` and `full` Skins Are Layout Skins Disguised as Visual Skins
-
-`half` (max-inline-size: 50%) and `full` (inline-size: 100%) control sizing/layout, not appearance. They're categorized alongside visual skins (emphasis, ghost) and shape skins (round, flat) in the skin layer. But in the F4 architecture, layout is supposed to be handled by the grid layer (section stacking + article row wrappers + colcount/colspan).
-
-This creates ambiguity: should a half-width button be `<button data-skin="half">` (skin approach) or `<article data-colcount="12"><button data-colspan="6">...</button></article>` (grid approach)?
-
-This is exactly Open Decision #54 ("partial-width single elements"). But it's not just an open decision — it's an architectural tension. The skin layer and grid layer both claim responsibility for element sizing.
-
-**Recommendation:** Resolve this before v1.0. Either:
-- (a) Remove `half`/`full` from skins and handle all sizing through the grid layer (purist approach, higher attribute cost)
-- (b) Keep them but document clearly when to use skins vs. grid for sizing (pragmatic approach, needs clear rules)
-- (c) Rename them to make the distinction clear (e.g., move to a `data-size` attribute separate from `data-skin`)
-
 
 
 ---
