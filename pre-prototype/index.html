@@ -283,25 +283,5 @@
     <a href="#" data-skin="mute">Sign out</a>
   </nav>
 
-  <!-- Modal dialog -->
-  <dialog id="modal">
-    <h3>Confirm Action</h3>
-    <p>Are you sure you want to clear all completed tasks? This cannot be undone.</p>
-    <footer>
-      <button data-colspan="6" data-skin="ghost" id="close-modal">Cancel</button>
-      <button data-colspan="6" data-skin="emphasis">Confirm</button>
-    </footer>
-  </dialog>
-
-
-  <!-- ══════════════════════════════════════════════
-       MINIMAL JS — dialog only (2 lines)
-       Popovers work via popovertarget attribute above.
-       ══════════════════════════════════════════════ -->
-  <script>
-    document.getElementById('open-modal').addEventListener('click', () => document.getElementById('modal').showModal());
-    document.getElementById('close-modal').addEventListener('click', () => document.getElementById('modal').close());
-  </script>
-
 </body>
 </html>
