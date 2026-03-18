@@ -1,5 +1,8 @@
 # Modularity: why it works, when it breaks, and what it means for building UIs
 
+> **Role:** Foundational research — cross-domain modularity theory that informed the blueprint's design. Background reading, not normative. Referenced from `blueprint_rationale.md` §7 and §10.
+> **Reading order:** Read last, or as needed for theoretical depth behind decisions in the rationale.
+
 **Modularity is the single most recurring design strategy in complex systems—from arthropod body plans to automotive platforms to frontend component libraries—because it solves a fundamental problem: complex systems that lack stable intermediate structures cannot evolve.** Herbert Simon demonstrated in 1962 that hierarchically organized systems with semi-independent modules assemble exponentially faster than monolithic alternatives. [Infraculture](https://www.infraculture.org/2020-09-10-text-notes-architecture-of-complexity/) This insight, validated across biology, manufacturing, logistics, and software, explains why modularity emerges independently in virtually every domain where complexity exceeds a threshold. Yet modularity is not free. It imposes a "modularity tax" of interface overhead, sacrifices system-level performance optimization, and fails catastrophically when applied to immature technologies or with poorly defined boundaries—as Boeing's $32 billion 787 Dreamliner debacle and Google's cancelled Project Ara vividly illustrate.
 
 This report traces modularity's theoretical foundations, maps its successes and failures across a dozen domains, and then applies those cross-domain lessons to the specific challenge of frontend UI development.
