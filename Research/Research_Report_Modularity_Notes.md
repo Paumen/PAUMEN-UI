@@ -1,4 +1,4 @@
-```markdown
+
 # Strategic Notes: Modular UI Systems & AI Synergy
 
 ---
@@ -76,4 +76,3 @@ Treating Cards as discrete files is a high-leverage strategy for AI-assisted dev
 
 - Over-Abstraction: If a Card exceeds ~xxx lines, it should be split into smaller sub-sections to maintain the "minimal context" benefit for LLMs. Initially try to limit by reusing components.
 - Rigidity: Strict modularity can lead to "boxed" designs. Use "transparent" Cards for content that needs to break the grid while maintaining the modular folder structure.
-```
