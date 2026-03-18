@@ -173,50 +173,46 @@ This eliminates:
 - The naming confusion (row defining columns)
 - Empty placeholder elements
 
-**Not yet resolved.** Needs prototyping. The equal-split case and partial-width-single-element case still need solutions.
+## Session 4 (March 18, 2026): Flexbox vs. Grid Resolution
 
-## Session 4 Summary
+**Goal:** Resolve the row wrapper mechanism (open decision #53) — determining how article rows partition space between children.
 
-**Goal:** Resolve the row wrapper mechanism (open decision #53) — how article rows split space between children.
+### Process & Discovery
 
-**What happened:**
+1. Evaluated a `data-colcount` / `data-colspan` attribute system as an alternative to the existing `data-skin` column approach (`cols-2`, `cols-4`, etc.). Tradeoff noted: more powerful (arbitrary splits) but requires 24 attribute selectors versus the established handful of skin combos.
+2. Built a test HTML with a search-bar pattern (text input + 2 icon buttons) utilizing 6, 8, 10, and 12 column grids. Each row featured the input filling leading columns, with two 1-col icon buttons at the end.
+3. Tested on a mobile viewport (~470px) and verified with a grid overlay screenshot. The visual analysis revealed:
+   - **6-col:** Buttons too large (`aspect-ratio:1` on wide `1fr` tracks).
+   - **8-col:** Buttons remained chunky.
+   - **10-col:** Optimal visual proportions.
+   - **12-col:** Near-identical to 10-col, but maximally divisible (2, 3, 4, 6).
+4. Selected 12 as the sole supported `colcount` value, allowing one grid definition to cover all required split ratios without a separate grid-size catalog.
+5. Updated the blueprint (v4 → v5) to reflect the architecture shift.
 
-1. You proposed a `data-colcount` / `data-colspan` attribute system as an alternative to the existing `data-skin` column approach (`cols-2`, `cols-4`, etc.). I noted the tradeoff: more powerful (arbitrary splits) but 24 attribute selectors vs the handful of skin combos that already covered common cases.
+### Key Decisions & Outcomes
+- **Decision #53 Locked:** Applied `data-colcount="12"` on article wrappers + `data-colspan` on children. Confirmed Grid layout over Flexbox.
+- **Decision #55 Locked:** Retained 9 established skins. Grid layer replaces legacy column skins.
+- **Decision #25 Locked:** CSS layers formalized into four distinct cascades: `reset`, `default`, `skin`, `grid`.
+- **CSS Additions:** Added a grid layer containing 1 `colcount` rule + 8 `colspan` selectors (limited to values that divide cleanly into 12: 2, 3, 4, 6, 8, 9, 10, 12). Set row gap to `--xs` (tighter than section `--s` spacing).
+- **Test Artifact:** `@Research/blueprint_experiment_5.html`
+- **Still Open:** Decision #54 — Handling partial-width single elements.
 
-2. I built a test HTML with a search-bar pattern (text input + 2 icon buttons) at 6, 8, 10, and 12 column grids. Each row: input fills leading cols, two 1-col icon buttons at the end.
 
-3. You tested on your OnePlus 8T (~470px viewport) and confirmed with a grid overlay screenshot. The visual comparison showed:
-   - **6-col:** buttons too large (aspect-ratio:1 on wide 1fr tracks)
-   - **8-col:** buttons still chunky
-   - **10-col:** best visual proportions
-   - **12-col:** near-identical to 10, but maximally divisible (2, 3, 4, 6)
+---
 
-4. You chose **12 as the only supported colcount value** — one grid definition covers all split ratios. No catalog of grid sizes needed.
 
-5. I updated the blueprint (v4 → v5) accordingly.
+## Session 5 (March 18, 2026): Layout Architecture & LLM Evaluation
 
-**Decisions locked:**
-- **#53:** `data-colcount="12"` on article + `data-colspan` on children. Grid, not flexbox.
-- **#55:** 9 skins unchanged. Grid layer replaces old column skins.
-- **#25:** CSS layers updated to four: `reset, default, skin, grid`
+Conducted a comprehensive review and research discussion concerning the PAUMEN-UI layout model, specifically evaluating competing layout architecture candidates.
 
-**CSS additions:**
-- Grid layer with 1 colcount rule + 8 colspan selectors (trimmed to values that divide cleanly into 12: 2, 3, 4, 6, 8, 9, 10, 12)
-- Row gap set to `--xs` (tighter than section's `--s`)
+### Key Topics
 
-**Still open:** #54 — partial-width single elements.
+- **F3 vs. F4 Layout Architecture:** Systematically compared two opposing approaches for the grid/layout system:
+    - **F3:** Utilizes `data-cols` on sections and `data-span` on children, relying on implicit defaults for elements lacking explicit `data-span` definitions.
+    - **F4:** Utilizes `<article data-row="N-M">` wrapper rows where children receive explicit column assignments governed by the encompassing row pattern.
+- **DOM Self-Description:** Established that the F4 architecture yields a fully self-describing DOM (element widths are explicitly readable strictly from DOM attributes). Conversely, F3 introduces implicit gaps where elements without `data-span` rely on CSS conventions invisible within the DOM hierarchy.
+- **LLM Evaluation Critique:** Re-examined the methodology where LLMs previously evaluated DOM readability. Noted that LLMs favored F3 because they processed isolated DOM text rather than rendered output. Consequently, the models failed to flag F3’s ambiguous width data as a deficit, instead hallucinating assumptions to fill the implicit gaps.
 
-**Test artifact:** `@Research/blueprint_experiment_5.html`
-
-### Session 5
-This session was a deep review and research discussion around the PAUMEN-UI layout model, specifically comparing layout architecture candidates.
-
-Key Topics
-* **F3 vs F4 Layout Architecture** — We compared two competing approaches for the grid/layout system:
-    * **F3:** Uses `data-cols` on sections and `data-span` on children, with implicit defaults for elements without `data-span`.
-    * **F4:** Uses `<article data-row="N-M">` wrapper rows with children getting explicit column assignments via the row pattern.
-* **DOM Self-Description** — The central argument that emerged: F4's DOM is fully self-describing (you can read the DOM and know exactly what every element's width is), while F3 has implicit gaps (elements without `data-span` rely on CSS conventions you can't see in the DOM).
-* **LLM Evaluation Critique** — We discussed how LLMs were asked to evaluate which DOM was easier to fully understand. They apparently favored F3 — but they were shown DOMs (not screenshots), and should have caught that F3's DOM has ambiguous width information for elements lacking `data-span`. Instead, they filled in the gap with assumptions rather than flagging it as incomplete information.
-
-Core Insight
-The LLMs treated the absence of explicit information as "obvious default" rather than recognizing it as missing information — which undermines the whole point of a self-describing DOM designed for LLM-assisted development.
+### Key Outcomes (Core Insight)
+- **Evaluation Methodology Adjusted:** Recognized that LLMs inherently treat the absence of explicit information as an "obvious default" rather than identifying missing information. This confirms that a non-self-describing DOM undermines the primary objective of an LLM-assisted development framework.
+ 
