@@ -208,3 +208,15 @@ This eliminates:
 
 **Test artifact:** `@Research/blueprint_experiment_5.html`
 
+### Session 5
+This session was a deep review and research discussion around the PAUMEN-UI layout model, specifically comparing layout architecture candidates.
+
+Key Topics
+* **F3 vs F4 Layout Architecture** — We compared two competing approaches for the grid/layout system:
+    * **F3:** Uses `data-cols` on sections and `data-span` on children, with implicit defaults for elements without `data-span`.
+    * **F4:** Uses `<article data-row="N-M">` wrapper rows with children getting explicit column assignments via the row pattern.
+* **DOM Self-Description** — The central argument that emerged: F4's DOM is fully self-describing (you can read the DOM and know exactly what every element's width is), while F3 has implicit gaps (elements without `data-span` rely on CSS conventions you can't see in the DOM).
+* **LLM Evaluation Critique** — We discussed how LLMs were asked to evaluate which DOM was easier to fully understand. They apparently favored F3 — but they were shown DOMs (not screenshots), and should have caught that F3's DOM has ambiguous width information for elements lacking `data-span`. Instead, they filled in the gap with assumptions rather than flagging it as incomplete information.
+
+Core Insight
+The LLMs treated the absence of explicit information as "obvious default" rather than recognizing it as missing information — which undermines the whole point of a self-describing DOM designed for LLM-assisted development.
