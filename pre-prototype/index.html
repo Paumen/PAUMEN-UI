@@ -226,62 +226,7 @@
   </article>
 
 
-  <!-- ══════════════════════════════════════════════
-       CARD 9 — Overlays
-       Patterns: tooltip (aside[popover]), dropdown (nav[popover]),
-                 toast (output[popover]), dialog modal
-       ══════════════════════════════════════════════ -->
 
-  <article>
-    <h3>Overlays</h3>
-    <p data-skin="mute">
-      Tooltip and dropdown use the native Popover API — zero JS required.
-      Dialog needs one line of JS for <code>showModal()</code>; Escape-to-close is native.
-    </p>
-    <section>
-      <button data-colspan="4" data-skin="ghost"
-              popovertarget="tip-1" popovertargetaction="toggle">? Tooltip</button>
-      <button data-colspan="4"
-              popovertarget="menu-1">Actions ▾</button>
-      <button data-colspan="4" data-skin="emphasis"
-              id="open-modal">Open Modal</button>
-    </section>
-
-    <section>
-      <button data-colspan="12" data-skin="ghost"
-              popovertarget="toast-1">Trigger Toast</button>
-    </section>
-  </article>
-
-
-  <!-- ══════════════════════════════════════════════
-       OVERLAYS — placed at end of body
-       ══════════════════════════════════════════════ -->
-
-  <!-- Tooltip popover -->
-  <aside popover id="tip-1">
-    Due dates are stored in your local timezone.
-  </aside>
-
-  <!-- Dropdown nav popover -->
-  <nav popover id="menu-1">
-    <a href="#">Edit task</a>
-    <a href="#">Archive</a>
-    <a href="#" data-skin="mute">Delete</a>
-  </nav>
-
-  <!-- Toast popover (output has native aria-live="polite") -->
-  <output popover id="toast-1">
-    Task added successfully!
-  </output>
-
-  <!-- Settings dropdown (from Card 1 header) -->
-  <nav popover id="settings-menu">
-    <a href="#">Account</a>
-    <a href="#">Integrations</a>
-    <a href="#">Keyboard shortcuts</a>
-    <a href="#" data-skin="mute">Sign out</a>
-  </nav>
 
 </body>
 </html>
