@@ -188,7 +188,7 @@ This eliminates:
 
 @Research/blueprint_expirement_4.html
 
-## Session 4 (March 18, 2026): Flexbox vs. Grid Resolution
+## Session 4 (March 18, 2026): Grid Proposal
 
 **Goal:** Resolve the row wrapper mechanism — determining how article rows partition space between children.
 
@@ -202,7 +202,6 @@ This eliminates:
    - **10-col:** Optimal visual proportions.
    - **12-col:** Near-identical to 10-col, but maximally divisible (2, 3, 4, 6).
 4. Selected 12 as the sole supported `colcount` value, allowing one grid definition to cover all required split ratios without a separate grid-size catalog.
-5. Updated the blueprint (v4 → v5) to reflect the architecture shift.
 
 - **Test Artifact:** `@Research/blueprint_experiment_5.html`
 
