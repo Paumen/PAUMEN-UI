@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Planner — PAUMEN-UI Pre-Prototype</title>
+  <link rel="stylesheet" href="paumen.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       CARD 1 — App Header
+       Patterns: header row wrapper, h1 + button, nav with links
+       ══════════════════════════════════════════════ -->
+
+  <article>
+    <header>
+      <h1 data-colspan="9">Daily Planner</h1>
+      <button data-colspan="3" data-skin="ghost" popovertarget="settings-menu">⚙ Settings</button>
+    </header>
+    <nav>
+      <a data-colspan="4" href="#">Today</a>
+      <a data-colspan="4" href="#">This Week</a>
+      <a data-colspan="4" href="#">Archive</a>
+    </nav>
+  </article>
+
+
+  <!-- ══════════════════════════════════════════════
+       CARD 2 — Search Bar
+       Pattern: 10 + 1 + 1 (input + 2 icon buttons)
+       ══════════════════════════════════════════════ -->
+
+  <article>
+    <section>
+      <input type="search" placeholder="Search tasks…" data-colspan="10" />
+      <button data-skin="ghost" aria-label="Clear search">×</button>
+      <button data-skin="emphasis" aria-label="Search">⌕</button>
+    </section>
+  </article>
+
+
+  <!-- ══════════════════════════════════════════════
+       CARD 3 — Add Task Form
+       Patterns: form display:contents, direct card children,
+                 section 6+6, footer 6+6
+       ══════════════════════════════════════════════ -->
+
+  <article>
+    <header>
+      <h3 data-colspan="12">Add Task</h3>
+    </header>
+    <form>
+      <input type="text" placeholder="Task title…" />
+      <textarea placeholder="Notes (optional)…"></textarea>
+      <section>
+        <input type="date" data-colspan="6" />
+        <select data-colspan="6">
+          <option value="">Priority…</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </section>
+      <footer>
+        <button data-colspan="6" data-skin="ghost" type="reset">Clear</button>
+        <button data-colspan="6" data-skin="emphasis" type="submit">Add Task</button>
+      </footer>
+    </form>
+  </article>
+
+
+  <!-- ══════════════════════════════════════════════
+       CARD 4 — Task List (collapsible)
+       Patterns: details + summary, checkbox rows (1+9+2)
+       ══════════════════════════════════════════════ -->
+
+  <details open>
+    <summary>
+      <h3 data-colspan="10">Today's Tasks</h3>
+      <small data-colspan="2">3 pending</small>
+    </summary>
+
+    <section>
+      <input type="checkbox" id="task-1" />
+      <label for="task-1" data-colspan="9">Review project proposal and leave comments</label>
+      <button data-colspan="2" data-skin="ghost" aria-label="Delete task">✕</button>
+    </section>
+
+    <section>
+      <input type="checkbox" id="task-2" />
+      <label for="task-2" data-colspan="9">Schedule team sync for Q2 planning</label>
+      <button data-colspan="2" data-skin="ghost" aria-label="Delete task">✕</button>
+    </section>
+
+    <section>
+      <input type="checkbox" id="task-3" checked />
+      <label for="task-3" data-colspan="9" data-skin="mute">Send weekly status update email</label>
+      <button data-colspan="2" data-skin="ghost" aria-label="Delete task">✕</button>
+    </section>
+  </details>
+
+
+  <!-- ══════════════════════════════════════════════
+       CARD 5 — Weekly Stats
+       Patterns: elevated skin, 3+3+3+3 stat grid
+       ══════════════════════════════════════════════ -->
+
+  <article data-skin="elevated">
+    <header>
+      <h3 data-colspan="12">This Week</h3>
+    </header>
+    <section>
+      <output data-colspan="3">12</output>
+      <output data-colspan="3">8</output>
+      <output data-colspan="3">3</output>
+      <output data-colspan="3">1</output>
+    </section>
+    <section>
+      <small data-colspan="3">Completed</small>
+      <small data-colspan="3">In progress</small>
+      <small data-colspan="3">Overdue</small>
+      <small data-colspan="3">On hold</small>
+    </section>
+  </article>
+
+
+  <!-- ══════════════════════════════════════════════
+       CARD 6 — Quick Settings
+       Patterns: label+control rows (3+9), range, checkbox,
+                 email input, radio group
+       ══════════════════════════════════════════════ -->
+
+  <article>
+    <header>
+      <h3 data-colspan="12">Quick Settings</h3>
+    </header>
+
+    <section>
+      <label for="theme-select" data-colspan="3">Theme</label>
+      <select id="theme-select" data-colspan="9">
+        <option>System default</option>
+        <option>Light</option>
+        <option>Dark</option>
+      </select>
+    </section>
+
+    <section>
+      <label for="font-range" data-colspan="3">Font size</label>
+      <input type="range" id="font-range" min="12" max="24" value="16" data-colspan="9" />
+    </section>
+
+    <section>
+      <label for="notif-check" data-colspan="9">Enable desktop notifications</label>
+      <input type="checkbox" id="notif-check" data-colspan="3" />
+    </section>
+
+    <section>
+      <label for="email-input" data-colspan="3">Email</label>
+      <input type="email" id="email-input" placeholder="you@example.com" data-colspan="9" />
+    </section>
+
+    <section>
+      <label data-colspan="3">Reminder</label>
+      <section data-colspan="9">
+        <input type="radio" name="reminder" id="r-15" data-colspan="2" />
+        <label for="r-15" data-colspan="2">15 min</label>
+        <input type="radio" name="reminder" id="r-30" data-colspan="2" />
+        <label for="r-30" data-colspan="2">30 min</label>
+        <input type="radio" name="reminder" id="r-60" data-colspan="2" />
+        <label for="r-60" data-colspan="2">1 hour</label>
+      </section>
+    </section>
+
+    <footer>
+      <button data-colspan="6" data-skin="ghost">Reset to defaults</button>
+      <button data-colspan="6" data-skin="emphasis">Save settings</button>
+    </footer>
+  </article>
+
+
+  <!-- ══════════════════════════════════════════════
+       CARD 7 — Skin Reference
+       Patterns: all 5 skins demonstrated on buttons
+       ══════════════════════════════════════════════ -->
+
+  <article>
+    <header>
+      <h3 data-colspan="12">Skin Reference</h3>
+    </header>
+
+    <section>
+      <button data-colspan="4">Default</button>
+      <button data-colspan="4" data-skin="emphasis">emphasis</button>
+      <button data-colspan="4" data-skin="ghost">ghost</button>
+    </section>
+
+    <section>
+      <button data-colspan="4" data-skin="mute">mute</button>
+      <button data-colspan="4" data-skin="elevated">elevated</button>
+      <button data-colspan="4" disabled>disabled</button>
+    </section>
+
+    <p data-skin="mute">
+      Skins are composable: <code>data-skin="emphasis elevated"</code> combines both.
+      Conflict groups: <code>emphasis</code> and <code>ghost</code> are mutually exclusive.
+    </p>
+  </article>
+
+
+  <!-- ══════════════════════════════════════════════
+       CARD 8 — Overlays
+       Patterns: tooltip (aside[popover]), dropdown (nav[popover]),
+                 toast (output[popover]), dialog modal
+       ══════════════════════════════════════════════ -->
+
+  <article>
+    <header>
+      <h3 data-colspan="12">Overlays</h3>
+    </header>
+    <p data-skin="mute">
+      Tooltip and dropdown use the native Popover API — zero JS required.
+      Dialog needs one line of JS for <code>showModal()</code>; Escape-to-close is native.
+    </p>
+    <section>
+      <button data-colspan="4" data-skin="ghost"
+              popovertarget="tip-1" popovertargetaction="toggle">? Tooltip</button>
+      <button data-colspan="4"
+              popovertarget="menu-1">Actions ▾</button>
+      <button data-colspan="4" data-skin="emphasis"
+              id="open-modal">Open Modal</button>
+    </section>
+
+    <section>
+      <button data-colspan="12" data-skin="ghost"
+              popovertarget="toast-1">Trigger Toast</button>
+    </section>
+  </article>
+
+
+  <!-- ══════════════════════════════════════════════
+       OVERLAYS — placed at end of body
+       ══════════════════════════════════════════════ -->
+
+  <!-- Tooltip popover -->
+  <aside popover id="tip-1">
+    Due dates are stored in your local timezone.
+  </aside>
+
+  <!-- Dropdown nav popover -->
+  <nav popover id="menu-1">
+    <a href="#">Edit task</a>
+    <a href="#">Archive</a>
+    <a href="#" data-skin="mute">Delete</a>
+  </nav>
+
+  <!-- Toast popover (output has native aria-live="polite") -->
+  <output popover id="toast-1">
+    Task added successfully!
+  </output>
+
+  <!-- Settings dropdown (from Card 1 header) -->
+  <nav popover id="settings-menu">
+    <a href="#">Account</a>
+    <a href="#">Integrations</a>
+    <a href="#">Keyboard shortcuts</a>
+    <a href="#" data-skin="mute">Sign out</a>
+  </nav>
+
+  <!-- Modal dialog -->
+  <dialog id="modal">
+    <header>
+      <h3 data-colspan="12">Confirm Action</h3>
+    </header>
+    <p>Are you sure you want to clear all completed tasks? This cannot be undone.</p>
+    <footer>
+      <button data-colspan="6" data-skin="ghost" id="close-modal">Cancel</button>
+      <button data-colspan="6" data-skin="emphasis">Confirm</button>
+    </footer>
+  </dialog>
+
+
+  <!-- ══════════════════════════════════════════════
+       MINIMAL JS — dialog only (2 lines)
+       Popovers work via popovertarget attribute above.
+       ══════════════════════════════════════════════ -->
+  <script>
+    document.getElementById('open-modal').onclick  = () => document.getElementById('modal').showModal();
+    document.getElementById('close-modal').onclick = () => document.getElementById('modal').close();
+  </script>
+
+</body>
+</html>

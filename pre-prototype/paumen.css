@@ -1,0 +1,361 @@
+/* PAUMEN-UI — Canonical Stylesheet
+   Single CSS file. Zero dependencies. Zero classes.
+   Four layers: reset → default → skin → grid
+   ─────────────────────────────────────────────── */
+
+@layer reset, default, skin, grid;
+
+/* ══════════════════════════════════════════════════
+   RESET
+   ══════════════════════════════════════════════════ */
+
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  body, h1, h2, h3, h4, p { margin: 0; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+}
+
+/* ══════════════════════════════════════════════════
+   DEFAULT
+   ══════════════════════════════════════════════════ */
+
+@layer default {
+
+  /* ── Tokens ─────────────────────────────────── */
+
+  :root {
+    /* Base inputs — change these to retheme the whole app */
+    --accent-hue:    250;
+    --accent-chroma: 0.14;
+    --surface-hue:   250;
+    --jump:          0.07;
+    color-scheme: light dark;
+
+    /* Accent scale */
+    --accent:    oklch(58% var(--accent-chroma) var(--accent-hue));
+    --accent-up: oklch(calc(58% + var(--jump)) var(--accent-chroma) var(--accent-hue));
+    --accent-dn: oklch(calc(58% - var(--jump)) var(--accent-chroma) var(--accent-hue));
+
+    /* Surface levels — light-dark() drives automatic dark mode */
+    --neutral:      light-dark(
+      oklch(96% 0.01 var(--surface-hue)),
+      oklch(16% 0.01 var(--surface-hue))
+    );
+    --neutral-mute: light-dark(
+      oklch(92% 0.01 var(--surface-hue)),
+      oklch(20% 0.01 var(--surface-hue))
+    );
+    --neutral-edge: light-dark(
+      oklch(85% 0.02 var(--surface-hue)),
+      oklch(30% 0.02 var(--surface-hue))
+    );
+
+    /* Text */
+    --text: light-dark(
+      oklch(20% 0.01 var(--surface-hue)),
+      oklch(92% 0.01 var(--surface-hue))
+    );
+    --text-mute: light-dark(
+      oklch(40% 0.01 var(--surface-hue)),
+      oklch(72% 0.01 var(--surface-hue))
+    );
+
+    /* Text on accent — fixed near-white regardless of mode */
+    --text-on-accent: oklch(98% 0.01 var(--accent-hue));
+
+    /* Spacing & sizing scale — --m is base font-size AND spacing unit */
+    --0:  0;
+    --xs: clamp(0.2rem, 0.4vw,  0.4rem);
+    --s:  clamp(0.4rem, 1vw,    0.8rem);
+    --m:  clamp(0.8rem, 2vw,    1.6rem);
+    --l:  clamp(1.2rem, 4vw,    2.4rem);
+  }
+
+  /* ── Body (depth 1) ─────────────────────────── */
+
+  body {
+    display: grid;
+    gap: var(--l);
+    max-inline-size: 800px;
+    margin-inline: auto;
+    padding: var(--l) var(--m);
+    font-family: system-ui, sans-serif;
+    font-size: var(--m);
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--neutral);
+  }
+
+  /* ── Cards (depth 2) ────────────────────────── */
+  /* article, details, dialog, [popover] */
+
+  article,
+  details,
+  dialog,
+  [popover] {
+    display: grid;
+    gap: var(--s);
+    padding: var(--s);
+    background: var(--neutral-mute);
+    border: 1px solid var(--neutral-edge);
+    border-radius: var(--s);
+  }
+
+  /* dialog extras */
+  dialog {
+    padding: var(--m);
+    max-inline-size: min(90vw, 480px);
+    width: min(90vw, 480px);
+  }
+
+  dialog::backdrop {
+    background: oklch(0% 0 0 / 50%);
+  }
+
+  /* Popover positioning */
+  [popover] {
+    position: fixed;
+    inset: auto;
+  }
+
+  /* ── Row Wrappers (depth 3) ─────────────────── */
+  /* section, header, footer, nav, summary */
+  /* No visual chrome — transparent, no border */
+
+  section,
+  header,
+  footer,
+  nav,
+  summary {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--xs);
+    align-items: center;
+  }
+
+  /* ── Transparent wrapper ────────────────────── */
+
+  form {
+    display: contents;
+  }
+
+  /* ── Headings ────────────────────────────────── */
+
+  h1, h2, h3, h4 {
+    padding-block-end: var(--xs);
+    border-block-end: 1px solid var(--neutral-edge);
+    line-height: 1.2;
+  }
+
+  h1 { font-size: calc(var(--m) * 1.8); }
+  h2 { font-size: calc(var(--m) * 1.5); }
+  h3 { font-size: calc(var(--m) * 1.25); }
+  h4 { font-size: var(--m); }
+
+  /* ── Shared control base ─────────────────────── */
+
+  button, input, textarea, select {
+    border: 1px solid var(--neutral-edge);
+    border-radius: var(--xs);
+    background: var(--neutral);
+    color: var(--text);
+    padding: var(--xs) var(--s);
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  }
+
+  /* ── Button ──────────────────────────────────── */
+
+  button {
+    cursor: pointer;
+    font-weight: 600;
+    background: var(--neutral-mute);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--xs);
+    width: 100%;
+  }
+
+  button:hover:not(:disabled) {
+    background: var(--neutral-edge);
+  }
+
+  button:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  /* ── Inputs ──────────────────────────────────── */
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+  }
+
+  textarea {
+    resize: vertical;
+    min-block-size: calc(var(--m) * 4);
+  }
+
+  /* ── Select — custom dropdown arrow ─────────── */
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--s) center;
+    padding-inline-end: calc(var(--s) * 3);
+  }
+
+  /* ── Range — native only ─────────────────────── */
+
+  input[type="range"] {
+    background: transparent;
+    border: none;
+    padding: 0;
+    accent-color: var(--accent);
+  }
+
+  /* ── Checkbox / Radio ────────────────────────── */
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: var(--m);
+    height: var(--m);
+    flex-shrink: 0;
+    accent-color: var(--accent);
+    border: none;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  /* ── Focus ring (all interactive) ───────────── */
+
+  :focus-visible {
+    outline: var(--xs) solid var(--accent);
+    outline-offset: var(--xs);
+  }
+
+  /* ── Disabled ────────────────────────────────── */
+
+  :disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ── Content elements ───────────────────────── */
+
+  svg {
+    fill: currentColor;
+    display: block;
+  }
+
+  label {
+    cursor: pointer;
+    color: var(--text-mute);
+    font-size: calc(var(--m) * 0.875);
+  }
+
+  small {
+    color: var(--text-mute);
+    font-size: calc(var(--m) * 0.75);
+  }
+
+  p {
+    line-height: 1.6;
+  }
+
+  output {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  a {
+    color: var(--accent);
+  }
+
+  aside {
+    color: var(--text-mute);
+    font-size: calc(var(--m) * 0.875);
+  }
+
+} /* end @layer default */
+
+/* ══════════════════════════════════════════════════
+   SKIN
+   Composable visual modifications via data-skin.
+   Space-separated values; use [data-skin~="value"].
+   ══════════════════════════════════════════════════ */
+
+@layer skin {
+
+  /* ── emphasis ────────────────────────────────── */
+  /* Accent background, light text, accent border. Hover darkens. */
+
+  [data-skin~="emphasis"] {
+    background: var(--accent);
+    color: var(--text-on-accent);
+    border-color: var(--accent);
+  }
+
+  [data-skin~="emphasis"]:hover:not(:disabled) {
+    background: var(--accent-dn);
+    border-color: var(--accent-dn);
+  }
+
+  /* ── ghost ───────────────────────────────────── */
+  /* Transparent bg + border. Interactive hover shows mute bg. */
+
+  [data-skin~="ghost"] {
+    background: transparent;
+    border-color: var(--neutral-edge);
+  }
+
+  button[data-skin~="ghost"]:hover:not(:disabled),
+  a[data-skin~="ghost"]:hover {
+    background: var(--neutral-mute);
+  }
+
+  /* ── mute ────────────────────────────────────── */
+  /* Secondary/de-emphasized text color. */
+
+  [data-skin~="mute"] {
+    color: var(--text-mute);
+  }
+
+  /* ── elevated ────────────────────────────────── */
+  /* Box-shadow for visual lift. */
+
+  [data-skin~="elevated"] {
+    box-shadow:
+      0 2px 8px  oklch(0% 0 0 / 12%),
+      0 1px 2px  oklch(0% 0 0 / 8%);
+  }
+
+  /* ── freeform ────────────────────────────────── */
+  /* Escape hatch. Removes PAUMEN constraints from card interior.
+     The card itself still fits the body stack. */
+
+  [data-skin~="freeform"] > * {
+    all: revert;
+  }
+
+} /* end @layer skin */
+
+/* ══════════════════════════════════════════════════
+   GRID
+   data-colspan — row child column span (1–12).
+   Omitted values (1, 5, 7, 11) don't produce clean 12-col ratios.
+   ══════════════════════════════════════════════════ */
+
+@layer grid {
+  [data-colspan="2"]  { grid-column: span 2; }
+  [data-colspan="3"]  { grid-column: span 3; }
+  [data-colspan="4"]  { grid-column: span 4; }
+  [data-colspan="6"]  { grid-column: span 6; }
+  [data-colspan="8"]  { grid-column: span 8; }
+  [data-colspan="9"]  { grid-column: span 9; }
+  [data-colspan="10"] { grid-column: span 10; }
+  [data-colspan="12"] { grid-column: span 12; }
+} /* end @layer grid */
