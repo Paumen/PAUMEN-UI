@@ -1,5 +1,8 @@
 # LLM Web App Blueprint — Design Rationale
 
+> **Role:** Decision rationale and design reasoning — explains *why* the spec is the way it is. Not authoritative for current system state; defer to `blueprint_spec.md` on conflicts.
+> **Reading order:** Read after the spec. See `blueprint_lab_notebook.md` for session-level chronology, `blueprint_theoretical_research.md` for foundational theory.
+
 ## 1. Problem Statement
 
 LLMs are increasingly used to generate web application code, but they produce inconsistent, bloated, and unpredictable UI output. The root cause is that the decision space for any given UI element is enormous — approximately 134 independently variable properties covering appearance, behavior, layout, states, spacing, typography, and more. When an LLM is asked to "add a settings page," it must make hundreds of micro-decisions: what padding on this card, what shade of blue for that button, what border radius, what hover effect, what font size for secondary text. Each decision is individually reasonable, but collectively they drift across sessions, across pages, and across projects.
@@ -207,46 +210,25 @@ Decision: 12-column grid on all row wrappers, handled entirely by CSS. `data-col
 ### Skin System Evolution
 
 - Column skins removed (session 3)
-- `half` removed (redundant with colspan), `transparent` merged into `ghost` (session 5)
+- `half` removed (redundant with colspan), `transparent` merged into `ghost`, `square`/`full`/`round`/`flat` removed (sessions 1–5)
 - `elevated` and `freeform` added (session 5)
-- Current count: 5 skins. System evolves through both addition and removal.
+- Current count: 5 skins (emphasis, ghost, mute, elevated, freeform). System evolves through both addition and removal.
 
 ---
 
 ## 7. Cross-Domain Modularity Research
 
-### Foundational Theory
+> Full treatment in `blueprint_theoretical_research.md`. This section summarizes the key takeaways that shaped blueprint decisions.
 
-- **Herbert Simon (1962):** Hierarchical systems with stable intermediate forms assemble exponentially faster. Nearly-decomposable systems have strong intra-module and weak inter-module linkages. The card (article) is the stable intermediate form.
-- **Baldwin & Clark (2000):** Modularity creates real options — ability to replace parts independently increases system value. Row wrappers are modular layout options.
-- **Clune et al. (2013):** Modularity emerges from pressure to minimize connection costs, not from top-down design. Draw module boundaries where communication density is naturally lowest.
+**Three theoretical pillars:**
 
-### Industrial Analogies
+- **Simon (1962):** Systems with stable intermediate forms assemble exponentially faster. The card (article) is our stable intermediate form.
+- **Baldwin & Clark (2000):** Modularity creates real options — replaceable parts increase system value. Row wrappers are modular layout options.
+- **Clune et al. (2013):** Modularity emerges from minimizing connection costs, not top-down design. Draw boundaries where communication density is naturally lowest.
 
-| Source | Lesson for blueprint |
-| --- | --- |
-| ISO shipping containers | Standardize the interface (grid cell), not the contents. One connection standard enables infinite composition. |
-| French mother sauces | Small set of bases, derivatives by adding one ingredient. Never need a new base. |
-| Swiss/International Typographic Style | Grid + hierarchy = two choices per element, everything else follows. |
-| Nashville Number System | Colors as relationships, not absolutes. Change the key, everything shifts. |
-| Periodic table | Properties predicted by position (row × column), not assigned per element. |
-| Lego Technic | Typed connection interfaces (pin, axle, hole) make compatibility checkable. |
-| LEGO brick system | 1.6mm unit grid IS the governance — ±10 micron tolerance. Makes proposals obviously compatible or not. Blueprint's depth constraint + ~21 tags do the same. |
-| Toyota TNGA | 80% parts sharing by standardizing what doesn't differentiate. 20% cost reduction. Standardize grid structure, differentiate content. |
-| IKEA flat-pack | Constraint is the product. Users pay it because it enables immediate, predictable results. |
-| Car dashboard / cockpit | Physical UI with roles, tones, states, parent-child nesting, and content. Full analogy holds. |
-| Form / Fit / Function | Form ≈ skin + placement. Fit ≈ context + relationships. Function ≈ HTML element + behavior. |
-| ARIA grid model | grid → row → gridcell. Three-level hierarchy. The web platform's own accessibility layer chose explicit rows — aligns with F4. |
-| Pico CSS / Water.css / MVP.css | Proof that flat semantic HTML with element-level styling works. Not the positioning — "same DOM philosophy, for production applications." |
+**Key analogies applied:** LEGO (unit grid = governance), Toyota TNGA (standardize what doesn't differentiate), IKEA (constraint is the product), ISO containers (standardize the interface, not the contents), ARIA grid model (explicit rows align with F4).
 
-### Cautionary Cases
-
-| Source | Warning |
-| --- | --- |
-| Project Ara (Google) | 25% physical bulk penalty killed modular phones. In CSS, equivalent "penalty" (padding, gaps) is actually good UX — digital modularity tax can be negative. |
-| Boeing 787 | Modularizing immature technology fails. Complex widgets need tight integration (escape hatch), not grid constraints. |
-| Cadillac Cimarron | Too much sharing kills identity. Apps built with the blueprint must still look like different products. |
-| Carnegie Unit | Modular architectures become institutional. The system must be evolvable without being thrown away. |
+**Cautionary lessons:** Boeing 787 (don't modularize immature tech → escape hatch), Project Ara (digital modularity tax is negligible/positive), Cadillac Cimarron (apps must still look distinct), Carnegie Unit (modular architectures ossify → system must be evolvable).
 
 ---
 
@@ -287,14 +269,14 @@ Decision: 12-column grid on all row wrappers, handled entirely by CSS. `data-col
 | 51  | Grid architecture: F4 (1-col section + optional article row wrappers)                                   | ✅ Locked S3   |
 | 52  | Row wrapper tags: section, header, footer, nav, summary                                                 | ✅ Updated S5  |
 | 53  | Row mechanism: 12-col grid via CSS on row wrappers + `data-colspan` on children. `data-colcount` removed. | ✅ Updated S5 |
-| 55  | 9 skins: emphasis, ghost, square, full, mute, round, flat, elevated, freeform. half/transparent removed, elevated/freeform added. | ✅ Updated S5 |
+| 55  | 5 skins: emphasis, ghost, mute, elevated, freeform. Earlier skins (half, transparent, square, full, round, flat) removed during S1–S5 iteration. | ✅ Updated S5 |
 | 57  | Add strategic goals (portability, context windowing, cloning) to blueprint                              | ✅ Locked S3   |
 | 58  | form = display:contents, always transparent, never a visual container                                   | ✅ Locked S5   |
 | 59  | details = card-level collapsible container, summary = row wrapper                                       | ✅ Locked S5   |
 | 60  | dialog interior follows same rules as any card                                                          | ✅ Locked S5   |
 | 61  | Body: max-inline-size 800px, margin-inline auto                                                         | ✅ Locked S5   |
 | 62  | Ghost skin merges old ghost + transparent. Hover on interactive only.                                   | ✅ Locked S5   |
-| 63  | Skin conflict groups: emphasis\|ghost (visual), round\|flat (radius)                                    | ✅ Locked S5   |
+| 63  | Skin conflict groups: emphasis\|ghost (mutually exclusive)                                              | ✅ Locked S5   |
 | 64  | Escape hatch via data-skin="freeform" on cards                                                          | ✅ Locked S5   |
 | 65  | Dropdown menu popover: nav[popover] (was section[popover])                                              | ✅ Locked S5   |
 | 66  | Cut elements: fieldset, img, table family, ul/ol/li, hr                                                 | ✅ Locked S5   |
@@ -305,6 +287,21 @@ Decision: 12-column grid on all row wrappers, handled entirely by CSS. `data-col
 | #   | Decision                                                                    | Depends on |
 | --- | --------------------------------------------------------------------------- | ---------- |
 | 54  | Partial-width single elements (sizing skins vs row wrapper with empty cols) | Prototype  |
+
+### All Deferred / Open Items (consolidated)
+
+Items scattered across spec, rationale, and notebook — collected here for visibility.
+
+| Item | Status | Source |
+| --- | --- | --- |
+| `data-state` signal states (`error`, `warning`, `info`, `success`, `loading`, `skeleton`, `empty`) | Not yet implemented | Spec §3, §6 |
+| Signal hues (danger, warning, success, info) — color tokens for signal states | Not yet implemented | Spec §4 |
+| Partial-width single elements — sizing skins vs row wrapper with empty cols | Open decision (#54) | Rationale §8 |
+| CLAUDE.md (<200 lines) + component catalog skill file | Out of scope for stage 1 | Decision #15 |
+| Validator script (HTML parser to flag unauthorized elements/styles/skins) | Out of scope for stage 1 | Decision #16 |
+| Reference app | Planned for end of stage 1 | Decision #23 |
+| Canonical CSS file (implementing the spec's CSS architecture) | Not yet created | Spec §7 |
+| Experiment-to-session mapping incomplete (experiments 1 and 4 unreferenced in notebook) | Documentation gap | Notebook, Experiments/ |
 
 ---
 
@@ -360,7 +357,7 @@ If the blueprint doesn't have a pattern for something, Claude either invents som
 
 **Mitigations:**
 
-- Current count: 9 skins. System evolves through both addition and removal.
+- Current count: 5 skins. System evolves through both addition and removal.
 - Composability reduces the need for new skins.
 - Regular review: if a new skin is proposed, challenge whether it can be achieved by composing existing skins.
 
@@ -408,20 +405,13 @@ Claude's training data is overwhelmingly nested DOM. The concept of building app
 
 ## 10. Modularity Philosophy — Applied to the Blueprint
 
-### Core Philosophy
+> General modularity theory (Simon, Baldwin & Clark, biological modularity, failure cases) is in `blueprint_theoretical_research.md`. This section covers only how those principles manifest in the blueprint.
 
-Modularity is the practice of balancing **acceptable constraints** against **high flexibility**.
+### Core Principles
 
-- **The Standardization Rule:** Standardize elements where variation does not add significant value, while enabling deep differentiation where it does.
-- **Connectivity First:** Modularity ensures things fit and connect through conforming interfaces; once conformity is established, the internal content remains fully customizable if desired.
-
-### The Physical vs. Digital Paradigm
-
-Modular systems often face a "bulkiness" penalty due to sub-optimal space usage at connection points (e.g., the Google Phone / Project Ara).
-
-- **Physical Constraint:** Joints and connectors take up physical volume that could otherwise be used for hardware.
-- **Digital Flexibility:** In front-end UI, "bulk" is less of a penalty because layouts are flexible and responsive.
-- **The UX Benefit:** While a framework-defined layout might not always be "space-optimized," the resulting spacing provides essential readability and touch targets.
+- **Standardize what doesn't differentiate** (Toyota TNGA principle): grid structure, spacing, color derivation, state styling.
+- **Differentiate where it matters:** content, placement, skin choice, card composition.
+- **Digital modularity tax is negligible or positive:** unlike physical systems (Project Ara's 25% bulk penalty), CSS gaps and padding are good UX — readability and touch targets.
 
 ### The Card as Primary Unit of Modularity
 

@@ -1,5 +1,8 @@
 # LLM Web App Blueprint — System Specification
 
+> **Role:** Canonical specification — the authoritative source of truth for what the system *is*.
+> **Reading order:** Start here. See `blueprint_rationale.md` for *why*, `blueprint_lab_notebook.md` for *how we got here*, `blueprint_theoretical_research.md` for foundational theory.
+
 ## Overview
 
 LLMs produce inconsistent UI because the decision space per element is enormous (~134 independently variable properties). This blueprint inverts the usual design system philosophy: instead of maximizing flexibility, maximize constraint. ~124 of those 134 properties become deterministic consequences of a few choices per element — which tag, which skin, where in the grid, and what content. Claude never writes custom CSS. All styling comes from the system.

@@ -1,5 +1,8 @@
 # Blueprint Lab Notebook — Sessions 1–5
 
+> **Role:** Chronological research journal — records *what was tried, discovered, and decided* in each session. Historical, not normative; defer to `blueprint_spec.md` for current system state.
+> **Reading order:** Reference as needed. Start with `blueprint_spec.md` for what the system is, `blueprint_rationale.md` for why.
+
 ## Session 1 (March 15, 2026): Foundation
 
 Started from the project brief (theoretical framework) and built the first working CSS prototype. Went from ~70 candidate elements to 21, established a token system, wrote default styles, tested on device, and drafted 9 composable skins.
@@ -84,7 +87,7 @@ Tested DOM readability across Claude Opus, Claude Sonnet (via POE), DeepSeek v3,
 
 **F3 and F4 are the top two.** F3 edges slightly (2.1 vs 2.3).
 
-**Key insight from spatial reasoning research:** LLMs struggle with "combinatorial planning, layout perturbation, and spatiotemporal geometry." F3 requires span accumulation (sequential spatial state tracking). F4 makes boundaries explicit via row wrappers — converts spatial reasoning into pattern matching.
+**Key insight from spatial reasoning research** (see `blueprint_rationale.md` §3 for full findings)**:** LLMs struggle with "combinatorial planning, layout perturbation, and spatiotemporal geometry." F3 requires span accumulation (sequential spatial state tracking). F4 makes boundaries explicit via row wrappers — converts spatial reasoning into pattern matching.
 
 **Counter-insight from ARIA/web platform:** Both patterns exist — CSS Grid = F3 (implicit rows), HTML tables/ARIA grid = F4 (explicit rows). The platform itself uses both.
 
