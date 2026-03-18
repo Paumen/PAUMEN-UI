@@ -197,25 +197,6 @@ This is exactly Open Decision #54 ("partial-width single elements"). But it's no
 - (b) Keep them but document clearly when to use skins vs. grid for sizing (pragmatic approach, needs clear rules)
 - (c) Rename them to make the distinction clear (e.g., move to a `data-size` attribute separate from `data-skin`)
 
----
-
-## IV. MINOR ISSUES & HOUSEKEEPING
-
-### 11. Filename Typo
-`blueprint_expirement_5.html` → should be `blueprint_experiment_5.html`
-
-### 12. Missing Experiment 2
-Files go experiment_1, experiment_3, experiment_4, experiment_5. There is no experiment_2. If it existed and was deleted, note that somewhere. If the numbering just skipped, renumber or document why.
-
-### 13. Experiment 4 Contains Two Concatenated HTML Documents
-blueprint_experiment_4.html has a complete HTML document (lines 1-485) immediately followed by a second `<!DOCTYPE html>` and another complete document (lines 487-959). This appears to be an accidental concatenation. The second document is nearly identical to the first but with structural differences (the second is missing `<body>` tags, has a slightly different F1 Section Y).
-
-
-
-
-
-
-
 
 
 ---
