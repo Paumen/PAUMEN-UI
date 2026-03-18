@@ -328,10 +328,11 @@ Native semantic HTML only. No custom elements. No div.
 
 ```
 body                              depth 1
- └ section                        depth 2  (1-col stack, display:grid)
-    ├ h3                          depth 3  (direct child, full width)
+ └ article                        depth 2  (1-col stack, display:grid)
+    ├ header
+    │ ├ h3                          depth 3  (direct child, full width)
     ├ input                       depth 3  (direct child, full width)
-    ├ article [row definition]    depth 3  (row wrapper, multi-element)
+    ├ section [row definition]    depth 3  (row wrapper, multi-element)
     │  ├ button                   depth 4  (row child, fills cell)
     │  └ button                   depth 4  (row child, fills cell)
     └ textarea                    depth 3  (direct child, full width)
@@ -454,7 +455,7 @@ color-scheme: light dark; /* light/dark mode toggle */
 
 ### Visual Depth Model
 
-Containers (section, details, dialog, popover) get `--neutral-mute` background. Controls inside (button, input, textarea, select) get `--neutral` (body color). Creates card-on-surface depth without extra tokens.
+Containers (article, section, header, footer, summary, details, dialog, popover) get `--neutral-mute` background. Controls inside (button, input, textarea, select) get `--neutral` (body color). Creates card-on-surface depth without extra tokens.
 
 ### Signal Hues (not yet implemented)
 
@@ -476,9 +477,9 @@ Used for: spacing (gap, padding), font-size (--m base), border-radius (--xs subt
 
 ## 7. Layout Model
 
-### Section as Single-Column Stack (F4 Architecture)
+### Article as Single-Column Stack (F4 Architecture)
 
-Sections are always single-column grids. Every direct child of a section occupies a full-width row. This is the default — no attribute needed.
+Articles are always single-column grids. Every direct child of a Articles occupies a full-width row. This is the default — no attribute needed.
 
 ```css
 section {
@@ -487,11 +488,11 @@ section {
 }
 ```
 
-Multi-element rows are handled by `<article>` row wrappers that define their own column structure internally. Single elements are direct section children.
+Multi-element rows are handled by `<section>` row wrappers that define their own column structure internally. Single elements are direct section children.
 
 This architecture was chosen (session 3) after systematic comparison of 5 alternatives (F1–F8) across 8 LLMs, 5 evaluation criteria, and 13 test patterns. Key factors:
 
-- Sections are self-contained (layout internal, not dependent on parent)
+- Article are self-contained (layout internal, not dependent on parent)
 - Single-column content (60% of rows) requires zero attributes
 - Multi-element rows are explicit (row wrappers, not implicit span accumulation)
 - LLMs struggle with spatial state tracking needed by span-based alternatives
@@ -501,7 +502,7 @@ This architecture was chosen (session 3) after systematic comparison of 5 altern
 
 ### Row Wrappers (12-Column Grid)
 
-`<article data-colcount="12">` wraps 2+ elements that share a horizontal row. No visual chrome. Children claim columns via `data-colspan="N"`. Children without `data-colspan` auto-span 1 column.
+`<section data-colcount="12">` wraps 2+ elements that share a horizontal row. No visual chrome. Children claim columns via `data-colspan="N"`. Children without `data-colspan` auto-span 1 column.
 
 The 12-column grid was chosen after testing 6/8/10/12-column variants on a ~470px mobile viewport. Key findings:
 
@@ -572,7 +573,7 @@ Claude never writes state styles. All states are derived from the element defaul
 - **Loading:** skeleton pulse animation, content hidden
 - **Empty:** placeholder content shown
 
-Depends on signal hues being added to the token system.
+Depends on signal hues being added to the token system, later concern.
 
 ---
 
@@ -631,9 +632,7 @@ Composable via `[data-skin~="value"]` selector (tilde matches space-separated va
 
 - **Appearance:** emphasis, ghost, transparent, mute.
 - **Shape:** square, round, flat.
-- **Sizing:** half, full.
 
-9 total skins. Column skins (cols-2/4/6/8, span-full) removed in session 3 — superseded by grid layer.
 
 ### Grid Layer
 
@@ -815,7 +814,7 @@ Not all UI patterns fit strict grid flow. Dense data tables, freeform canvases, 
 - These live inside the escape hatch container.
 - The section stack + row wrappers govern page-level and section-level composition (covering ~80% of typical app UI). Internal widget layout is a separate, smaller concern.
 
-### Risk 8: LLM Cannot Think in Flat Grids (HIGHEST PRIORITY)
+### Risk 8: LLM Cannot Think in Flat Grids (HIGH PRIORITY)
 
 **Likelihood: High. This is the single biggest risk in the project.**
 
@@ -840,23 +839,11 @@ Claude's training data is overwhelmingly nested DOM (Bootstrap div soup, React c
 
 ---
 
-## 12. Ideas & Explorations (Not Decided)
+## 12. Potential Ideas & Explorations 
 
 ### Coordinates-as-Language
 
 Users or Claude describe UIs like chess notation: "Button-primary at C3, spanning to E3." Useful as internal intermediate representation.
-
-### UI-as-Database
-
-Every element is a JSON row: `{element: "button", skin: "emphasis round", content: "Save"}`. Claude generates JSON, renderer turns it into HTML. Enables schema validation, meaningful diffs.
-
-### Color by Function Not Name
-
-Instead of emphasis skin deciding color, use `data-intent="interactive"` and `data-intent="passive"`. Interactive things get accent; passive things get surface. Claude declares intent, system maps to color.
-
-### Flexbox Row Model (Rejected S4)
-
-Late session 3 exploration. Instead of row wrappers defining column ratios, use bare `data-row` (flexbox) where children self-size via skins (`square` = fixed, `flex:1` = fill remainder). Would eliminate the ratio catalog entirely. Most "ratio" layouts are actually "one thing is fixed, the rest fills." **Rejected in S4:** grid with `data-colcount="12"` + `data-colspan` chosen instead. Grid gives explicit, predictable column control and tested better visually on mobile (S4 comparison of 6/8/10/12-col grids).
 
 ### Named Row Patterns (R2+)
 
@@ -888,46 +875,3 @@ Row wrappers with semantic names (`data-row="button-pair"`, `data-row="label-inp
 
 ---
 
-## 14. Implementation Status
-
-### Done
-
-- ✅ Element selection (21 entries from ~70 candidates)
-- ✅ Token system (5 inputs, full derived palette)
-- ✅ CSS architecture (@layer reset, default, skin, grid — S4)
-- ✅ Default styles for all 21 elements
-- ✅ 9 composable skins (column skins added S2, removed S3)
-- ✅ State automation (hover, active, focus-visible, disabled, checked)
-- ✅ Overlay system (popover on semantic hosts)
-- ✅ Device testing (OnePlus 8T, ~470px viewport)
-- ✅ DOM depth testing (8 layout patterns, flat vs nested — S2)
-- ✅ Grid architecture analysis: A/B/C comparison, R-option analysis, F-variant definition (S3)
-- ✅ F5 eliminated, F3 vs F4 compared, F4 chosen (S3)
-- ✅ LLM readability survey across 8 models (S3)
-- ✅ Evaluation framework: 5 goals, weights, measurements (S3)
-- ✅ Strategic notes integration: portability, context windowing, cloning goals (S3)
-- ✅ Cross-domain modularity research (S2)
-- ✅ LLM blind spot analysis and framing strategy (S2)
-- ✅ Spatial reasoning research integration (S3)
-- ✅ Row wrapper mechanism: data-colcount="12" + data-colspan on children (S4)
-- ✅ 6/8/10/12-column comparative test on ~470px viewport — 12-col chosen (S4)
-- ✅ Grid layer added to CSS architecture (S4)
-- ✅ Colspan selectors trimmed to common ratios: 2, 3, 4, 6, 8, 9, 10, 12 (S4)
-
-### Test Artifacts
-
-- `blueprint-test.html` — Session 1: all 21 elements + 9 skins
-- `cols-flat.html` — Session 2: 8 layout patterns, flat DOM, column skins
-- `f-variants.html` — Session 3: F1/F3/F4/F5/F8 rendered with 2 sections each
-- `colcount-demo.html` — Session 4: 6/8/10/12-col grid comparison (input + icon buttons)
-
-### Next Steps
-
-1. **Resolve #54** — partial-width single elements (sizing skins vs article row with empty cols).
-2. **Add signal state layer** — signal hues in tokens, data-state styles in CSS.
-3. **Write skill file** — with F4 architecture, grid layer, framing strategy, before/after examples.
-4. **Build reference app** — one working example that validates every decision.
-5. **Test with Claude Code** — multi-session pressure test.
-6. **Build validator** — script that checks generated HTML for depth violations, unauthorized elements, style attributes.
-
----
