@@ -10,7 +10,11 @@ Target apps: single or few-page tools, mostly client-side. Productivity tools, d
 
 ## Current State
 
-The project is in research/design phase. The `Research/` directory contains the blueprint specification (`Blueprint_Draft_v0.5.md`), modularity research, session summaries, and HTML/JSX prototypes. There is no build system, package manager, or test suite yet.
+**Pre-spec / research phase.** Everything under `Research/` is draft material — experiments, prototypes, working notes. The goal is to arrive at the first real specification through further experimentation and iteration. There is no build system, package manager, or test suite yet.
+
+**Priority:** Core architecture first (layout model, element set, skin system, color system). Details like signal states/hues come later.
+
+**No tooling scaffolding yet.** Skills, hooks, linters, permissions, workflows — all far future. The blueprint itself must be strong enough to work without soft enforcement. If it needs guardrails to function, that's a design smell.
 
 ## Architecture — The Blueprint
 
@@ -75,11 +79,15 @@ Single elements are always direct section children — never wrapped in an artic
 
 ### Escape Hatch
 
-For complex widgets (game canvases, data viz), use `data-skin="transparent"` on section + freeform CSS inside. Must fit the section stack externally.
+For complex widgets (game canvases, data viz), use `data-skin="transparent"` on section + freeform CSS inside. Must fit the section stack externally. Exact scoping behavior (whether color tokens/scale variables are inherited) is TBD.
+
+### Naming Decisions
+
+`data-colcount` / `data-colspan` are locked for now but open for revision if real-world usage surfaces problems or trade-offs. See `Research/blueprint_expirement_5.html` for related exploration.
 
 ## Key Research Documents
 
-- `Research/Blueprint_Draft_v0.5.md` — Full specification (elements, skins, color system, layout, CSS architecture)
+- `Research/Blueprint_Draft_v0.5.md` — Full specification draft (elements, skins, color system, layout, CSS architecture)
 - `Research/Research_Sessions_Summaries.md` — Session-by-session decisions and rationale
 - `Research/Research_Report_Modularity_Notes.md` — Strategic notes on Section/Card framework and LLM optimization
 - `Research/blueprint_experiment_*.html` / `.jsx` — Visual prototypes testing the system
