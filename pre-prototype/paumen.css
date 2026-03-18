@@ -273,6 +273,7 @@
 
   a {
     color: var(--accent);
+    text-decoration: none;
   }
 
   aside {
@@ -313,7 +314,8 @@
   }
 
   button[data-skin~="ghost"]:hover:not(:disabled),
-  a[data-skin~="ghost"]:hover {
+  a[data-skin~="ghost"]:hover,
+  summary[data-skin~="ghost"]:hover {
     background: var(--neutral-mute);
   }
 

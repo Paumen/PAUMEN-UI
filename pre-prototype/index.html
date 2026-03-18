@@ -10,12 +10,17 @@
 
   <!-- ══════════════════════════════════════════════
        CARD 1 — App Header
-       Patterns: header row wrapper, h1 + button, nav with links
+       Patterns: header row (h1 + svg + button), nav row with links
+       NOTE: header used here because it has 3 children (h1 + svg + button).
+             Single elements are direct card children — no row wrapper.
        ══════════════════════════════════════════════ -->
 
   <article>
     <header>
-      <h1 data-colspan="9">Daily Planner</h1>
+      <h1 data-colspan="8">Daily Planner</h1>
+      <svg data-colspan="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
       <button data-colspan="3" data-skin="ghost" popovertarget="settings-menu">⚙ Settings</button>
     </header>
     <nav>
@@ -35,7 +40,11 @@
     <section>
       <input type="search" placeholder="Search tasks…" data-colspan="10" />
       <button data-skin="ghost" aria-label="Clear search">×</button>
-      <button data-skin="emphasis" aria-label="Search">⌕</button>
+      <button data-skin="emphasis" aria-label="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
     </section>
   </article>
 
@@ -47,9 +56,7 @@
        ══════════════════════════════════════════════ -->
 
   <article>
-    <header>
-      <h3 data-colspan="12">Add Task</h3>
-    </header>
+    <h3>Add Task</h3>
     <form>
       <input type="text" placeholder="Task title…" />
       <textarea placeholder="Notes (optional)…"></textarea>
@@ -103,13 +110,11 @@
 
   <!-- ══════════════════════════════════════════════
        CARD 5 — Weekly Stats
-       Patterns: elevated skin, 3+3+3+3 stat grid
+       Patterns: elevated skin, h2 heading, 3+3+3+3 stat grid
        ══════════════════════════════════════════════ -->
 
   <article data-skin="elevated">
-    <header>
-      <h3 data-colspan="12">This Week</h3>
-    </header>
+    <h2>This Week</h2>
     <section>
       <output data-colspan="3">12</output>
       <output data-colspan="3">8</output>
@@ -132,9 +137,7 @@
        ══════════════════════════════════════════════ -->
 
   <article>
-    <header>
-      <h3 data-colspan="12">Quick Settings</h3>
-    </header>
+    <h3>Quick Settings</h3>
 
     <section>
       <label for="theme-select" data-colspan="3">Theme</label>
@@ -179,43 +182,58 @@
 
   <!-- ══════════════════════════════════════════════
        CARD 7 — Skin Reference
-       Patterns: all 5 skins demonstrated on buttons
+       Patterns: all 5 skins, h4 sub-headings within card
        ══════════════════════════════════════════════ -->
 
   <article>
-    <header>
-      <h3 data-colspan="12">Skin Reference</h3>
-    </header>
+    <h3>Skin Reference</h3>
+    <p data-skin="mute">
+      Skins are composable via <code>data-skin</code> (space-separated).
+      Conflict group: <code>emphasis</code> and <code>ghost</code> are mutually exclusive.
+    </p>
 
+    <h4>emphasis · ghost · default</h4>
     <section>
-      <button data-colspan="4">Default</button>
       <button data-colspan="4" data-skin="emphasis">emphasis</button>
       <button data-colspan="4" data-skin="ghost">ghost</button>
+      <button data-colspan="4">default</button>
     </section>
 
+    <h4>mute · elevated · disabled</h4>
     <section>
       <button data-colspan="4" data-skin="mute">mute</button>
       <button data-colspan="4" data-skin="elevated">elevated</button>
       <button data-colspan="4" disabled>disabled</button>
     </section>
 
-    <p data-skin="mute">
-      Skins are composable: <code>data-skin="emphasis elevated"</code> combines both.
-      Conflict groups: <code>emphasis</code> and <code>ghost</code> are mutually exclusive.
-    </p>
+    <h4>freeform (card skin — escape hatch)</h4>
+    <p data-skin="mute">Removes all PAUMEN constraints from the card interior. Used for game canvases, third-party embeds, and data visualisations.</p>
   </article>
 
 
   <!-- ══════════════════════════════════════════════
-       CARD 8 — Overlays
+       CARD 8 — Freeform Escape Hatch
+       Pattern: data-skin="freeform" on a card
+       ══════════════════════════════════════════════ -->
+
+  <article data-skin="freeform">
+    <div style="padding: 1.25rem; background: oklch(12% 0.03 250); border-radius: 0.5rem; font-family: monospace; font-size: 0.85em; color: oklch(75% 0.12 200); line-height: 1.7;">
+      &lt;article data-skin="freeform"&gt;<br>
+      &nbsp;&nbsp;<!-- All PAUMEN constraints removed from this card's interior --><br>
+      &nbsp;&nbsp;<!-- Custom CSS, third-party widgets, canvas elements go here --><br>
+      &lt;/article&gt;
+    </div>
+  </article>
+
+
+  <!-- ══════════════════════════════════════════════
+       CARD 9 — Overlays
        Patterns: tooltip (aside[popover]), dropdown (nav[popover]),
                  toast (output[popover]), dialog modal
        ══════════════════════════════════════════════ -->
 
   <article>
-    <header>
-      <h3 data-colspan="12">Overlays</h3>
-    </header>
+    <h3>Overlays</h3>
     <p data-skin="mute">
       Tooltip and dropdown use the native Popover API — zero JS required.
       Dialog needs one line of JS for <code>showModal()</code>; Escape-to-close is native.
@@ -267,9 +285,7 @@
 
   <!-- Modal dialog -->
   <dialog id="modal">
-    <header>
-      <h3 data-colspan="12">Confirm Action</h3>
-    </header>
+    <h3>Confirm Action</h3>
     <p>Are you sure you want to clear all completed tasks? This cannot be undone.</p>
     <footer>
       <button data-colspan="6" data-skin="ghost" id="close-modal">Cancel</button>
