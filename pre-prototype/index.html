@@ -19,12 +19,9 @@
       from { transform: rotate(0deg); }
       to   { transform: rotate(360deg); }
     }
-    @keyframes icon-shake {
-      0%, 100%  { transform: rotate(0deg); }
-      20%       { transform: rotate(-18deg); }
-      40%       { transform: rotate(18deg); }
-      60%       { transform: rotate(-10deg); }
-      80%       { transform: rotate(10deg); }
+    @keyframes icon-spin-ccw {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(-360deg); }
     }
     @keyframes icon-pop {
       0%   { transform: scale(1); }
@@ -34,6 +31,25 @@
     @keyframes icon-cross-spin {
       from { transform: rotate(0deg); }
       to   { transform: rotate(135deg); }
+    }
+    @keyframes icon-trash-lid {
+      0%   { transform: scale(1)    translateY(0); }
+      30%  { transform: scale(1.25) translateY(-7px); }
+      60%  { transform: scale(1.15) translateY(-5px); }
+      100% { transform: scale(1.1)  translateY(-4px); }
+    }
+    @keyframes icon-slide-right {
+      from { transform: translateX(0); }
+      to   { transform: translateX(4px); }
+    }
+    @keyframes icon-pulse-warn {
+      0%, 100% { transform: scale(1);    opacity: 1; }
+      50%       { transform: scale(1.25); opacity: 0.7; }
+    }
+    @keyframes icon-wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25%       { transform: rotate(-15deg); }
+      75%       { transform: rotate(15deg); }
     }
 
     /* ── Animations per context ─────────────────── */
@@ -61,10 +77,51 @@
       animation: icon-cross-spin 0.2s ease forwards;
     }
 
-    /* Trash: shake on hover */
+    /* Trash bin: lid lifts open + danger tint on hover */
+    .ph-trash { transition: color 0.2s; }
     button:hover .ph-trash,
     button:focus-visible .ph-trash {
-      animation: icon-shake 0.4s ease;
+      animation: icon-trash-lid 0.35s ease forwards;
+      color: oklch(58% 0.22 25);
+    }
+
+    /* Nav icons: slide right on link hover */
+    nav a:hover .ph,
+    nav a:focus-visible .ph {
+      animation: icon-slide-right 0.2s ease forwards;
+    }
+
+    /* In-progress clock: slow continuous spin (it's still ticking) */
+    .ph-clock { animation: icon-spin 4s linear infinite; }
+
+    /* Overdue warning: pulse */
+    .ph-warning-circle {
+      animation: icon-pulse-warn 1.4s ease-in-out infinite;
+      color: oklch(58% 0.22 45);
+    }
+
+    /* Completed: accent green tint (static) */
+    .ph-check-circle { color: oklch(58% 0.18 145); }
+
+    /* On-hold: muted (static) */
+    .ph-pause-circle { opacity: 0.5; }
+
+    /* Reset buttons: counter-clockwise spin on hover */
+    button:hover .ph-arrow-counter-clockwise,
+    button:focus-visible .ph-arrow-counter-clockwise {
+      animation: icon-spin-ccw 0.5s ease;
+    }
+
+    /* Copy: pop on hover */
+    button:hover .ph-copy,
+    button:focus-visible .ph-copy {
+      animation: icon-pop 0.3s ease;
+    }
+
+    /* Eraser: wiggle on hover */
+    button:hover .ph-eraser,
+    button:focus-visible .ph-eraser {
+      animation: icon-wiggle 0.35s ease;
     }
   </style>
 </head>
@@ -84,9 +141,9 @@
       <button data-colspan="3" data-skin="ghost" popovertarget="settings-menu"><i class="ph ph-gear" aria-hidden="true"></i> Settings</button>
     </header>
     <nav>
-      <a data-colspan="4" href="#">Today</a>
-      <a data-colspan="4" href="#">This Week</a>
-      <a data-colspan="4" href="#">Archive</a>
+      <a data-colspan="4" href="#"><i class="ph ph-sun" aria-hidden="true"></i> Today</a>
+      <a data-colspan="4" href="#"><i class="ph ph-calendar-dots" aria-hidden="true"></i> This Week</a>
+      <a data-colspan="4" href="#"><i class="ph ph-archive" aria-hidden="true"></i> Archive</a>
     </nav>
   </article>
 
@@ -112,7 +169,7 @@
        ══════════════════════════════════════════════ -->
 
   <article>
-    <h3>Add Task</h3>
+    <h3><i class="ph ph-plus-circle" aria-hidden="true"></i> Add Task</h3>
     <form>
       <input type="text" placeholder="Task title…" />
       <textarea placeholder="Notes (optional)…"></textarea>
@@ -126,8 +183,8 @@
         </select>
       </section>
       <footer>
-        <button data-colspan="6" data-skin="ghost" type="reset">Clear</button>
-        <button data-colspan="6" data-skin="emphasis" type="submit">Add Task</button>
+        <button data-colspan="6" data-skin="ghost" type="reset"><i class="ph ph-eraser" aria-hidden="true"></i> Clear</button>
+        <button data-colspan="6" data-skin="emphasis" type="submit"><i class="ph ph-plus" aria-hidden="true"></i> Add Task</button>
       </footer>
     </form>
   </article>
@@ -140,7 +197,7 @@
 
   <details open>
     <summary>
-      <h3 data-colspan="10">Today's Tasks</h3>
+      <h3 data-colspan="10"><i class="ph ph-list-checks" aria-hidden="true"></i> Today's Tasks</h3>
       <small data-colspan="2">3 pending</small>
     </summary>
 
@@ -170,7 +227,7 @@
        ══════════════════════════════════════════════ -->
 
   <article data-skin="elevated">
-    <h2>This Week</h2>
+    <h2><i class="ph ph-chart-bar" aria-hidden="true"></i> This Week</h2>
     <section>
       <output data-colspan="3">12</output>
       <output data-colspan="3">8</output>
@@ -178,10 +235,10 @@
       <output data-colspan="3">1</output>
     </section>
     <section>
-      <small data-colspan="3">Completed</small>
-      <small data-colspan="3">In progress</small>
-      <small data-colspan="3">Overdue</small>
-      <small data-colspan="3">On hold</small>
+      <small data-colspan="3"><i class="ph ph-check-circle" aria-hidden="true"></i> Completed</small>
+      <small data-colspan="3"><i class="ph ph-clock" aria-hidden="true"></i> In progress</small>
+      <small data-colspan="3"><i class="ph ph-warning-circle" aria-hidden="true"></i> Overdue</small>
+      <small data-colspan="3"><i class="ph ph-pause-circle" aria-hidden="true"></i> On hold</small>
     </section>
   </article>
 
@@ -193,7 +250,7 @@
        ══════════════════════════════════════════════ -->
 
   <article>
-    <h3>Quick Settings</h3>
+    <h3><i class="ph ph-sliders-horizontal" aria-hidden="true"></i> Quick Settings</h3>
 
     <section>
       <label for="theme-select" data-colspan="3">Theme</label>
@@ -230,8 +287,8 @@
     </section>
 
     <footer>
-      <button data-colspan="6" data-skin="ghost">Reset to defaults</button>
-      <button data-colspan="6" data-skin="emphasis">Save settings</button>
+      <button data-colspan="6" data-skin="ghost"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i> Reset to defaults</button>
+      <button data-colspan="6" data-skin="emphasis"><i class="ph ph-floppy-disk" aria-hidden="true"></i> Save settings</button>
     </footer>
   </article>
 
@@ -273,7 +330,7 @@
        ══════════════════════════════════════════════ -->
 
   <article>
-    <h3>Color Test Controls</h3>
+    <h3><i class="ph ph-palette" aria-hidden="true"></i> Color Test Controls</h3>
 
     <section>
       <label for="mode-toggle" data-colspan="9">Dark mode</label>
@@ -305,8 +362,8 @@
     </section>
 
     <footer>
-      <button data-colspan="6" data-skin="ghost" id="color-reset">Reset to defaults</button>
-      <button data-colspan="6" data-skin="emphasis" id="color-copy">Copy CSS vars</button>
+      <button data-colspan="6" data-skin="ghost" id="color-reset"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i> Reset to defaults</button>
+      <button data-colspan="6" data-skin="emphasis" id="color-copy"><i class="ph ph-copy" aria-hidden="true"></i> Copy CSS vars</button>
     </footer>
   </article>
 
@@ -370,8 +427,13 @@
       ].join('\n');
       navigator.clipboard.writeText(vars).then(() => {
         const btn = document.getElementById('color-copy');
+        const icon = btn.querySelector('i');
         btn.textContent = 'Copied!';
-        setTimeout(() => btn.textContent = 'Copy CSS vars', 1500);
+        btn.prepend(icon);
+        setTimeout(() => {
+          btn.textContent = ' Copy CSS vars';
+          btn.prepend(icon);
+        }, 1500);
       });
     });
   })();
