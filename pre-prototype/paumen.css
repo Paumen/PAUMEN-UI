@@ -69,6 +69,7 @@
     --s:  clamp(0.4rem, 1vw,    0.8rem);
     --m:  clamp(0.8rem, 2vw,    1.6rem);
     --l:  clamp(1.2rem, 4vw,    2.4rem);
+    --xl: clamp(1.6rem, 6vw,    3.6re.);
   }
 
   /* ── Body (depth 1) ─────────────────────────── */
@@ -80,7 +81,7 @@
     margin-inline: auto;
     padding: var(--m);
     font-family: system-ui, sans-serif;
-    font-size: var(--l);
+    font-size: var(--m);
     color: var(--text);
     background: var(--neutral);
   }
@@ -148,9 +149,9 @@
     border-block-end: 1px solid var(--neutral-edge);
   }
 
-  h1 { font-size: calc(var(--m) * 1.8); }
-  h2 { font-size: calc(var(--m) * 1.5); }
-  h3 { font-size: calc(var(--m) * 1.25); }
+  h1 { font-size: var(--xl); }
+  h2 { font-size: var(--xl); }
+  h3 { font-size: var(--l); }
   h4 { font-size: var(--m); }
 
   /* ── Shared control base ─────────────────────── */
@@ -192,7 +193,7 @@
 
   textarea {
     resize: vertical;
-    min-block-size: var(--l);
+    min-block-size: var(--xl);
   }
 
   /* ── Select — custom dropdown arrow ─────────── */
@@ -252,7 +253,7 @@
   label {
     cursor: pointer;
     color: var(--text-mute);
-    font-size: var(--l);
+    font-size: var(--m);
   }
 
   small {
