@@ -6,124 +6,6 @@
   <title>Daily Planner — PAUMEN-UI Pre-Prototype</title>
   <link rel="stylesheet" href="paumen.css">
   <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-  <style>
-    /* ── Phosphor icon sizing ───────────────────── */
-    .ph { font-size: 1.2em; line-height: 1; display: inline-block; }
-
-    /* ── Keyframes ──────────────────────────────── */
-    @keyframes icon-float {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-4px); }
-    }
-    @keyframes icon-spin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-    @keyframes icon-spin-ccw {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(-360deg); }
-    }
-    @keyframes icon-pop {
-      0%   { transform: scale(1); }
-      50%  { transform: scale(1.35); }
-      100% { transform: scale(1); }
-    }
-    @keyframes icon-cross-spin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(135deg); }
-    }
-    @keyframes icon-trash-lid {
-      0%   { transform: scale(1)    translateY(0); }
-      30%  { transform: scale(1.25) translateY(-7px); }
-      60%  { transform: scale(1.15) translateY(-5px); }
-      100% { transform: scale(1.1)  translateY(-4px); }
-    }
-    @keyframes icon-slide-right {
-      from { transform: translateX(0); }
-      to   { transform: translateX(4px); }
-    }
-    @keyframes icon-pulse-warn {
-      0%, 100% { transform: scale(1);    opacity: 1; }
-      50%       { transform: scale(1.25); opacity: 0.7; }
-    }
-    @keyframes icon-wiggle {
-      0%, 100% { transform: rotate(0deg); }
-      25%       { transform: rotate(-15deg); }
-      75%       { transform: rotate(15deg); }
-    }
-
-    /* ── Animations per context ─────────────────── */
-
-    /* Calendar: continuous float in the header */
-    header .ph-calendar {
-      animation: icon-float 2.8s ease-in-out infinite;
-    }
-
-    /* Gear: full spin while hovering the Settings button */
-    button:hover .ph-gear,
-    button:focus-visible .ph-gear {
-      animation: icon-spin 0.55s linear infinite;
-    }
-
-    /* Magnifying glass: pop on hover */
-    button:hover .ph-magnifying-glass,
-    button:focus-visible .ph-magnifying-glass {
-      animation: icon-pop 0.35s ease;
-    }
-
-    /* × (clear): quarter-turn into an ✕ on hover */
-    button:hover .ph-x,
-    button:focus-visible .ph-x {
-      animation: icon-cross-spin 0.2s ease forwards;
-    }
-
-    /* Trash bin: lid lifts open + danger tint on hover */
-    .ph-trash { transition: color 0.2s; }
-    button:hover .ph-trash,
-    button:focus-visible .ph-trash {
-      animation: icon-trash-lid 0.35s ease forwards;
-      color: oklch(58% 0.22 25);
-    }
-
-    /* Nav icons: slide right on link hover */
-    nav a:hover .ph,
-    nav a:focus-visible .ph {
-      animation: icon-slide-right 0.2s ease forwards;
-    }
-
-    /* In-progress clock: slow continuous spin (it's still ticking) */
-    .ph-clock { animation: icon-spin 4s linear infinite; }
-
-    /* Overdue warning: pulse */
-    .ph-warning-circle {
-      animation: icon-pulse-warn 1.4s ease-in-out infinite;
-      color: oklch(58% 0.22 45);
-    }
-
-    /* Completed: accent green tint (static) */
-    .ph-check-circle { color: oklch(58% 0.18 145); }
-
-    /* On-hold: muted (static) */
-    .ph-pause-circle { opacity: 0.5; }
-
-    /* Reset buttons: counter-clockwise spin on hover */
-    button:hover .ph-arrow-counter-clockwise,
-    button:focus-visible .ph-arrow-counter-clockwise {
-      animation: icon-spin-ccw 0.5s ease;
-    }
-
-    /* Copy: pop on hover */
-    button:hover .ph-copy,
-    button:focus-visible .ph-copy {
-      animation: icon-pop 0.3s ease;
-    }
-
-    /* Eraser: wiggle on hover */
-    button:hover .ph-eraser,
-    button:focus-visible .ph-eraser {
-      animation: icon-wiggle 0.35s ease;
-    }
-  </style>
 </head>
 <body>
 
@@ -138,12 +20,12 @@
     <header>
       <h1 data-colspan="8">Daily Planner</h1>
       <i class="ph ph-calendar" data-colspan="1" aria-hidden="true"></i>
-      <button data-colspan="3" data-skin="ghost" popovertarget="settings-menu"><i class="ph ph-gear" aria-hidden="true"></i> Settings</button>
+      <button data-colspan="3" data-skin="ghost" popovertarget="settings-menu"><i class="ph ph-gear" aria-hidden="true"></i><i class="ph-fill ph-gear" aria-hidden="true" data-icon-fill></i> Settings</button>
     </header>
     <nav>
-      <a data-colspan="4" href="#"><i class="ph ph-sun" aria-hidden="true"></i> Today</a>
-      <a data-colspan="4" href="#"><i class="ph ph-calendar-dots" aria-hidden="true"></i> This Week</a>
-      <a data-colspan="4" href="#"><i class="ph ph-archive" aria-hidden="true"></i> Archive</a>
+      <a data-colspan="4" href="#"><i class="ph ph-sun" aria-hidden="true"></i><i class="ph-fill ph-sun" aria-hidden="true" data-icon-fill></i> Today</a>
+      <a data-colspan="4" href="#"><i class="ph ph-calendar-dots" aria-hidden="true"></i><i class="ph-fill ph-calendar-dots" aria-hidden="true" data-icon-fill></i> This Week</a>
+      <a data-colspan="4" href="#"><i class="ph ph-archive" aria-hidden="true"></i><i class="ph-fill ph-archive" aria-hidden="true" data-icon-fill></i> Archive</a>
     </nav>
   </article>
 
@@ -156,8 +38,8 @@
   <article>
     <section>
       <input type="search" placeholder="Search tasks…" data-colspan="10" />
-      <button data-skin="ghost" aria-label="Clear search"><i class="ph ph-x" aria-hidden="true"></i></button>
-      <button data-skin="emphasis" aria-label="Search"><i class="ph ph-magnifying-glass" aria-hidden="true"></i></button>
+      <button data-skin="ghost" aria-label="Clear search"><i class="ph ph-x" aria-hidden="true"></i><i class="ph-fill ph-x" aria-hidden="true" data-icon-fill></i></button>
+      <button data-skin="emphasis" aria-label="Search"><i class="ph ph-magnifying-glass" aria-hidden="true"></i><i class="ph-fill ph-magnifying-glass" aria-hidden="true" data-icon-fill></i></button>
     </section>
   </article>
 
@@ -183,8 +65,8 @@
         </select>
       </section>
       <footer>
-        <button data-colspan="6" data-skin="ghost" type="reset"><i class="ph ph-eraser" aria-hidden="true"></i> Clear</button>
-        <button data-colspan="6" data-skin="emphasis" type="submit"><i class="ph ph-plus" aria-hidden="true"></i> Add Task</button>
+        <button data-colspan="6" data-skin="ghost" type="reset"><i class="ph ph-eraser" aria-hidden="true"></i><i class="ph-fill ph-eraser" aria-hidden="true" data-icon-fill></i> Clear</button>
+        <button data-colspan="6" data-skin="emphasis" type="submit"><i class="ph ph-plus" aria-hidden="true"></i><i class="ph-fill ph-plus" aria-hidden="true" data-icon-fill></i> Add Task</button>
       </footer>
     </form>
   </article>
@@ -204,19 +86,19 @@
     <section>
       <input type="checkbox" id="task-1" />
       <label for="task-1" data-colspan="9">Review project proposal and leave comments</label>
-      <button data-colspan="2" data-skin="ghost" aria-label="Delete task"><i class="ph ph-trash" aria-hidden="true"></i></button>
+      <button data-colspan="2" data-skin="ghost" aria-label="Delete task"><i class="ph ph-trash" aria-hidden="true"></i><i class="ph-fill ph-trash" aria-hidden="true" data-icon-fill></i></button>
     </section>
 
     <section>
       <input type="checkbox" id="task-2" />
       <label for="task-2" data-colspan="9">Schedule team sync for Q2 planning</label>
-      <button data-colspan="2" data-skin="ghost" aria-label="Delete task"><i class="ph ph-trash" aria-hidden="true"></i></button>
+      <button data-colspan="2" data-skin="ghost" aria-label="Delete task"><i class="ph ph-trash" aria-hidden="true"></i><i class="ph-fill ph-trash" aria-hidden="true" data-icon-fill></i></button>
     </section>
 
     <section>
       <input type="checkbox" id="task-3" checked />
       <label for="task-3" data-colspan="9" data-skin="mute">Send weekly status update email</label>
-      <button data-colspan="2" data-skin="ghost" aria-label="Delete task"><i class="ph ph-trash" aria-hidden="true"></i></button>
+      <button data-colspan="2" data-skin="ghost" aria-label="Delete task"><i class="ph ph-trash" aria-hidden="true"></i><i class="ph-fill ph-trash" aria-hidden="true" data-icon-fill></i></button>
     </section>
   </details>
 
@@ -287,8 +169,8 @@
     </section>
 
     <footer>
-      <button data-colspan="6" data-skin="ghost"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i> Reset to defaults</button>
-      <button data-colspan="6" data-skin="emphasis"><i class="ph ph-floppy-disk" aria-hidden="true"></i> Save settings</button>
+      <button data-colspan="6" data-skin="ghost"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i><i class="ph-fill ph-arrow-counter-clockwise" aria-hidden="true" data-icon-fill></i> Reset to defaults</button>
+      <button data-colspan="6" data-skin="emphasis"><i class="ph ph-floppy-disk" aria-hidden="true"></i><i class="ph-fill ph-floppy-disk" aria-hidden="true" data-icon-fill></i> Save settings</button>
     </footer>
   </article>
 
@@ -362,8 +244,8 @@
     </section>
 
     <footer>
-      <button data-colspan="6" data-skin="ghost" id="color-reset"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i> Reset to defaults</button>
-      <button data-colspan="6" data-skin="emphasis" id="color-copy"><i class="ph ph-copy" aria-hidden="true"></i> Copy CSS vars</button>
+      <button data-colspan="6" data-skin="ghost" id="color-reset"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i><i class="ph-fill ph-arrow-counter-clockwise" aria-hidden="true" data-icon-fill></i> Reset to defaults</button>
+      <button data-colspan="6" data-skin="emphasis" id="color-copy"><i class="ph ph-copy" aria-hidden="true"></i><i class="ph-fill ph-copy" aria-hidden="true" data-icon-fill></i> Copy CSS vars</button>
     </footer>
   </article>
 
@@ -427,12 +309,14 @@
       ].join('\n');
       navigator.clipboard.writeText(vars).then(() => {
         const btn = document.getElementById('color-copy');
-        const icon = btn.querySelector('i');
-        btn.textContent = 'Copied!';
-        btn.prepend(icon);
+        const [stroke, fill] = btn.querySelectorAll('i');
+        btn.textContent = ' Copied!';
+        btn.prepend(fill);
+        btn.prepend(stroke);
         setTimeout(() => {
           btn.textContent = ' Copy CSS vars';
-          btn.prepend(icon);
+          btn.prepend(fill);
+          btn.prepend(stroke);
         }, 1500);
       });
     });
