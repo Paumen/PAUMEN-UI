@@ -70,6 +70,17 @@
     --m:  clamp(0.8rem, 2vw,    1.6rem);
     --l:  clamp(1.2rem, 4vw,    2.4rem);
     --xl: clamp(1.6rem, 6vw,    3.6rem);
+
+    /* Icon sizes — em is intentional: icons scale with their text context.
+       --icon-sm in a button/nav  = ~var(--m) (body text size).
+       --icon-md in an h2/h3      = ~var(--l/--xl) (heading text size).
+       No other icon size exists. */
+    --icon-sm: 1em;
+    --icon-md: 1.1em;
+
+    /* Semantic danger — destructive-action hover only.
+       The only non-currentColor icon color in the system. */
+    --color-danger: oklch(58% 0.22 25);
   }
 
   /* ── Body (depth 1) ─────────────────────────── */
@@ -276,7 +287,97 @@
     font-size: var(--m);
   }
 
-} 
+  /* ── Icons ──────────────────────────────────── */
+  /*
+     Conventions:
+       Size    — var(--icon-sm) everywhere; context supplies the em base.
+                 Heading icons get var(--icon-md) via the :is(h…) rule below.
+       Weight  — Regular (ph) at rest. Fill (ph-fill) on hover.
+                 Both weights must be present in markup for interactive icons
+                 (see [data-icon-fill] pattern). Static icons need only one.
+       Color   — currentColor always, except trash hover → --color-danger.
+       Motion  — Hover-triggered only. 3 keyframes: spin, spin-ccw, bounce.
+                 No continuous animations. prefers-reduced-motion kills all.
+
+     Placement rules:
+       nav a          — always, icon-left, both weights
+       button+label   — always when icon adds meaning; both weights
+       button+destructive — always; both weights
+       h2 / h3        — always, icon-left, stroke only (no hover state)
+       status labels  — always, stroke only, currentColor
+       form labels / p / body — never
+  */
+
+  .ph,
+  .ph-fill {
+    font-size: var(--icon-sm);
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  /* Heading icons are slightly more prominent than inline icons */
+  :is(h1, h2, h3, h4) .ph {
+    font-size: var(--icon-md);
+  }
+
+  /* ── Stroke → fill swap ─────────────────────── */
+  /* Default: fill variant hidden */
+  [data-icon-fill] { display: none; }
+
+  /* On hover/focus: show fill, hide stroke sibling */
+  :is(a, button):hover       [data-icon-fill],
+  :is(a, button):focus-visible [data-icon-fill] {
+    display: inline-block;
+  }
+  :is(a, button):hover        i:has(~ [data-icon-fill]),
+  :is(a, button):focus-visible i:has(~ [data-icon-fill]) {
+    display: none;
+  }
+
+  /* ── Keyframes ──────────────────────────────── */
+  @keyframes icon-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes icon-spin-ccw {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(-360deg); }
+  }
+  @keyframes icon-bounce {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.3); }
+    70%  { transform: scale(0.92); }
+    100% { transform: scale(1); }
+  }
+
+  /* ── Animations (scoped — never target icon class globally) ── */
+
+  /* Gear: continuous spin while the settings button is hovered */
+  button:hover        .ph-gear,
+  button:focus-visible .ph-gear {
+    animation: icon-spin 0.55s linear infinite;
+  }
+
+  /* Trash: bounce + danger color — warns before destructive action */
+  button:hover        .ph-trash,
+  button:focus-visible .ph-trash {
+    animation: icon-bounce 0.35s ease;
+    color: var(--color-danger);
+  }
+
+  /* Reset arrow: single counter-clockwise sweep */
+  button:hover        .ph-arrow-counter-clockwise,
+  button:focus-visible .ph-arrow-counter-clockwise {
+    animation: icon-spin-ccw 0.45s ease;
+  }
+
+  /* Kill all icon animation for users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .ph, .ph-fill { animation: none !important; }
+  }
+
+}
 
 /* ══════════════════════════════════════════════════
    SKIN
