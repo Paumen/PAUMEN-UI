@@ -5,6 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily Planner — PAUMEN-UI Pre-Prototype</title>
   <link rel="stylesheet" href="paumen.css">
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+  <style>
+    /* ── Phosphor icon sizing ───────────────────── */
+    .ph { font-size: 1.2em; line-height: 1; display: inline-block; }
+
+    /* ── Keyframes ──────────────────────────────── */
+    @keyframes icon-float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-4px); }
+    }
+    @keyframes icon-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes icon-shake {
+      0%, 100%  { transform: rotate(0deg); }
+      20%       { transform: rotate(-18deg); }
+      40%       { transform: rotate(18deg); }
+      60%       { transform: rotate(-10deg); }
+      80%       { transform: rotate(10deg); }
+    }
+    @keyframes icon-pop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.35); }
+      100% { transform: scale(1); }
+    }
+    @keyframes icon-cross-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(135deg); }
+    }
+
+    /* ── Animations per context ─────────────────── */
+
+    /* Calendar: continuous float in the header */
+    header .ph-calendar {
+      animation: icon-float 2.8s ease-in-out infinite;
+    }
+
+    /* Gear: full spin while hovering the Settings button */
+    button:hover .ph-gear,
+    button:focus-visible .ph-gear {
+      animation: icon-spin 0.55s linear infinite;
+    }
+
+    /* Magnifying glass: pop on hover */
+    button:hover .ph-magnifying-glass,
+    button:focus-visible .ph-magnifying-glass {
+      animation: icon-pop 0.35s ease;
+    }
+
+    /* × (clear): quarter-turn into an ✕ on hover */
+    button:hover .ph-x,
+    button:focus-visible .ph-x {
+      animation: icon-cross-spin 0.2s ease forwards;
+    }
+
+    /* Trash: shake on hover */
+    button:hover .ph-trash,
+    button:focus-visible .ph-trash {
+      animation: icon-shake 0.4s ease;
+    }
+  </style>
 </head>
 <body>
 
@@ -18,10 +80,8 @@
   <article>
     <header>
       <h1 data-colspan="8">Daily Planner</h1>
-      <svg data-colspan="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-      </svg>
-      <button data-colspan="3" data-skin="ghost" popovertarget="settings-menu">⚙ Settings</button>
+      <i class="ph ph-calendar" data-colspan="1" aria-hidden="true"></i>
+      <button data-colspan="3" data-skin="ghost" popovertarget="settings-menu"><i class="ph ph-gear" aria-hidden="true"></i> Settings</button>
     </header>
     <nav>
       <a data-colspan="4" href="#">Today</a>
@@ -39,12 +99,8 @@
   <article>
     <section>
       <input type="search" placeholder="Search tasks…" data-colspan="10" />
-      <button data-skin="ghost" aria-label="Clear search">×</button>
-      <button data-skin="emphasis" aria-label="Search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
-          <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-      </button>
+      <button data-skin="ghost" aria-label="Clear search"><i class="ph ph-x" aria-hidden="true"></i></button>
+      <button data-skin="emphasis" aria-label="Search"><i class="ph ph-magnifying-glass" aria-hidden="true"></i></button>
     </section>
   </article>
 
@@ -91,19 +147,19 @@
     <section>
       <input type="checkbox" id="task-1" />
       <label for="task-1" data-colspan="9">Review project proposal and leave comments</label>
-      <button data-colspan="2" data-skin="ghost" aria-label="Delete task">✕</button>
+      <button data-colspan="2" data-skin="ghost" aria-label="Delete task"><i class="ph ph-trash" aria-hidden="true"></i></button>
     </section>
 
     <section>
       <input type="checkbox" id="task-2" />
       <label for="task-2" data-colspan="9">Schedule team sync for Q2 planning</label>
-      <button data-colspan="2" data-skin="ghost" aria-label="Delete task">✕</button>
+      <button data-colspan="2" data-skin="ghost" aria-label="Delete task"><i class="ph ph-trash" aria-hidden="true"></i></button>
     </section>
 
     <section>
       <input type="checkbox" id="task-3" checked />
       <label for="task-3" data-colspan="9" data-skin="mute">Send weekly status update email</label>
-      <button data-colspan="2" data-skin="ghost" aria-label="Delete task">✕</button>
+      <button data-colspan="2" data-skin="ghost" aria-label="Delete task"><i class="ph ph-trash" aria-hidden="true"></i></button>
     </section>
   </details>
 
