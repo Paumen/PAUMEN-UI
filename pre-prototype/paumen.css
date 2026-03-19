@@ -42,12 +42,12 @@
       oklch(16% 0.01 var(--surface-hue))
     );
     --neutral-mute: light-dark(
-      oklch(92% 0.01 var(--surface-hue)),
-      oklch(20% 0.01 var(--surface-hue))
+      oklch(90% 0.01 var(--surface-hue)),
+      oklch(22% 0.01 var(--surface-hue))
     );
     --neutral-edge: light-dark(
-      oklch(85% 0.02 var(--surface-hue)),
-      oklch(30% 0.02 var(--surface-hue))
+      oklch(82% 0.02 var(--surface-hue)),
+      oklch(34% 0.02 var(--surface-hue))
     );
 
     /* Text */
@@ -61,7 +61,7 @@
     );
 
     /* Text on accent — fixed near-white regardless of mode */
-    --text-on-accent: oklch(98% 0.01 var(--accent-hue));
+    --text-on-accent: oklch(96% 0.01 var(--accent-hue));
 
     /* Spacing & sizing scale — --m is base font-size AND spacing unit */
     --0:  0;
@@ -69,7 +69,7 @@
     --s:  clamp(0.4rem, 1vw,    0.8rem);
     --m:  clamp(0.8rem, 2vw,    1.6rem);
     --l:  clamp(1.2rem, 4vw,    2.4rem);
-    --xl: clamp(1.6rem, 6vw,    3.6re.);
+    --xl: clamp(1.6rem, 6vw,    3.6rem);
   }
 
   /* ── Body (depth 1) ─────────────────────────── */
@@ -176,8 +176,8 @@
     font-weight: 600;
     background: var(--neutral-mute);
     display: inline-flex;
-    place-items: center start;
-    place-content: center start;
+    place-items: center;
+    place-content: center;
     gap: var(--xs);
   }
 
