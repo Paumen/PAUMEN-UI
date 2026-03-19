@@ -80,7 +80,7 @@
     margin-inline: auto;
     padding: var(--m);
     font-family: system-ui, sans-serif;
-    font-size: var(--m);
+    font-size: var(--l);
     color: var(--text);
     background: var(--neutral);
   }
@@ -129,7 +129,7 @@
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: var(--s);
-    place-items: start center;
+    place-items: center start;
   }
 
   /* ── Transparent wrapper ────────────────────── */
@@ -162,6 +162,7 @@
     border: 1px solid var(--neutral-edge);
     border-radius: var(--xs);
     background: var(--neutral);
+    width:100%;
     color: var(--text);
     padding: var(--s);
     transition: background 0.15s, border-color 0.15s, transform 0.1s;
@@ -174,8 +175,8 @@
     font-weight: 600;
     background: var(--neutral-mute);
     display: inline-flex;
-    place-items: center;
-    place-content: center;
+    place-items: center start;
+    place-content: center start;
     gap: var(--xs);
   }
 
@@ -251,12 +252,12 @@
   label {
     cursor: pointer;
     color: var(--text-mute);
-    font-size: var(--m);
+    font-size: var(--l);
   }
 
   small {
     color: var(--text-mute);
-    font-size: var(--s);
+    font-size: var(--m);
   }
 
   output {
