@@ -10,15 +10,19 @@ Target apps: single or few-page tools, mostly client-side. Productivity tools, d
 
 ## Current State
 
-**Pre-spec / research phase.** Everything under `Research/` is draft material — experiments, prototypes, working notes. The goal is to arrive at the first real specification through further experimentation and iteration. There is no build system, package manager, or test suite yet.
+**Core architecture complete.** The spec (element set, skins, color system, layout model, CSS architecture) is locked. A canonical stylesheet (`pre-prototype/paumen.css`) and working reference app (Daily Planner) exist. Signal states (`data-state`) are defined but not yet implemented in CSS.
 
-**Priority:** Core architecture first (layout model, element set, skin system, color system). Details like signal states/hues come later.
+**Next priority:** Signal state implementation, LLM validation with diverse reference apps, and production CLAUDE.md. See `Research/next_steps.md` for the full roadmap.
 
 **No tooling scaffolding yet.** Skills, hooks, linters, permissions, workflows — all far future. The blueprint itself must be strong enough to work without soft enforcement. If it needs guardrails to function, that's a design smell.
 
-## Key Research Documents
+## Key Documents
 
-- `Research/Blueprint_Draft_v0.5.md` — Full specification draft (elements, skins, color system, layout, CSS architecture)
-- `Research/Research_Sessions_Summaries.md` — Session-by-session decisions and rationale
-- `Research/Research_Report_Modularity_Notes.md` — Strategic notes on Section/Card framework and LLM optimization
-- `Research/blueprint_experiment_*.html` / `.jsx` — Visual prototypes testing the system. They each test different aspacts and may not fully comply to blueprint, or may be conducted before latest blue print update.
+- `Research/blueprint_spec.md` — Canonical specification (authoritative source of truth)
+- `Research/blueprint_rationale.md` — Design reasoning and trade-off analysis
+- `Research/blueprint_lab_notebook.md` — Session-by-session research chronology (Sessions 1–5)
+- `Research/blueprint_theoretical_research.md` — Cross-domain modularity theory
+- `Research/next_steps.md` — Phased roadmap for project progression
+- `Research/Experiments/blueprint_experiment_*.html` / `.jsx` — Visual prototypes testing the system
+- `pre-prototype/paumen.css` — Canonical stylesheet (implements the spec)
+- `pre-prototype/index.html` — Daily Planner reference app
