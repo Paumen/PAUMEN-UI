@@ -71,16 +71,10 @@
     --l:  clamp(1.2rem, 4vw,    2.4rem);
     --xl: clamp(1.6rem, 6vw,    3.6rem);
 
-    /* Icon sizes — em is intentional: icons scale with their text context.
-       --icon-sm in a button/nav  = ~var(--m) (body text size).
-       --icon-md in an h2/h3      = ~var(--l/--xl) (heading text size).
-       No other icon size exists. */
-    --icon-sm: 1em;
-    --icon-md: 1.1em;
+    --icon-s: 1rem;
+    --icon-m: 1.2rem;
 
-    /* Semantic danger — destructive-action hover only.
-       The only non-currentColor icon color in the system. */
-    --color-danger: oklch(58% 0.22 25);
+
   }
 
   /* ── Body (depth 1) ─────────────────────────── */
@@ -141,7 +135,6 @@
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: var(--s);
-    place-items: center start;
   }
 
   /* ── Transparent wrapper ────────────────────── */

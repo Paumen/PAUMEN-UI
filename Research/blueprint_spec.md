@@ -19,11 +19,10 @@ LLMs produce inconsistent UI because the decision space per element is enormous 
 4. **Content** — text, icon, image. Irreducible — always unique.
 5. **Context** — inherited from parent. Gap, alignment, tone. Zero decisions.
 
-### Hard Constraints
+### Constraints
 
-- Zero dependencies. Full control over source code. Single CSS file.
 - Works across screen sizes without per-page custom styling.
-- Zero CSS classes. All styling via element selectors, attribute selectors, and pseudo-classes.
+- No div or span.
 
 ### Target Apps
 
@@ -31,13 +30,10 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ---
 
-## 1. HTML Elements — ~21 Tags
-
-Native semantic HTML only. No custom elements. No div.
+## 1. HTML Elements — ~20 Tags
 
 ### Cards (body children, depth 2 — display: grid, gap --s, single-column stack)
 
-- `<article>` — standard card. The primary structural unit.
 - `<details>` + `<summary>` — collapsible card with native toggle. Summary acts as built-in header row wrapper.
 - `<dialog>` — modal overlay card with backdrop, focus trap, Escape-to-close. Interior follows same rules as any card.
 
@@ -48,10 +44,7 @@ Native semantic HTML only. No custom elements. No div.
 ### Row Wrappers (inside cards, depth 3 — display: grid, 12-column, gap --xs, no visual chrome)
 
 - `<section>` — generic multi-element row. Only used when 2+ elements share a horizontal row. Single elements are direct card children.
-- `<header>` — title row (typically h1–h4 + optional icon/action).
-- `<footer>` — action row (typically buttons at card bottom).
-- `<nav>` — navigation row (tabs, links). Also serves as dropdown popover host.
-- `<summary>` — details header row (inside `<details>` only). Clickable toggle target.
+- `<summary>` — details header row (inside `<details>` only). Clickable toggle target. title row (typically h1–h4 + optional icon/action).
 
 ### Interactive Elements
 
@@ -79,11 +72,11 @@ Native semantic HTML only. No custom elements. No div.
 
 ### Implicit Inline Formatting (allowed within text elements)
 
-`<strong>`, `<em>`, `<code>`, etc.
+`<strong>`, `<code>`,`<ul>`/`<ol>`/`<li>`, 
 
 ### Cut Elements
 
-`<fieldset>`, `<img>`, `<table>` family, `<ul>`/`<ol>`/`<li>`, `<hr>`.
+`<fieldset>`, `<img>`, `<table>`, `<hr>`.
 
 ### Popover Hosts (semantic element + popover attribute)
 
@@ -95,11 +88,11 @@ Native semantic HTML only. No custom elements. No div.
 
 | Category    | Display      | Role                            | Elements                                                       |
 | ----------- | ------------ | ------------------------------- | -------------------------------------------------------------- |
-| Card        | grid         | Holds and arranges children     | article, details, dialog, [popover]                            |
-| Wrapper     | grid (12-col)| Groups elements into rows       | section, header, footer, nav, summary                          |
+| Card        | grid         | Holds and arranges children     | details, dialog, [popover]                            |
+| Wrapper     | grid (12-col)| Groups elements into rows       | section, summary                          |
 | Transparent | contents     | Submission scope only           | form                                                           |
 | Component   | inline-block | Self-contained interactive unit | button, text inputs, textarea, select, range                   |
-| Content     | inline       | Leaf-level text/graphic         | h1–h4, p, small, label, a, svg, checkbox, radio, date/time, output, aside |
+| Content     | inline       | Leaf-level text/graphic         | h1–h4, p, small, label, a, svg, checkbox, radio, date/time, output, aside, `<ul>`/`<ol>`/`<li>` |
 
 ---
 
@@ -107,8 +100,8 @@ Native semantic HTML only. No custom elements. No div.
 
 ```
 body                              depth 1  (grid, gap --l, max 800px centered)
- └ article                        depth 2  (card, 1-col stack, grid, gap --s)
-    ├ header [row wrapper]        depth 3  (12-col grid, gap --xs)
+ └ Details                        depth 2  (card, 1-col stack, grid, gap --s)
+    ├ Summary [row wrapper]        depth 3  (12-col grid, gap --xs)
     │  ├ h3                       depth 4  (row child, fills cell)
     │  └ svg                      depth 4  (row child, fills cell)
     ├ form                        ----     (display:contents, transparent)
@@ -117,19 +110,17 @@ body                              depth 1  (grid, gap --l, max 800px centered)
     │  │  ├ button                depth 4  (row child, fills cell)
     │  │  └ button                depth 4  (row child, fills cell)
     │  └ textarea                 depth 3  (direct card child, full width)
-    └ footer [row wrapper]        depth 3  (12-col grid, gap --xs)
+    └ section [row wrapper]        depth 3  (12-col grid, gap --xs)
        ├ button                   depth 4  (row child)
        └ button                   depth 4  (row child)
 ```
 
-Max structural depth: 3 (body → article → content). Depth 4 for row wrapper children and HTML-mandated nesting (svg inside button, small inside p). Form is `display: contents` — transparent to the depth model.
+Max structural depth: 4 (html → body → details → content). Depth 5 for row children and HTML-mandated nesting (svg inside button, small inside p). Form is `display: contents` — transparent to the depth model.
 
 ### Rules
 
-- No article inside article (no nested cards).
-- No form inside form (HTML forbids this).
-- Cards are body-level only. Row wrappers are card-level only.
-- Single elements are direct card children — never wrapped in a row wrapper.
+- Cards are body-level only. Row are card-level only.
+- Single elements are direct card children.
 
 ---
 
@@ -174,7 +165,7 @@ Common patterns:
 | 67 / 33      | 8 + 4          | Content + sidebar element           |
 | Full width   | 12             | Span-full child inside a row        |
 
-Supported colspan values: 2, 3, 4, 6, 8, 9, 10, 12. Values 1 (auto default), 5, 7, 11 omitted — they don't produce clean ratios in a 12-column grid.
+Supported colspan values: 1, 2, 3, 4, 6, 8, 9, 10, 11, 12. Values 5, 7 omitted — they don't produce clean ratios in a 12-column grid.
 
 ### data-state — Signal States (not yet implemented)
 
@@ -187,10 +178,10 @@ Supported colspan values: 2, 3, 4, 6, 8, 9, 10, 12. Values 1 (auto default), 5, 
 ### Base Inputs (5 values)
 
 ```css
---accent-hue: 250;
+--accent-hue: 220;
 --accent-chroma: 0.14;
 --surface-hue: 250;
---jump: 0.07;
+--jump: 0.2;
 color-scheme: light dark;
 ```
 
@@ -235,8 +226,8 @@ color-scheme: light dark;
 | Layer       | Background      | Elements                                    |
 | ----------- | --------------- | ------------------------------------------- |
 | Body        | `--neutral`     | body                                        |
-| Card        | `--neutral-mute`| article, details, dialog, [popover]         |
-| Row wrapper | transparent     | section, header, footer, nav, summary       |
+| Card        | `--neutral-mute`| details, dialog, [popover]         |
+| Row wrapper | transparent     | section, summary       |
 | Control     | `--neutral`     | button, input, textarea, select             |
 
 ### Signal Hues (not yet implemented)
@@ -245,15 +236,23 @@ Danger, warning, success, info. Hue values only — saturation and lightness der
 
 ### Scale
 
+
+
 ```css
+--min: 0.8rem;   
+--max: 1.6rem;
+--val: 2vw;
+
 --0: 0;
---xs: clamp(0.2rem, 0.4vw, 0.4rem);
---s: clamp(0.4rem, 1vw, 0.8rem);
---m: clamp(0.8rem, 2vw, 1.6rem);   /* base font-size AND spacing unit */
---l: clamp(1.2rem, 4vw, 2.4rem);
+--xs: clamp(0.4rem, 0.4vw, 0.8rem);
+--s: clamp(0.6rem, 1vw, 1.4rem);
+--m: clamp(0.8rem, 2vw, 2rem);   
+--l: clamp(1rem, 3vw, 2.6rem);
+--xl: clamp(1.2rem, 4vw, 3.2rem);
+
 ```
 
-Used for: spacing (gap, padding), font-size (--m base), border-radius (--xs subtle, --s visible), outline width/offset (--xs), checkbox/radio sizing (--m).
+Used for: spacing (gap, padding), font-size, border-radius, outline width/offset, etc.
 
 ---
 
