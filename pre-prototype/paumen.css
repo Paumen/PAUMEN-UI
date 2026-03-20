@@ -164,7 +164,7 @@
   /* ── Button ──────────────────────────────────── */
 
   button {
-    border: 1px solid var(--accent);
+    border: 2px solid var(--accent);
     cursor: pointer;
     background: transparent; 
     color: var(--accent);
