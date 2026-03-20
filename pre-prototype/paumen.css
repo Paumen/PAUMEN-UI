@@ -285,8 +285,6 @@
 
   /* ── Icons ──────────────────────────────────── */
 
-   
-
   :is(.ph, .ph-bold, .ph-duotone) {
     line-height: 1;
     display: inline-block;
@@ -382,7 +380,7 @@
 
   [data-skin~="ghost"] {
     background: transparent;
-    border-color: 1px var(--text-mute);
+    border-color: 1px solid var(--neutral-mute); 
     color: var(--text-mute);
   }
 
@@ -415,7 +413,6 @@
   [data-skin~="freeform"] > * {
     all: revert;
   }
-
 
    output {
    font-size: var(--l); 
