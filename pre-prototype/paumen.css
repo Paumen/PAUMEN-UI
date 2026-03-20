@@ -83,7 +83,7 @@
 
   body {
     display: grid;
-    gap: var(--xl);
+    gap: var(--l);
     max-inline-size: 800px;
     margin-inline: auto;
     padding: var(--m);
@@ -137,7 +137,7 @@
   h2, 
   h3, 
   h4 {
-    padding: var(--s);
+    padding: var(--m);
     border-block-end: 1px solid var(--neutral-edge);
   }
 
