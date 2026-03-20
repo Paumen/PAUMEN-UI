@@ -380,7 +380,7 @@
 
   [data-skin~="ghost"] {
     background: transparent;
-    border-color: 1px solid var(--neutral-mute); 
+    border: 1px solid var(--neutral-mute); 
     color: var(--text-mute);
   }
 
