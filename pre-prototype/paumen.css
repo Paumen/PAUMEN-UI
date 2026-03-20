@@ -3,6 +3,8 @@
    Four layers: reset → default → skin → grid
    ─────────────────────────────────────────────── */
 
+@import url('https://fonts.googleapis.com/css2?family=Naruto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
 @layer reset, default, skin, grid;
 
 /* ══════════════════════════════════════════════════
@@ -85,7 +87,7 @@
     max-inline-size: 800px;
     margin-inline: auto;
     padding: var(--m);
-    font-family: system-ui, serif;
+    font-family: "Naruto Sans", system-ui, serif;
     font-size: var(--m);
     color: var(--text);
     background: var(--neutral);
