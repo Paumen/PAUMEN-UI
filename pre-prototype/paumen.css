@@ -135,7 +135,6 @@
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: var(--s);
-    place-items: center start;
   }
 
   /* ── Transparent wrapper ────────────────────── */
