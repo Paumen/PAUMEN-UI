@@ -121,7 +121,7 @@
     gap: var(--s);
   }
 
-   footer: {
+   footer {
       background:var(--neutral-edge);
    }
 
@@ -305,7 +305,7 @@
   */
 
   :is(.ph, .ph-bold, .ph-duotone) {
-    font-size: var(--icon-sm);
+    font-size: var(--icon-s);
     line-height: 1;
     display: inline-block;
     vertical-align: middle;
@@ -313,7 +313,7 @@
 
   /* Heading icons: larger size, always duotone */
   :is(h1, h2, h3, h4) .ph-duotone {
-    font-size: var(--icon-md);
+    font-size: var(--icon-m);
   }
 
   /* ── Stroke → fill swap ─────────────────────── */
