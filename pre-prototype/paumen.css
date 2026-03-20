@@ -122,7 +122,7 @@
   }
 
    footer: {
-      background:var(--edge);
+      background:var(--neutral-edge);
    }
 
   /* ── Transparent wrapper ────────────────────── */
@@ -402,7 +402,7 @@
   [data-skin~="ghost"] {
     background: transparent;
     border-color: transparent;
-    color: var(--text-mute);
+    color: var(--text);
   }
 
   button[data-skin~="ghost"]:hover:not(:disabled),
