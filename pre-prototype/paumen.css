@@ -99,7 +99,7 @@
   dialog,
   [popover] {
     display: grid;
-    gap: var(--m);
+    gap: var(--l);
     padding: var(--s);
     background: var(--neutral-mute);
     border: 1px solid var(--neutral-edge);
@@ -151,11 +151,11 @@
   textarea, 
   select {
     border: 1px solid var(--text);
-    border-radius: var(--xs);
+    border-radius: var(--s);
     background: var(--neutral);
     width:100%;
     color: var(--text);
-    padding: var(--m);
+    padding: var(--s);
     transition: background 0.15s, border-color 0.15s, transform 0.1s;
   }
 
