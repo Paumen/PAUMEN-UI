@@ -25,7 +25,7 @@
 
   :root {
     /* Base inputs — change these to retheme the whole app */
-    --accent-hue:    250;
+    --accent-hue:    240;
     --accent-chroma: 0.14;
     --surface-hue:   250;
     --jump:          0.17;
@@ -262,7 +262,7 @@
 
   small {
     color: var(--text-mute);
-    font-size: var(--m);
+    font-size: var(--s);
   }
 
   output {
