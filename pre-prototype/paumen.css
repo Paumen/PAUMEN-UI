@@ -178,7 +178,7 @@
   button {
     cursor: pointer;
     font-weight: 600;
-    background: var(--neutral-mute);
+    background: transparent;
     display: inline-flex;
     place-items: center;
     place-content: center;
@@ -186,7 +186,7 @@
   }
 
   button:hover:not(:disabled) {
-    background: var(--neutral-edge);
+    background: var(--neutral-mute);
   }
 
   button:active:not(:disabled) {
@@ -208,6 +208,19 @@
     background-repeat: no-repeat;
     background-position: right var(--s) center;
     padding-inline-end: var(--l);
+  }
+
+  /* ── Date — custom calendar icon ────────────── */
+
+  input[type="date"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Crect x='1.5' y='3.5' width='13' height='11' rx='1.5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3Cline x1='1.5' y1='7' x2='14.5' y2='7' stroke='%23888' stroke-width='1.5'/%3E%3Cline x1='5' y1='1.5' x2='5' y2='5' stroke='%23888' stroke-width='1.5' stroke-linecap='round'/%3E%3Cline x1='11' y1='1.5' x2='11' y2='5' stroke='%23888' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left var(--s) center;
+    padding-inline-start: var(--l);
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
   }
 
   /* ── Range — native only ─────────────────────── */
@@ -381,26 +394,26 @@
 
 @layer skin {
 
-  /* ── emphasis ────────────────────────────────── */
+  /* ── filled ──────────────────────────────────── */
   /* Accent background, light text, accent border. Hover darkens. */
 
-  [data-skin~="emphasis"] {
+  [data-skin~="filled"] {
     background: var(--accent);
     color: var(--text-on-accent);
     border-color: var(--accent);
   }
 
-  [data-skin~="emphasis"]:hover:not(:disabled) {
+  [data-skin~="filled"]:hover:not(:disabled) {
     background: var(--accent-dn);
     border-color: var(--accent-dn);
   }
 
   /* ── ghost ───────────────────────────────────── */
-  /* Transparent bg + border. Interactive hover shows mute bg. */
+  /* Transparent bg, no border. Interactive hover shows mute bg. */
 
   [data-skin~="ghost"] {
     background: transparent;
-    border-color: var(--neutral-edge);
+    border-color: transparent;
   }
 
   button[data-skin~="ghost"]:hover:not(:disabled),

@@ -9,7 +9,7 @@ LLMs produce inconsistent UI because the decision space per element is enormous 
 
 ### Core Principle
 
-**Coupling reduces decisions.** If you know the element is a button with the emphasis skin, you already know its color, hover behavior, focus ring, padding, border radius, cursor, and disabled state. Nothing left to decide.
+**Coupling reduces decisions.** If you know the element is a button with the filled skin, you already know its color, hover behavior, focus ring, padding, border radius, cursor, and disabled state. Nothing left to decide.
 
 ### The Five Aspects
 
@@ -132,13 +132,15 @@ Space-separated. Applied to any element. Selected via `[data-skin~="value"]`.
 
 | Skin       | Effect                                                                            |
 | ---------- | --------------------------------------------------------------------------------- |
-| `emphasis` | Accent background, light text, accent border. Hover darkens.                      |
-| `ghost`    | Transparent bg + border. Interactive elements: hover shows mute bg. Others: static. |
+| `filled`   | Accent background, light text, accent border. Hover darkens.                      |
+| `ghost`    | Transparent bg, no border. Interactive elements: hover shows mute bg. Others: static. |
 | `mute`     | text-mute color.                                                                  |
 | `elevated` | box-shadow for visual lift.                                                       |
 | `freeform` | Escape hatch. Removes system constraints from card interior. Cards only.          |
 
-**Skin conflict groups** (mutually exclusive): emphasis | ghost (pick at most one).
+Default (no skin): transparent bg + visible border ("outlined"). Hover fills to neutral-mute.
+
+**Skin conflict groups** (mutually exclusive): filled | ghost (pick at most one).
 
 ### data-colspan — Row Child Width
 
@@ -149,7 +151,7 @@ How many of the 12 columns a child occupies inside a row wrapper. Children witho
   <section>
     <input type="text" placeholder="Search…" data-colspan="10" />
     <button>×</button>
-    <button data-skin="emphasis">⌕</button>
+    <button data-skin="filled">⌕</button>
   </section>
 </article>
 ```
@@ -280,7 +282,7 @@ Row wrappers (`<section>`, `<header>`, `<footer>`, `<nav>`, `<summary>`) wrap 2+
   <h3>Settings</h3>
   <section>
     <button data-colspan="6">Cancel</button>
-    <button data-colspan="6" data-skin="emphasis">Save</button>
+    <button data-colspan="6" data-skin="filled">Save</button>
   </section>
   <input type="text" placeholder="Name" />
 </article>
@@ -313,7 +315,7 @@ Claude never writes state styles. All states are derived from element default + 
 
 ### Interactive States (via pseudo-classes)
 
-- **Hover:** button darkens to --neutral-edge. Emphasis skin darkens to --accent-dn. Ghost shows --neutral-mute on interactive elements only.
+- **Hover:** button (outlined default) fills to --neutral-mute. Filled skin darkens to --accent-dn. Ghost shows --neutral-mute on interactive elements only.
 - **Active:** scale 0.98.
 - **Focus-visible:** --xs solid --accent ring, --xs offset. All interactive elements.
 - **Disabled:** opacity 0.5, cursor not-allowed. All controls.
@@ -367,7 +369,7 @@ button, input, textarea, select { font: inherit; color: inherit; }
 
 Composable via `[data-skin~="value"]`:
 
-- **Visual:** emphasis, ghost, mute.
+- **Visual:** filled, ghost, mute.
 - **Elevation:** elevated.
 - **Escape:** freeform.
 
