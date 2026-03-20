@@ -398,6 +398,7 @@
   [data-skin~="ghost"] {
     background: transparent;
     border-color: transparent;
+    color: var(--neutral-mute);
   }
 
   button[data-skin~="ghost"]:hover:not(:disabled),
@@ -432,7 +433,7 @@
 
 
    output {
-   font-size: var(--l); 
+   font-size: var(--xl); 
    font-Weight: 800; 
    }
 } 
