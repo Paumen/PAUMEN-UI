@@ -280,30 +280,10 @@
   }
 
   /* ── Icons ──────────────────────────────────── */
-  /*
-     Conventions:
-       Size    — var(--icon-sm) everywhere; context supplies the em base.
-                 Heading icons get var(--icon-md) via the :is(h…) rule below.
-       Weight  — Bold (ph-bold) for all small icons (buttons, nav, status).
-                 Thicker strokes read clearly at body-text size.
-                 Duotone (ph-duotone) for heading/feature icons (always)
-                 and for interactive icons on hover.
-                 No Regular or Fill anywhere in this system.
-       Color   — currentColor always, except trash hover → --color-danger.
-       Motion  — Hover-triggered only. 3 keyframes: spin, spin-ccw, bounce.
-                 No continuous animations. prefers-reduced-motion kills all.
 
-     Placement rules:
-       nav a             — always, icon-left, bold + duotone pair
-       button+label      — always when icon adds meaning; bold + duotone pair
-       button+destructive — always; bold + duotone pair
-       h2 / h3           — always, icon-left, duotone only (static)
-       status labels     — always, bold only (static, no hover)
-       form labels / p / body — never
-  */
+   
 
   :is(.ph, .ph-bold, .ph-duotone) {
-    font-size: var(--icon-s);
     line-height: 1;
     display: inline-block;
     vertical-align: middle;
@@ -311,7 +291,6 @@
 
   /* Heading icons: larger size, always duotone */
   :is(h1, h2, h3, h4) .ph-duotone {
-    font-size: var(--icon-m);
   }
 
   /* ── Stroke → fill swap ─────────────────────── */
