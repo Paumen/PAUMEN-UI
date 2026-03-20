@@ -81,7 +81,7 @@
 
   body {
     display: grid;
-    gap: var(--l);
+    gap: var(--xl);
     max-inline-size: 800px;
     margin-inline: auto;
     padding: var(--m);
@@ -99,7 +99,7 @@
   dialog,
   [popover] {
     display: grid;
-    gap: var(--l);
+    gap: var(--m);
     padding: var(--s);
     background: var(--neutral-mute);
     border: 1px solid var(--neutral-edge);
@@ -135,7 +135,7 @@
   h2, 
   h3, 
   h4 {
-    padding-block-end: var(--xs);
+    padding: var(--s);
     border-block-end: 1px solid var(--neutral-edge);
   }
 
