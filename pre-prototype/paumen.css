@@ -158,7 +158,7 @@
     background: var(--neutral);
     width:100%;
     color: var(--text);
-    padding: var(--s);
+    padding: var(--m);
     transition: background 0.15s, border-color 0.15s, transform 0.1s;
   }
 
@@ -438,7 +438,7 @@
 
 
    output {
-   font-size: var(--xl); 
+   font-size: var(--l); 
    font-Weight: 800; 
    }
 } 
