@@ -121,6 +121,10 @@
     gap: var(--s);
   }
 
+   footer: {
+      background:var(--edge);
+   }
+
   /* ── Transparent wrapper ────────────────────── */
 
   form {
@@ -398,7 +402,7 @@
   [data-skin~="ghost"] {
     background: transparent;
     border-color: transparent;
-    color: var(--neutral-mute);
+    color: var(--neutral-edge);
   }
 
   button[data-skin~="ghost"]:hover:not(:disabled),
