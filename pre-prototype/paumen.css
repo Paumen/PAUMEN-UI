@@ -150,11 +150,11 @@
   input, 
   textarea, 
   select {
-    border: 1px solid var(--accent);
+    border: 1px solid var(--text);
     border-radius: var(--xs);
     background: var(--neutral);
     width:100%;
-    color: var(--accent);
+    color: var(--text);
     padding: var(--m);
     transition: background 0.15s, border-color 0.15s, transform 0.1s;
   }
@@ -162,8 +162,11 @@
   /* ── Button ──────────────────────────────────── */
 
   button {
+    border: 1px solid var(--accent);
     cursor: pointer;
-    font-weight: 600;
+    background: transparent; 
+    color: var(--accent);
+    font-weight: 700;
     display: inline-flex;
     place-items: center;
     place-content: center;
