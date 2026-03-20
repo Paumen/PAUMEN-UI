@@ -122,9 +122,6 @@
     place-items: center start;
   }
 
-   footer {
-      background:var(--neutral-edge);
-   }
 
   /* ── Transparent wrapper ────────────────────── */
 
@@ -153,11 +150,11 @@
   input, 
   textarea, 
   select {
-    border: 1px solid var(--neutral-edge);
+    border: 1px solid var(--accent);
     border-radius: var(--xs);
     background: var(--neutral);
     width:100%;
-    color: var(--text);
+    color: var(--accent);
     padding: var(--m);
     transition: background 0.15s, border-color 0.15s, transform 0.1s;
   }
@@ -402,7 +399,7 @@
 
   [data-skin~="ghost"] {
     background: transparent;
-    border-color: transparent;
+    border-color: var(--neutral-mute);
     color: var(--text);
   }
 
