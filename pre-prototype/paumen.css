@@ -432,8 +432,8 @@
 
 
    output {
-   font-size: var(--m); 
-   font-Weight: 900; 
+   font-size: var(--l); 
+   font-Weight: 800; 
    }
 } 
 
