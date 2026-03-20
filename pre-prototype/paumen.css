@@ -99,11 +99,11 @@
   dialog,
   [popover] {
     display: grid;
-    gap: var(--s);
+    gap: var(--m);
     padding: var(--s);
     background: var(--neutral-mute);
     border: 1px solid var(--neutral-edge);
-    border-radius: var(--s);
+    border-radius: var(--m);
   }
 
 
@@ -119,6 +119,7 @@
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: var(--s);
+    place-items: center start;
   }
 
    footer {
