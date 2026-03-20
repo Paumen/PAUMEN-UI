@@ -151,6 +151,7 @@
   textarea, 
   select {
     border-radius: var(--s);
+    border: none;
     background: var(--neutral);
     width:100%;
     color: var(--text);
@@ -161,7 +162,7 @@
   /* ── Button ──────────────────────────────────── */
 
   button {
-    border: 1px solid var(--accent);
+    
     cursor: pointer;
     background: transparent; 
     color: var(--accent);
