@@ -178,7 +178,7 @@
   button {
     cursor: pointer;
     font-weight: 600;
-    background: var(--neutral-mute);
+    background: transparent;
     display: inline-flex;
     place-items: center;
     place-content: center;
@@ -186,7 +186,7 @@
   }
 
   button:hover:not(:disabled) {
-    background: var(--neutral-edge);
+    background: var(--neutral-mute);
   }
 
   button:active:not(:disabled) {
@@ -381,26 +381,26 @@
 
 @layer skin {
 
-  /* ── emphasis ────────────────────────────────── */
+  /* ── filled ──────────────────────────────────── */
   /* Accent background, light text, accent border. Hover darkens. */
 
-  [data-skin~="emphasis"] {
+  [data-skin~="filled"] {
     background: var(--accent);
     color: var(--text-on-accent);
     border-color: var(--accent);
   }
 
-  [data-skin~="emphasis"]:hover:not(:disabled) {
+  [data-skin~="filled"]:hover:not(:disabled) {
     background: var(--accent-dn);
     border-color: var(--accent-dn);
   }
 
   /* ── ghost ───────────────────────────────────── */
-  /* Transparent bg + border. Interactive hover shows mute bg. */
+  /* Transparent bg, no border. Interactive hover shows mute bg. */
 
   [data-skin~="ghost"] {
     background: transparent;
-    border-color: var(--neutral-edge);
+    border-color: transparent;
   }
 
   button[data-skin~="ghost"]:hover:not(:disabled),

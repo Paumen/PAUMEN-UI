@@ -38,7 +38,7 @@
     <section>
       <input type="search" placeholder="Search tasks…" data-colspan="10" />
       <button data-skin="ghost" aria-label="Clear search"><i class="ph-bold ph-x" aria-hidden="true"></i><i class="ph-duotone ph-x" aria-hidden="true" data-icon-fill></i></button>
-      <button data-skin="emphasis" aria-label="Search"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i><i class="ph-duotone ph-magnifying-glass" aria-hidden="true" data-icon-fill></i></button>
+      <button data-skin="filled" aria-label="Search"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i><i class="ph-duotone ph-magnifying-glass" aria-hidden="true" data-icon-fill></i></button>
     </section>
   </article>
 
@@ -65,7 +65,7 @@
       </section>
       <footer>
         <button data-colspan="6" data-skin="ghost" type="reset"><i class="ph-bold ph-eraser" aria-hidden="true"></i><i class="ph-duotone ph-eraser" aria-hidden="true" data-icon-fill></i> Clear</button>
-        <button data-colspan="6" data-skin="emphasis" type="submit"><i class="ph-bold ph-plus" aria-hidden="true"></i><i class="ph-duotone ph-plus" aria-hidden="true" data-icon-fill></i> Add Task</button>
+        <button data-colspan="6" data-skin="filled" type="submit"><i class="ph-bold ph-plus" aria-hidden="true"></i><i class="ph-duotone ph-plus" aria-hidden="true" data-icon-fill></i> Add Task</button>
       </footer>
     </form>
   </article>
@@ -164,7 +164,7 @@
 
     <footer>
       <button data-colspan="6" data-skin="ghost"><i class="ph-bold ph-arrow-counter-clockwise" aria-hidden="true"></i><i class="ph-duotone ph-arrow-counter-clockwise" aria-hidden="true" data-icon-fill></i> Reset to defaults</button>
-      <button data-colspan="6" data-skin="emphasis"><i class="ph-bold ph-floppy-disk" aria-hidden="true"></i><i class="ph-duotone ph-floppy-disk" aria-hidden="true" data-icon-fill></i> Save settings</button>
+      <button data-colspan="6" data-skin="filled"><i class="ph-bold ph-floppy-disk" aria-hidden="true"></i><i class="ph-duotone ph-floppy-disk" aria-hidden="true" data-icon-fill></i> Save settings</button>
     </footer>
   </article>
 
@@ -178,14 +178,14 @@
     <h3>Skin Reference</h3>
     <p data-skin="mute">
       Skins are composable via <code>data-skin</code> (space-separated).
-      Conflict group: <code>emphasis</code> and <code>ghost</code> are mutually exclusive.
+      Conflict group: <code>filled</code> and <code>ghost</code> are mutually exclusive.
     </p>
 
-    <h4>emphasis · ghost · default</h4>
+    <h4>filled · outlined (default) · ghost</h4>
     <section>
-      <button data-colspan="4" data-skin="emphasis">emphasis</button>
+      <button data-colspan="4" data-skin="filled">filled</button>
+      <button data-colspan="4">outlined</button>
       <button data-colspan="4" data-skin="ghost">ghost</button>
-      <button data-colspan="4">default</button>
     </section>
 
     <h4>mute · elevated · disabled</h4>
@@ -239,7 +239,7 @@
 
     <footer>
       <button data-colspan="6" data-skin="ghost" id="color-reset"><i class="ph-bold ph-arrow-counter-clockwise" aria-hidden="true"></i><i class="ph-duotone ph-arrow-counter-clockwise" aria-hidden="true" data-icon-fill></i> Reset to defaults</button>
-      <button data-colspan="6" data-skin="emphasis" id="color-copy"><i class="ph-bold ph-copy" aria-hidden="true"></i><i class="ph-duotone ph-copy" aria-hidden="true" data-icon-fill></i> Copy CSS vars</button>
+      <button data-colspan="6" data-skin="filled" id="color-copy"><i class="ph-bold ph-copy" aria-hidden="true"></i><i class="ph-duotone ph-copy" aria-hidden="true" data-icon-fill></i> Copy CSS vars</button>
     </footer>
   </article>
 
