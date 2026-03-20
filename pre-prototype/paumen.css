@@ -71,8 +71,8 @@
     --l:  clamp(1.2rem, 4vw,    2.4rem);
     --xl: clamp(1.6rem, 6vw,    3.6rem);
 
-    --icon-s: 1rem;
-    --icon-m: 1.2rem;
+    --icon-s: 1.075rem;
+    --icon-m: 1.225rem;
 
 
   }
@@ -106,22 +106,6 @@
     border-radius: var(--s);
   }
 
-  /* dialog extras */
-  dialog {
-    padding: var(--m);
-    max-inline-size: min(90vw, 480px);
-    width: min(90vw, 480px);
-  }
-
-  dialog::backdrop {
-    background: oklch(0% 0 0 / 50%);
-  }
-
-  /* Popover positioning */
-  [popover] {
-    position: fixed;
-    inset: auto;
-  }
 
   /* ── Row Wrappers (depth 3) ─────────────────── */
   /* section, header, footer, nav, summary */
