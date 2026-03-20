@@ -164,7 +164,7 @@
   /* ── Button ──────────────────────────────────── */
 
   button {
-    
+    border: 1px var(--accent);
     cursor: pointer;
     background: transparent; 
     color: var(--accent);
@@ -382,7 +382,7 @@
 
   [data-skin~="ghost"] {
     background: transparent;
-    border-color: var(--text-mute);
+    border-color: 1px var(--text-mute);
     color: var(--text);
   }
 
