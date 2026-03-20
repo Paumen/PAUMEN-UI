@@ -275,7 +275,7 @@
 
   small {
     color: var(--text-mute);
-    font-size: var(--s);
+    font-size: var(--m);
   }
 
   output {
