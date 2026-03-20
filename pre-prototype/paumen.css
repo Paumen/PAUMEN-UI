@@ -402,7 +402,7 @@
   [data-skin~="ghost"] {
     background: transparent;
     border-color: transparent;
-    color: var(--neutral-edge);
+    color: var(--neutral);
   }
 
   button[data-skin~="ghost"]:hover:not(:disabled),
