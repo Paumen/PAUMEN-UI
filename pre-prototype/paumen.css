@@ -164,7 +164,6 @@
   button {
     cursor: pointer;
     font-weight: 600;
-    background: var(--neutral);
     display: inline-flex;
     place-items: center;
     place-content: center;
@@ -378,7 +377,7 @@
 
   [data-skin~="ghost"] {
     background: transparent;
-    border-color: var(--neutral-mute);
+    border-color: var(--text-mute);
     color: var(--text);
   }
 
@@ -415,7 +414,7 @@
 
    output {
    font-size: var(--l); 
-   font-Weight: 800; 
+   font-Weight: 700; 
    }
 } 
 
