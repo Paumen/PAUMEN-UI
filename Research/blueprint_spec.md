@@ -23,6 +23,8 @@ LLMs produce inconsistent UI because the decision space per element is enormous 
 
 - Works across screen sizes without per-page custom styling.
 - No div or span.
+- Inline styles are forbidden.
+- Any new css class requires explicit PO approval.
 
 ### Target Apps
 
@@ -30,7 +32,7 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ---
 
-## 1. HTML Elements — ~19 Tags
+## 1. HTML Elements — ~20 Tags
 
 ### Cards (body children, depth 2 — display: grid, gap --m, single-column stack)
 
@@ -43,14 +45,8 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ### Row Wrappers (inside cards, depth 3 — display: grid, 12-column, gap --s, no visual chrome)
 
-- `<section>` — generic multi-element row. Only used when 2+ elements share a horizontal row. Single elements are direct card children.
 - `<summary>` — details header row (inside `<details>` only). Clickable toggle target. Title row (typically h1–h4 + optional icon/action).
-
-### Deferred Row Wrappers (not in current system — future candidates)
-
-- `<header>` — potential button group at top of card.
-- `<footer>` — potential button group at bottom of card.
-- `<nav>` — stays for popover menus only (`<nav popover>`). Deferred as general row wrapper.
+- `<section>` — generic multi-element row. Only used when 2+ elements share a horizontal row. Single elements are direct card children.
 
 ### Interactive Elements
 
@@ -78,26 +74,33 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ### Implicit Inline Formatting (allowed within text elements)
 
-`<strong>`, `<code>`, `<s>`, `<ul>`/`<ol>`/`<li>`
-
-### Cut Elements
-
-`<fieldset>`, `<img>`, `<table>`, `<hr>`, `<article>`.
+`<strong>`, `<code>`, `<ol>`/`<li>, `<s>`
 
 ### Popover Hosts (semantic element + popover attribute)
 
 - Tooltip → `<aside popover>` — supplementary info
 - Toast/notification → `<output popover>` — announced result (native aria-live)
-- Dropdown menu → `<nav popover>` — container with buttons/links
+- Dropdown menu → `<nav popover>` — container with buttons/links.
+
+
+### Deferred (not in current system, or only for different use case — future candidates)
+
+- `<header>` — potential button group at top of card.
+- `<footer>` — potential button group at bottom of card.
+- `<nav>` — stays for popover menus only (`<nav popover>`). Deferred as general row wrapper.
+
+### Cut Elements
+
+`<fieldset>`, `<img>`, `<table>`, `<hr>`, `<article>`. 
 
 ### Category → Display Type
 
 | Category    | Display      | Role                            | Elements                                       |
 | ----------- | ------------ | ------------------------------- | ---------------------------------------------- |
-| Card        | grid         | Holds and arranges children     | details, dialog, [popover]                     |
-| Wrapper     | grid (12-col)| Groups elements into rows       | section, summary                               |
+| Card        | grid         | Holds and arranges children     | details, dialog                     |
+| Wrapper     | grid (12-col)| Groups elements into rows       | section, summary                           |
 | Transparent | contents     | Submission scope only           | form                                           |
-| Component   | inline-block | Self-contained interactive unit | button, text inputs, textarea, select, range   |
+| Component   | inline-block | Self-contained interactive unit | button, text inputs, textarea, select, range,  [popover]      |
 | Content     | inline       | Leaf-level text/graphic         | h1–h4, p, small, label, a, svg, checkbox, radio, date/time, output, aside |
 
 ---
@@ -135,19 +138,21 @@ Max structural depth: 4 (html → body → details → content). Depth 5 for row
 
 ### data-skin — Composable Visual Modifications
 
-Space-separated. Applied to any element. Selected via `[data-skin~="value"]`.
+Applied to any element. Selected via `[data-skin~="value"]`.
 
 | Skin       | Effect                                                                            |
 | ---------- | --------------------------------------------------------------------------------- |
-| `filled`   | Accent background, light text, accent border. Hover darkens.                      |
+| `filled`   | Accent background, light text, accent border. Hover darkens.
+|
+| `Outline`     | border `accent`.                                                                  |
 | `ghost`    | Transparent bg, no border. Interactive elements: hover shows mute bg. Others: static. |
 | `mute`     | text-mute color.                                                                  |
 | `elevated` | box-shadow for visual lift.                                                       |
 | `freeform` | Escape hatch. Removes system constraints from card interior. Cards only.          |
 
-Default (no skin): transparent bg + visible border ("outlined"). Hover fills to neutral-mute.
+Hover fills to neutral-mute.
 
-**Skin conflict groups** (mutually exclusive): filled | ghost (pick at most one).
+**Skin conflict groups** (mutually exclusive): filled | ghost | outline (pick at most one).
 
 ### data-colspan — Row Child Width
 
@@ -323,7 +328,7 @@ Claude never writes state styles. All states are derived from element default + 
 ### Interactive States (via pseudo-classes)
 
 - **Hover:** button (outlined default) fills to --neutral-mute. Filled skin darkens to --accent-dn. Ghost shows --neutral-mute on interactive elements only.
-- **Active:** scale 0.98.
+- **Active:** scale 0.96.
 - **Focus-visible:** --xs solid --accent ring, --xs offset. All interactive elements.
 - **Disabled:** opacity 0.5, cursor not-allowed. All controls.
 - **Checked/selected:** accent-color on checkbox/radio.
@@ -359,7 +364,7 @@ button, input, textarea, select { font: inherit; color: inherit; }
 ### Default Layer
 
 - **Body:** grid, gap --l, max-inline-size 800px, margin-inline auto, padding --m, font-family Nunito (system-ui fallback), --m base size, --text color, --neutral bg.
-- **Cards** (`details, dialog, [popover]`): --neutral-mute bg, border 1px solid --neutral-edge, radius --m, padding --m, display grid, gap --m.
+- **Cards** (`details, dialog ): --neutral-mute bg, border 1px solid --neutral-edge, radius --m, padding --m, display grid, gap --m.
 - **Row wrappers** (`section, summary`): display grid, grid-template-columns repeat(12, 1fr), gap --s, place-items center start. Transparent — no visual styling.
 - **Form:** display contents.
 - **Dialog:** larger padding --m, max-inline-size, backdrop.
@@ -376,7 +381,7 @@ button, input, textarea, select { font: inherit; color: inherit; }
 
 Composable via `[data-skin~="value"]`:
 
-- **Visual:** filled, ghost, mute.
+- **Visual:** filled, outline, ghost, mute.
 - **Elevation:** elevated.
 - **Escape:** freeform.
 
@@ -403,19 +408,12 @@ Selectors are global (not scoped to row wrapper children) — flat specificity. 
 
 ## 8. Icon System (Optional Layer)
 
-The icon system is an optional visual enhancement layer. It uses Phosphor Icons loaded via CDN and CSS class selectors (`.ph-*`). This is the **one exception** to the "zero CSS classes" rule — icon classes are managed by the external library, not authored in PAUMEN CSS.
+The icon system is an optional visual enhancement layer. It uses Phosphor Icons loaded via CDN and CSS class selectors (`.ph-*`). This is the **one exception** to the "zero CSS classes" rule currently — icon classes are managed by the external library, not authored in PAUMEN CSS.
 
 ### Setup
 
 ```html
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-```
-
-### Icon Tokens
-
-```css
---icon-s: 1.075rem;
---icon-m: 1.225rem;
 ```
 
 ### Stroke → Fill Swap
@@ -463,19 +461,10 @@ After removing `<article>` and making `<details>` the default card, and simplify
 - **S2:** form = always `display: contents`, never a visual container.
 - **S3:** `<details>` = default card. `<details open>` with chevron hidden = non-collapsible card.
 - **S4:** dialog interior = same rules as any card. One interior pattern for all card types.
-- **S5:** fieldset cut from element set.
 - **S6:** `<article>` cut. Replaced by `<details>` as default card.
 - **S7:** `<header>`, `<footer>`, `<nav>` deferred as row wrappers. Nav stays for popover menus.
 - **S8:** Inline formatting (`<strong>`, `<code>`, `<s>`, `<ul>`/`<ol>`/`<li>`) implicit, not spec-listed.
-- **S9:** Keep date/time inputs. Native behavior worth the styling inconsistency.
-- **S10:** Cut `half` skin. Redundant with colspan grid system.
-- **S11:** Merge ghost + transparent → `ghost`. Hover behavior determined by element type.
-- **S12:** Add `elevated` skin (box-shadow).
-- **S13:** Add `freeform` skin (escape hatch).
-- **S14:** Document skin conflict groups (§3).
 - **S15:** Drop `data-colcount`. Always 12.
-- **S16:** Body: `max-inline-size: 800px; margin-inline: auto`.
-- **S17:** Dropdown menu: `<nav popover>`.
 - **S18:** summary = row wrapper (12-col grid). Built-in header for details cards.
 - **S19:** Escape hatch via `data-skin="freeform"` on cards.
 - **S20:** Spec values reconciled with shipped CSS (spacing scale, color tokens, token-to-property mappings).
@@ -488,21 +477,18 @@ Element count: ~19 unique tag names. ~23 total entries counting input type varia
 
 ### Tier 1 — Locked (structural, do not change without explicit decision)
 
-- Card type: `<details>` default, `<dialog>` for modals. No `<article>`.
-- Row wrappers: `<section>` + `<summary>` only.
+- Card type: `<details>` default, `<dialog>` for modals.
+- Row wrappers:  `<summary>` + `<section>` 
 - Grid architecture: F4 (1-col stack + row wrappers), 12-column.
 - Four CSS layers: reset → default → skin → grid.
-- Zero custom CSS rule — Claude never writes CSS.
-- Zero CSS classes — element selectors + attribute selectors only (icon classes excepted).
+- Claude never writes CSS.
+- No CSS classes — element selectors + attribute selectors only (icon classes excepted).
 - No div or span.
-- Skins via `data-skin`, composable, 5 values: filled, ghost, mute, elevated, freeform.
+- Skins via `data-skin`, composable, 5 values: filled, ghost, mute, outlined (default) elevated, freeform.
 - Color system: oklch, light-dark(), 5 base inputs.
-- States fully automated via CSS derivation.
-- form = display:contents, never visual.
 - Max depth 4 (body → card → row wrapper → child). Depth 5 for row children only.
 - Body: max-inline-size 800px, margin-inline auto.
 - Popover hosts: aside (tooltip), output (toast), nav (dropdown).
-- `<details open>` + hidden chevron = non-collapsible card.
 
 ### Tier 2 — Tunable (visual tokens, adjustable through testing)
 
