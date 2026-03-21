@@ -1,7 +1,7 @@
 # LLM Web App Blueprint — System Specification
 
-> **Role:** Canonical specification — the authoritative source of truth for what the system *is*.
-> **Reading order:** Start here. See `blueprint_rationale.md` for *why*, `blueprint_lab_notebook.md` for *how we got here*, `blueprint_theoretical_research.md` for foundational theory.
+> **Role:** Canonical specification — the authoritative source of truth for what the system _is_.
+> **Reading order:** Start here. See `blueprint_rationale.md` for _why_, `blueprint_lab_notebook.md` for _how we got here_, `blueprint_theoretical_research.md` for foundational theory.
 
 ## Overview
 
@@ -64,7 +64,7 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ### Content / Text
 
-`<p>` — paragraph text only. NOT used for layout wrapping.
+`<p>` — paragraph text only. NOT used for layout wrapping. Inherits body defaults (color, font-size) — no explicit styling needed.
 `<small>` — secondary/fine text.
 `<label>` — ties text to a control.
 `<a>` — link / navigation.
@@ -74,14 +74,13 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ### Implicit Inline Formatting (allowed within text elements)
 
-`<strong>`, `<code>`, `<ol>`/`<li>, `<s>`
+`<strong>`, `<code>`, `<ul>`/`<ol>`/`<li>`, `<s>`
 
 ### Popover Hosts (semantic element + popover attribute)
 
 - Tooltip → `<aside popover>` — supplementary info
 - Toast/notification → `<output popover>` — announced result (native aria-live)
 - Dropdown menu → `<nav popover>` — container with buttons/links.
-
 
 ### Deferred (not in current system, or only for different use case — future candidates)
 
@@ -91,17 +90,17 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ### Cut Elements
 
-`<fieldset>`, `<img>`, `<table>`, `<hr>`, `<article>`. 
+`<fieldset>`, `<img>`, `<table>`, `<hr>`, `<article>`.
 
 ### Category → Display Type
 
-| Category    | Display      | Role                            | Elements                                       |
-| ----------- | ------------ | ------------------------------- | ---------------------------------------------- |
-| Card        | grid         | Holds and arranges children     | details, dialog                     |
-| Wrapper     | grid (12-col)| Groups elements into rows       | section, summary                           |
-| Transparent | contents     | Submission scope only           | form                                           |
-| Component   | inline-block | Self-contained interactive unit | button, text inputs, textarea, select, range,  [popover]      |
-| Content     | inline       | Leaf-level text/graphic         | h1–h4, p, small, label, a, svg, checkbox, radio, date/time, output, aside |
+| Category    | Display       | Role                            | Elements                                                                  |
+| ----------- | ------------- | ------------------------------- | ------------------------------------------------------------------------- |
+| Card        | grid          | Holds and arranges children     | details, dialog                                                           |
+| Wrapper     | grid (12-col) | Groups elements into rows       | section, summary                                                          |
+| Transparent | contents      | Submission scope only           | form                                                                      |
+| Component   | inline-block  | Self-contained interactive unit | button, text inputs, textarea, select, range, [popover]                   |
+| Content     | inline        | Leaf-level text/graphic         | h1–h4, p, small, label, a, svg, checkbox, radio, date/time, output, aside |
 
 ---
 
@@ -140,19 +139,14 @@ Max structural depth: 4 (html → body → details → content). Depth 5 for row
 
 Applied to any element. Selected via `[data-skin~="value"]`.
 
-| Skin       | Effect                                                                            |
-| ---------- | --------------------------------------------------------------------------------- |
-| `filled`   | Accent background, light text, accent border. Hover darkens.
-|
-| `Outline`     | border `accent`.                                                                  |
-| `ghost`    | Transparent bg, no border. Interactive elements: hover shows mute bg. Others: static. |
-| `mute`     | text-mute color.                                                                  |
-| `elevated` | box-shadow for visual lift.                                                       |
-| `freeform` | Escape hatch. Removes system constraints from card interior. Cards only.          |
+- **default** — the unskinned appearance. Buttons render with accent border, accent text, transparent background. Not a `data-skin` value — it's what you get when no skin is applied.
+- **`filled`** — accent background, light text, accent border. Hover darkens to `--accent-dn`.
+- **`ghost`** — transparent background, no border. Interactive elements: hover shows `--neutral-mute` background. Non-interactive: static.
+- **`mute`** — `--text-mute` color.
+- **`elevated`** — `box-shadow` for visual lift.
+- **`freeform`** — escape hatch. Removes system constraints from card interior via `all: revert`. Cards only. The author takes full responsibility for interior styling.
 
-Hover fills to neutral-mute.
-
-**Skin conflict groups** (mutually exclusive): filled | ghost | outline (pick at most one).
+**Skin conflict groups** (mutually exclusive): filled | ghost (pick at most one).
 
 ### data-colspan — Row Child Width
 
@@ -188,6 +182,16 @@ Supported colspan values: 1, 2, 3, 4, 6, 8, 9, 10, 11, 12. Values 5, 7 omitted �
 
 `error` / `warning` / `info` / `success` / `loading` / `skeleton` / `empty`
 
+Signal hues (danger, warning, success, info) are derived from accent — hue values only, saturation and lightness reuse the accent formula. Visual effects per state:
+
+- **Error:** border and text shift to danger hue
+- **Warning:** border shifts to warning hue
+- **Success:** border/icon shifts to success hue
+- **Info:** border shifts to info hue
+- **Loading:** skeleton pulse animation
+- **Skeleton:** placeholder shimmer (content not yet loaded)
+- **Empty:** placeholder content shown
+
 ---
 
 ## 4. Color System
@@ -207,8 +211,12 @@ color-scheme: light dark;
 ```css
 /* Accent */
 --accent: oklch(58% var(--accent-chroma) var(--accent-hue));
---accent-up: oklch(calc(58% + var(--jump)) var(--accent-chroma) var(--accent-hue));
---accent-dn: oklch(calc(58% - var(--jump)) var(--accent-chroma) var(--accent-hue));
+--accent-up: oklch(
+  calc(58% + var(--jump)) var(--accent-chroma) var(--accent-hue)
+);
+--accent-dn: oklch(
+  calc(58% - var(--jump)) var(--accent-chroma) var(--accent-hue)
+);
 
 /* Surface levels — light-dark() for automatic dark mode */
 --neutral: light-dark(
@@ -240,26 +248,24 @@ color-scheme: light dark;
 
 ### Visual Depth Model
 
-| Layer       | Background      | Elements                       |
-| ----------- | --------------- | ------------------------------ |
-| Body        | `--neutral`     | body                           |
-| Card        | `--neutral-mute`| details, dialog, [popover]     |
-| Row wrapper | transparent     | section, summary               |
-| Control     | `--neutral`     | button, input, textarea, select|
+| Layer       | Background       | Elements                        |
+| ----------- | ---------------- | ------------------------------- |
+| Body        | `--neutral`      | body                            |
+| Card        | `--neutral-mute` | details, dialog, [popover]*     |
+| Row wrapper | transparent      | section, summary                |
+| Control     | `--neutral`      | button, input, textarea, select |
 
-### Signal Hues (not yet implemented)
-
-Danger, warning, success, info. Hue values only — saturation and lightness derived from accent. Deferred.
+\* **Popover dual nature:** Popovers are visually cards (same background, border, radius) but positionally overlays (out-of-flow). They appear in the Visual Depth Model at the Card layer for styling, and in the Layout Model (§5) at Layer 2 for positioning.
 
 ### Scale
 
 ```css
---0:  0;
---xs: clamp(0.2rem, 0.4vw,  0.4rem);
---s:  clamp(0.4rem, 1vw,    0.8rem);
---m:  clamp(0.8rem, 2vw,    1.6rem);
---l:  clamp(1.2rem, 4vw,    2.4rem);
---xl: clamp(1.6rem, 6vw,    3.6rem);
+--0: 0;
+--xs: clamp(0.2rem, 0.4vw, 0.4rem);
+--s: clamp(0.4rem, 1vw, 0.8rem);
+--m: clamp(0.8rem, 2vw, 1.6rem);
+--l: clamp(1.2rem, 4vw, 2.4rem);
+--xl: clamp(1.6rem, 6vw, 3.6rem);
 ```
 
 Used for: spacing (gap, padding), font-size, border-radius, outline width/offset, etc.
@@ -275,7 +281,8 @@ Used for: spacing (gap, padding), font-size, border-radius, outline width/offset
 Cards (details, dialog) are always single-column grids. Every direct child occupies a full-width row. No attribute needed.
 
 ```css
-details, dialog {
+details,
+dialog {
   display: grid;
   gap: var(--m);
 }
@@ -315,6 +322,10 @@ Body is a grid with `gap: var(--l)`, `max-inline-size: 800px`, `margin-inline: a
 - `<nav popover>` — dropdown menu
 - `<dialog>` — modal (backdrop + focus trap + Escape)
 
+### Sizing Model
+
+All elements are content-intrinsic. Width is determined by placement (body grid → card, card grid → full width, row wrapper → colspan). Height is determined by content + padding. No element has an explicit width, height, or min-height. Cards, rows, and controls grow to fit their content. This is not a simplification — it is the sizing model.
+
 ### Escape Hatch
 
 `data-skin="freeform"` on any card. Externally fits the body stack; internally unconstrained. For game canvases, data visualizations, complex widgets, third-party embeds.
@@ -327,21 +338,15 @@ Claude never writes state styles. All states are derived from element default + 
 
 ### Interactive States (via pseudo-classes)
 
-- **Hover:** button (outlined default) fills to --neutral-mute. Filled skin darkens to --accent-dn. Ghost shows --neutral-mute on interactive elements only.
+- **Hover:** button (outlined default) fills to --neutral-mute. Filled skin darkens to --accent-dn. Ghost shows --neutral-mute on interactive elements only. Links (`<a>`) show text-decoration underline on hover.
 - **Active:** scale 0.96.
 - **Focus-visible:** --xs solid --accent ring, --xs offset. All interactive elements.
 - **Disabled:** opacity 0.5, cursor not-allowed. All controls.
 - **Checked/selected:** accent-color on checkbox/radio.
 
-### Signal States (not yet implemented — via data-state)
+### Signal States
 
-- **Error:** border and text shift to danger color
-- **Warning:** border shifts to warning color
-- **Success:** border/icon shifts to success color
-- **Loading:** skeleton pulse animation
-- **Empty:** placeholder content shown
-
-Depends on signal hues being added to the token system.
+See §3 `data-state` for the canonical definition of all signal states and their visual effects.
 
 ---
 
@@ -356,9 +361,26 @@ Depends on signal hues being added to the token system.
 ### Reset (3 rules)
 
 ```css
-*, *::before, *::after { box-sizing: border-box; }
-body, h1, h2, h3, h4, p { margin: 0; }
-button, input, textarea, select { font: inherit; color: inherit; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body,
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
 ```
 
 ### Default Layer
@@ -367,12 +389,13 @@ button, input, textarea, select { font: inherit; color: inherit; }
 - **Cards** (`details, dialog ): --neutral-mute bg, border 1px solid --neutral-edge, radius --m, padding --m, display grid, gap --m.
 - **Row wrappers** (`section, summary`): display grid, grid-template-columns repeat(12, 1fr), gap --s, place-items center start. Transparent — no visual styling.
 - **Form:** display contents.
-- **Dialog:** larger padding --m, max-inline-size, backdrop.
-- **Headings h1–h4:** border-block-end 1px solid --neutral-edge, padding --m. Sizes: h1/h2 --xl, h3 --l, h4 --m.
+- **Dialog:** padding --l, max-inline-size min(600px, 90vw), `::backdrop` with `oklch(20% 0 0 / 0.5)`. Focus trap is browser-native via `showModal()`.
+- **Headings h1–h4:** Sizes: h1/h2 --xl, h3 --l, h4 --m.
 - **Shared control base** (`button, input, textarea, select`): border 1px solid --neutral-edge, radius --s, --neutral bg, --text color, padding --s, width 100%, transition.
 - **Focus ring:** --xs solid --accent, --xs offset. Unified across all interactive elements.
 - **Disabled:** opacity 0.5, cursor not-allowed. Unified across all controls.
-- **Button:** border 2px solid --accent, cursor pointer, transparent bg, --accent color, font-weight 700, inline-flex, place-items/content center, gap --xs. Hover fills to --neutral-mute. Active: scale 0.98.
+- **Button:** border 2px solid --accent, cursor pointer, transparent bg, --accent color, font-weight 700, inline-flex, place-items/content center, gap --xs. Hover fills to --neutral-mute. Active: scale 0.96.
+- **Output:** font-weight 700.
 - **Select:** custom dropdown arrow (SVG data URI), appearance:none.
 - **Range:** stripped to native (transparent bg, no border/padding, accent-color).
 - **Checkbox/radio:** sized to --m, accent-color, no border/padding/bg, cursor pointer.
@@ -381,7 +404,7 @@ button, input, textarea, select { font: inherit; color: inherit; }
 
 Composable via `[data-skin~="value"]`:
 
-- **Visual:** filled, outline, ghost, mute.
+- **Visual:** filled, ghost, mute.
 - **Elevation:** elevated.
 - **Escape:** freeform.
 
@@ -389,16 +412,36 @@ Composable via `[data-skin~="value"]`:
 
 ```css
 @layer grid {
-  [data-colspan="1"]  { grid-column: span 1; }
-  [data-colspan="2"]  { grid-column: span 2; }
-  [data-colspan="3"]  { grid-column: span 3; }
-  [data-colspan="4"]  { grid-column: span 4; }
-  [data-colspan="6"]  { grid-column: span 6; }
-  [data-colspan="8"]  { grid-column: span 8; }
-  [data-colspan="9"]  { grid-column: span 9; }
-  [data-colspan="10"] { grid-column: span 10; }
-  [data-colspan="11"] { grid-column: span 11; }
-  [data-colspan="12"] { grid-column: span 12; }
+  [data-colspan="1"] {
+    grid-column: span 1;
+  }
+  [data-colspan="2"] {
+    grid-column: span 2;
+  }
+  [data-colspan="3"] {
+    grid-column: span 3;
+  }
+  [data-colspan="4"] {
+    grid-column: span 4;
+  }
+  [data-colspan="6"] {
+    grid-column: span 6;
+  }
+  [data-colspan="8"] {
+    grid-column: span 8;
+  }
+  [data-colspan="9"] {
+    grid-column: span 9;
+  }
+  [data-colspan="10"] {
+    grid-column: span 10;
+  }
+  [data-colspan="11"] {
+    grid-column: span 11;
+  }
+  [data-colspan="12"] {
+    grid-column: span 12;
+  }
 }
 ```
 
@@ -429,13 +472,19 @@ Icons have two variants inline: a stroke (bold) version shown by default, and a 
 ```
 
 ```css
-[data-icon-fill] { display: none; }
+[data-icon-fill] {
+  display: none;
+}
 
-:is(a, button):hover        [data-icon-fill],
-:is(a, button):focus-visible [data-icon-fill] { display: inline-block; }
+:is(a, button):hover [data-icon-fill],
+:is(a, button):focus-visible [data-icon-fill] {
+  display: inline-block;
+}
 
-:is(a, button):hover        i:has(~ [data-icon-fill]),
-:is(a, button):focus-visible i:has(~ [data-icon-fill]) { display: none; }
+:is(a, button):hover i:has(~ [data-icon-fill]),
+:is(a, button):focus-visible i:has(~ [data-icon-fill]) {
+  display: none;
+}
 ```
 
 ### Icon Animations (scoped to specific icons, never global)
@@ -478,13 +527,13 @@ Element count: ~19 unique tag names. ~23 total entries counting input type varia
 ### Tier 1 — Locked (structural, do not change without explicit decision)
 
 - Card type: `<details>` default, `<dialog>` for modals.
-- Row wrappers:  `<summary>` + `<section>` 
+- Row wrappers: `<summary>` + `<section>`
 - Grid architecture: F4 (1-col stack + row wrappers), 12-column.
 - Four CSS layers: reset → default → skin → grid.
 - Claude never writes CSS.
 - No CSS classes — element selectors + attribute selectors only (icon classes excepted).
 - No div or span.
-- Skins via `data-skin`, composable, 5 values: filled, ghost, mute, outlined (default) elevated, freeform.
+- Skins via `data-skin`, composable, 5 values: filled, ghost, mute, elevated, freeform. Default (unskinned) appearance is not a `data-skin` value.
 - Color system: oklch, light-dark(), 5 base inputs.
 - Max depth 4 (body → card → row wrapper → child). Depth 5 for row children only.
 - Body: max-inline-size 800px, margin-inline auto.

@@ -1,6 +1,6 @@
 # LLM Web App Blueprint — Design Rationale
 
-> **Role:** Decision rationale and design reasoning — explains *why* the spec is the way it is. Not authoritative for current system state; defer to `blueprint_spec.md` on conflicts.
+> **Role:** Decision rationale and design reasoning — explains _why_ the spec is the way it is. Not authoritative for current system state; defer to `blueprint_spec.md` on conflicts.
 > **Reading order:** Read after the spec. See `blueprint_lab_notebook.md` for session-level chronology, `blueprint_theoretical_research.md` for foundational theory.
 
 ## 1. Problem Statement
@@ -236,51 +236,51 @@ Decision: 12-column grid on all row wrappers, handled entirely by CSS. `data-col
 
 ### Locked
 
-| #   | Decision                                                                                                | Status         |
-| --- | ------------------------------------------------------------------------------------------------------- | -------------- |
-| 3   | Color: hue+chroma inputs, light-dark(), oklch derivation                                                | ✅ Locked      |
-| 6   | Zero custom CSS — Claude never writes CSS                                                               | ✅ Locked      |
-| 7   | Escape hatch container for freeform content                                                             | ✅ Locked      |
-| 8   | States fully automated via derivation                                                                   | ✅ Locked      |
-| 15  | CLAUDE.md 200 lines, catalog in skill (out of scope for stage 1)                                        | ✅ Locked      |
-| 16  | Validator script (out of scope for stage 1)                                                             | ✅ Locked      |
-| 18  | Overlays via popover attribute on semantic elements                                                     | ✅ Locked      |
-| 20  | CSS oklch color, light-dark() for dark mode                                                             | ✅ Locked      |
-| 23  | Reference app built toward end of stage 1                                                               | ✅ Locked      |
-| 24  | Native HTML only — no custom elements, no Shadow DOM                                                    | ✅ Locked      |
-| 25  | Flat global stylesheet with @layer (reset, default, skin, grid)                                         | ✅ Updated S4  |
-| 26  | Composable skins via data-skin                                                                          | ✅ Locked      |
-| 27  | Zero CSS classes — element selectors + attribute selectors only                                         | ✅ Locked      |
-| 28  | No div — article is card, section is row wrapper                                                        | ✅ Updated S5  |
-| 29  | Popover hosts: aside (tooltip), output (toast), nav (dropdown)                                          | ✅ Updated S5  |
-| 30  | ~21 base tags, h1–h4 only. Cut: fieldset, img, table, lists, hr.                                       | ✅ Updated S5  |
-| 31  | Scale: --0, --xs, --s, --m, --l. --m is base font-size + spacing                                       | ✅ Locked      |
-| 32  | Visual depth: cards --neutral-mute, row wrappers transparent, controls --neutral                        | ✅ Updated S5  |
-| 33  | Open Props — not used. Own token system.                                                                | ✅ Locked      |
-| 34  | text-on-accent: fixed near-white                                                                        | ✅ Locked      |
-| 35  | --m double duty (font-size + spacing): keep as-is                                                       | ✅ Locked      |
-| 36  | Scale stops at --l, no --xl needed                                                                      | ✅ Locked      |
-| 37  | Emphasis skin on inputs: keep accent bg                                                                 | ✅ Locked S3   |
-| 39  | Skins follow defaults for undefined states; skins can explicitly override                               | ✅ Reframed S3 |
-| 43  | Max depth 3 for structure, depth 4 allowed for row wrapper children                                     | ✅ Updated S5  |
-| 44  | No article inside article (no nested cards)                                                             | ✅ Updated S5  |
-| 45  | p is for text only, not layout wrapping                                                                 | ✅ Locked      |
-| 49  | Skill file framing: engineered constraint, not prototype simplicity                                     | ✅ Locked      |
-| 51  | Grid architecture: F4 (1-col section + optional article row wrappers)                                   | ✅ Locked S3   |
-| 52  | Row wrapper tags: section, header, footer, nav, summary                                                 | ✅ Updated S5  |
-| 53  | Row mechanism: 12-col grid via CSS on row wrappers + `data-colspan` on children. `data-colcount` removed. | ✅ Updated S5 |
-| 55  | 5 skins: emphasis, ghost, mute, elevated, freeform. Earlier skins (half, transparent, square, full, round, flat) removed during S1–S5 iteration. | ✅ Updated S5 |
-| 57  | Add strategic goals (portability, context windowing, cloning) to blueprint                              | ✅ Locked S3   |
-| 58  | form = display:contents, always transparent, never a visual container                                   | ✅ Locked S5   |
-| 59  | details = card-level collapsible container, summary = row wrapper                                       | ✅ Locked S5   |
-| 60  | dialog interior follows same rules as any card                                                          | ✅ Locked S5   |
-| 61  | Body: max-inline-size 800px, margin-inline auto                                                         | ✅ Locked S5   |
-| 62  | Ghost skin merges old ghost + transparent. Hover on interactive only.                                   | ✅ Locked S5   |
-| 63  | Skin conflict groups: emphasis\|ghost (mutually exclusive)                                              | ✅ Locked S5   |
-| 64  | Escape hatch via data-skin="freeform" on cards                                                          | ✅ Locked S5   |
-| 65  | Dropdown menu popover: nav[popover] (was section[popover])                                              | ✅ Locked S5   |
-| 66  | Cut elements: fieldset, img, table family, ul/ol/li, hr                                                 | ✅ Locked S5   |
-| 67  | Inline formatting (strong, em, code) implicit, not spec-listed                                          | ✅ Locked S5   |
+| #   | Decision                                                                                                                                         | Status         |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- |
+| 3   | Color: hue+chroma inputs, light-dark(), oklch derivation                                                                                         | ✅ Locked      |
+| 6   | Zero custom CSS — Claude never writes CSS                                                                                                        | ✅ Locked      |
+| 7   | Escape hatch container for freeform content                                                                                                      | ✅ Locked      |
+| 8   | States fully automated via derivation                                                                                                            | ✅ Locked      |
+| 15  | CLAUDE.md 200 lines, catalog in skill (out of scope for stage 1)                                                                                 | ✅ Locked      |
+| 16  | Validator script (out of scope for stage 1)                                                                                                      | ✅ Locked      |
+| 18  | Overlays via popover attribute on semantic elements                                                                                              | ✅ Locked      |
+| 20  | CSS oklch color, light-dark() for dark mode                                                                                                      | ✅ Locked      |
+| 23  | Reference app built toward end of stage 1                                                                                                        | ✅ Locked      |
+| 24  | Native HTML only — no custom elements, no Shadow DOM                                                                                             | ✅ Locked      |
+| 25  | Flat global stylesheet with @layer (reset, default, skin, grid)                                                                                  | ✅ Updated S4  |
+| 26  | Composable skins via data-skin                                                                                                                   | ✅ Locked      |
+| 27  | Zero CSS classes — element selectors + attribute selectors only                                                                                  | ✅ Locked      |
+| 28  | No div — article is card, section is row wrapper                                                                                                 | ✅ Updated S5  |
+| 29  | Popover hosts: aside (tooltip), output (toast), nav (dropdown)                                                                                   | ✅ Updated S5  |
+| 30  | ~21 base tags, h1–h4 only. Cut: fieldset, img, table, lists, hr.                                                                                 | ✅ Updated S5  |
+| 31  | Scale: --0, --xs, --s, --m, --l. --m is base font-size + spacing                                                                                 | ✅ Locked      |
+| 32  | Visual depth: cards --neutral-mute, row wrappers transparent, controls --neutral                                                                 | ✅ Updated S5  |
+| 33  | Open Props — not used. Own token system.                                                                                                         | ✅ Locked      |
+| 34  | text-on-accent: fixed near-white                                                                                                                 | ✅ Locked      |
+| 35  | --m double duty (font-size + spacing): keep as-is                                                                                                | ✅ Locked      |
+| 36  | Scale stops at --l, no --xl needed                                                                                                               | ✅ Locked      |
+| 37  | Emphasis skin on inputs: keep accent bg                                                                                                          | ✅ Locked S3   |
+| 39  | Skins follow defaults for undefined states; skins can explicitly override                                                                        | ✅ Reframed S3 |
+| 43  | Max depth 3 for structure, depth 4 allowed for row wrapper children                                                                              | ✅ Updated S5  |
+| 44  | No article inside article (no nested cards)                                                                                                      | ✅ Updated S5  |
+| 45  | p is for text only, not layout wrapping                                                                                                          | ✅ Locked      |
+| 49  | Skill file framing: engineered constraint, not prototype simplicity                                                                              | ✅ Locked      |
+| 51  | Grid architecture: F4 (1-col section + optional article row wrappers)                                                                            | ✅ Locked S3   |
+| 52  | Row wrapper tags: section, header, footer, nav, summary                                                                                          | ✅ Updated S5  |
+| 53  | Row mechanism: 12-col grid via CSS on row wrappers + `data-colspan` on children. `data-colcount` removed.                                        | ✅ Updated S5  |
+| 55  | 5 skins: emphasis, ghost, mute, elevated, freeform. Earlier skins (half, transparent, square, full, round, flat) removed during S1–S5 iteration. | ✅ Updated S5  |
+| 57  | Add strategic goals (portability, context windowing, cloning) to blueprint                                                                       | ✅ Locked S3   |
+| 58  | form = display:contents, always transparent, never a visual container                                                                            | ✅ Locked S5   |
+| 59  | details = card-level collapsible container, summary = row wrapper                                                                                | ✅ Locked S5   |
+| 60  | dialog interior follows same rules as any card                                                                                                   | ✅ Locked S5   |
+| 61  | Body: max-inline-size 800px, margin-inline auto                                                                                                  | ✅ Locked S5   |
+| 62  | Ghost skin merges old ghost + transparent. Hover on interactive only.                                                                            | ✅ Locked S5   |
+| 63  | Skin conflict groups: emphasis\|ghost (mutually exclusive)                                                                                       | ✅ Locked S5   |
+| 64  | Escape hatch via data-skin="freeform" on cards                                                                                                   | ✅ Locked S5   |
+| 65  | Dropdown menu popover: nav[popover] (was section[popover])                                                                                       | ✅ Locked S5   |
+| 66  | Cut elements: fieldset, img, table family, ul/ol/li, hr                                                                                          | ✅ Locked S5   |
+| 67  | Inline formatting (strong, em, code) implicit, not spec-listed                                                                                   | ✅ Locked S5   |
 
 ### Open
 
@@ -292,16 +292,16 @@ Decision: 12-column grid on all row wrappers, handled entirely by CSS. `data-col
 
 Items scattered across spec, rationale, and notebook — collected here for visibility.
 
-| Item | Status | Source |
-| --- | --- | --- |
-| `data-state` signal states (`error`, `warning`, `info`, `success`, `loading`, `skeleton`, `empty`) | Not yet implemented | Spec §3, §6 |
-| Signal hues (danger, warning, success, info) — color tokens for signal states | Not yet implemented | Spec §4 |
-| Partial-width single elements — sizing skins vs row wrapper with empty cols | Open decision (#54) | Rationale §8 |
-| CLAUDE.md (<200 lines) + component catalog skill file | Out of scope for stage 1 | Decision #15 |
-| Validator script (HTML parser to flag unauthorized elements/styles/skins) | Out of scope for stage 1 | Decision #16 |
-| Reference app | Planned for end of stage 1 | Decision #23 |
-| Canonical CSS file (implementing the spec's CSS architecture) | Not yet created | Spec §7 |
-| Experiment-to-session mapping incomplete (experiments 1 and 4 unreferenced in notebook) | Documentation gap | Notebook, Experiments/ |
+| Item                                                                                               | Status                     | Source                 |
+| -------------------------------------------------------------------------------------------------- | -------------------------- | ---------------------- |
+| `data-state` signal states (`error`, `warning`, `info`, `success`, `loading`, `skeleton`, `empty`) | Not yet implemented        | Spec §3, §6            |
+| Signal hues (danger, warning, success, info) — color tokens for signal states                      | Not yet implemented        | Spec §4                |
+| Partial-width single elements — sizing skins vs row wrapper with empty cols                        | Open decision (#54)        | Rationale §8           |
+| CLAUDE.md (<200 lines) + component catalog skill file                                              | Out of scope for stage 1   | Decision #15           |
+| Validator script (HTML parser to flag unauthorized elements/styles/skins)                          | Out of scope for stage 1   | Decision #16           |
+| Reference app                                                                                      | Planned for end of stage 1 | Decision #23           |
+| Canonical CSS file (implementing the spec's CSS architecture)                                      | Not yet created            | Spec §7                |
+| Experiment-to-session mapping incomplete (experiments 1 and 4 unreferenced in notebook)            | Documentation gap          | Notebook, Experiments/ |
 
 ---
 
@@ -435,7 +435,7 @@ Treating Cards as discrete files is a high-leverage strategy for AI-assisted dev
 | :--------------- | :------------------------------------------------------------------------------------ |
 | **Directory**    | Every Card resides in its own file or folder.                                         |
 | **Independence** | Each folder/file contains its own logic, tests, and mock data.                        |
-| **Cloning**      | New Cards are created by duplicating an existing Card folder/files or specific cells.  |
+| **Cloning**      | New Cards are created by duplicating an existing Card folder/files or specific cells. |
 
 ### Potential Failure Modes
 
