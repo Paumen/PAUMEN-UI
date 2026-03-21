@@ -326,6 +326,10 @@ Body is a grid with `gap: var(--l)`, `max-inline-size: 800px`, `margin-inline: a
 - `<nav popover>` — dropdown menu
 - `<dialog>` — modal (backdrop + focus trap + Escape)
 
+### Sizing Model
+
+All elements are content-intrinsic. Width is determined by placement (body grid → card, card grid → full width, row wrapper → colspan). Height is determined by content + padding. No element has an explicit width, height, or min-height. Cards, rows, and controls grow to fit their content. This is not a simplification — it is the sizing model.
+
 ### Escape Hatch
 
 `data-skin="freeform"` on any card. Externally fits the body stack; internally unconstrained. For game canvases, data visualizations, complex widgets, third-party embeds.
