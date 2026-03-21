@@ -64,7 +64,7 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ### Content / Text
 
-`<p>` — paragraph text only. NOT used for layout wrapping.
+`<p>` — paragraph text only. NOT used for layout wrapping. Inherits body defaults (color, font-size) — no explicit styling needed.
 `<small>` — secondary/fine text.
 `<label>` — ties text to a control.
 `<a>` — link / navigation.
@@ -139,20 +139,14 @@ Max structural depth: 4 (html → body → details → content). Depth 5 for row
 
 Applied to any element. Selected via `[data-skin~="value"]`.
 
-| Skin     | Effect                                                       |
-| -------- | ------------------------------------------------------------ |
-| `filled` | Accent background, light text, accent border. Hover darkens. |
+- **default** — the unskinned appearance. Buttons render with accent border, accent text, transparent background. Not a `data-skin` value — it's what you get when no skin is applied.
+- **`filled`** — accent background, light text, accent border. Hover darkens to `--accent-dn`.
+- **`ghost`** — transparent background, no border. Interactive elements: hover shows `--neutral-mute` background. Non-interactive: static.
+- **`mute`** — `--text-mute` color.
+- **`elevated`** — `box-shadow` for visual lift.
+- **`freeform`** — escape hatch. Removes system constraints from card interior via `all: revert`. Cards only. The author takes full responsibility for interior styling.
 
-|
-| `Outline` | border `accent`. |
-| `ghost` | Transparent bg, no border. Interactive elements: hover shows mute bg. Others: static. |
-| `mute` | text-mute color. |
-| `elevated` | box-shadow for visual lift. |
-| `freeform` | Escape hatch. Removes system constraints from card interior. Cards only. |
-
-Hover fills to neutral-mute.
-
-**Skin conflict groups** (mutually exclusive): filled | ghost | outline (pick at most one).
+**Skin conflict groups** (mutually exclusive): filled | ghost (pick at most one).
 
 ### data-colspan — Row Child Width
 
@@ -257,9 +251,11 @@ color-scheme: light dark;
 | Layer       | Background       | Elements                        |
 | ----------- | ---------------- | ------------------------------- |
 | Body        | `--neutral`      | body                            |
-| Card        | `--neutral-mute` | details, dialog, [popover]      |
+| Card        | `--neutral-mute` | details, dialog, [popover]*     |
 | Row wrapper | transparent      | section, summary                |
 | Control     | `--neutral`      | button, input, textarea, select |
+
+\* **Popover dual nature:** Popovers are visually cards (same background, border, radius) but positionally overlays (out-of-flow). They appear in the Visual Depth Model at the Card layer for styling, and in the Layout Model (§5) at Layer 2 for positioning.
 
 ### Scale
 
@@ -393,12 +389,13 @@ select {
 - **Cards** (`details, dialog ): --neutral-mute bg, border 1px solid --neutral-edge, radius --m, padding --m, display grid, gap --m.
 - **Row wrappers** (`section, summary`): display grid, grid-template-columns repeat(12, 1fr), gap --s, place-items center start. Transparent — no visual styling.
 - **Form:** display contents.
-- **Dialog:** larger padding --m, max-inline-size, backdrop.
-- **Headings h1–h4:** border-block-end 1px solid --neutral-edge, padding --m. Sizes: h1/h2 --xl, h3 --l, h4 --m.
+- **Dialog:** padding --l, max-inline-size min(600px, 90vw), `::backdrop` with `oklch(20% 0 0 / 0.5)`. Focus trap is browser-native via `showModal()`.
+- **Headings h1–h4:** Sizes: h1/h2 --xl, h3 --l, h4 --m.
 - **Shared control base** (`button, input, textarea, select`): border 1px solid --neutral-edge, radius --s, --neutral bg, --text color, padding --s, width 100%, transition.
 - **Focus ring:** --xs solid --accent, --xs offset. Unified across all interactive elements.
 - **Disabled:** opacity 0.5, cursor not-allowed. Unified across all controls.
-- **Button:** border 2px solid --accent, cursor pointer, transparent bg, --accent color, font-weight 700, inline-flex, place-items/content center, gap --xs. Hover fills to --neutral-mute. Active: scale 0.98.
+- **Button:** border 2px solid --accent, cursor pointer, transparent bg, --accent color, font-weight 700, inline-flex, place-items/content center, gap --xs. Hover fills to --neutral-mute. Active: scale 0.96.
+- **Output:** font-weight 700.
 - **Select:** custom dropdown arrow (SVG data URI), appearance:none.
 - **Range:** stripped to native (transparent bg, no border/padding, accent-color).
 - **Checkbox/radio:** sized to --m, accent-color, no border/padding/bg, cursor pointer.
@@ -407,7 +404,7 @@ select {
 
 Composable via `[data-skin~="value"]`:
 
-- **Visual:** filled, outline, ghost, mute.
+- **Visual:** filled, ghost, mute.
 - **Elevation:** elevated.
 - **Escape:** freeform.
 
@@ -536,7 +533,7 @@ Element count: ~19 unique tag names. ~23 total entries counting input type varia
 - Claude never writes CSS.
 - No CSS classes — element selectors + attribute selectors only (icon classes excepted).
 - No div or span.
-- Skins via `data-skin`, composable, 5 values: filled, ghost, mute, outlined (default) elevated, freeform.
+- Skins via `data-skin`, composable, 5 values: filled, ghost, mute, elevated, freeform. Default (unskinned) appearance is not a `data-skin` value.
 - Color system: oklch, light-dark(), 5 base inputs.
 - Max depth 4 (body → card → row wrapper → child). Depth 5 for row children only.
 - Body: max-inline-size 800px, margin-inline auto.
