@@ -1,131 +1,152 @@
-# Blueprint Spec Review
+# Blueprint Spec Internal Review
 
-> Reviewed: `Research/blueprint_spec.md` cross-referenced against `pre-prototype/paumen.css` and `pre-prototype/index.html`
+> Reviewed: `Research/blueprint_spec.md` (internal consistency only)
 > Date: 2026-03-21
+> Items marked ✅ were fixed in this pass.
 
 ---
 
-## INCONSISTENCIES (spec says X, implementation says Y)
+## INCONSISTENCIES (spec contradicts itself)
 
-### 1. `<article>` — cut in spec, used everywhere in practice
-- Spec §1 lists `<article>` under "Cut Elements"
-- `paumen.css:117` includes `article` in the card selector
-- `index.html` uses `<article>` as the primary card type (6 of 7 cards)
-- Only 1 card uses `<details>` — the supposed "default card type"
-- **Verdict:** Either un-cut `<article>` or rewrite the reference app
+### 1. `Outline` skin — naming, casing, and identity crisis
+- §3 skin table: `Outline` (capital O) — only skin with inconsistent casing
+- §10 Tier 1: calls it "outlined (default)"
+- §3 conflict group: "filled | ghost | outline"
+- §7 Default Layer describes the outlined look as the default button style (2px solid accent border), not as a skin
+- **Problem:** Is "outline/outlined" a data-skin value or the unskinned default? The spec treats it as both. If it's the default, remove it from the skin table and conflict group. If it's a skin, define its `[data-skin~="outline"]` behavior.
 
-### 2. `<header>`, `<footer>`, `<nav>` — deferred in spec, implemented in CSS+HTML
-- Spec §1 and §S7 explicitly defer these as row wrappers
-- `paumen.css:133-137` styles all three as 12-col grid row wrappers
-- `index.html` uses `<header>` (line 19), `<footer>` (lines 77, 218, 366), and `<nav>` (line 34)
-- **Verdict:** Either promote them to Tier 1 or remove from CSS/HTML
+### 2. Skin count: "5 values" lists 6
+- §10 Tier 1: "5 values: filled, ghost, mute, outlined (default) elevated, freeform"
+- Actual count: **6** items listed. Missing comma between "outlined (default)" and "elevated" compounds the confusion.
+- If "outlined" is the default (not a skin), then the 5 count is correct but the list shouldn't include it.
 
-### 3. Active scale: 0.96 vs 0.98
-- Spec §6: "Active: scale 0.96"
-- `paumen.css:210`: `transform: scale(0.98)`
-- **Verdict:** Pick one
+### 3. Active scale value contradicts itself across sections
+- §6 State Automation: "Active: scale 0.96"
+- §7 CSS Architecture, Button: "Active: scale 0.98"
+- **Verdict:** Pick one value and use it in both places.
 
-### 4. `--jump` default: 0.17 vs 0.07
-- Spec §4 and `paumen.css:49`: `--jump: 0.17`
-- `index.html` range input default value: `0.07` (line 352)
-- `index.html` reset handler resets to `0.07` (lines 426-427)
-- **Verdict:** Reference app contradicts both spec and CSS
+### 4. `output` font-weight: two different values
+- §7 Default Layer doesn't specify output font-weight
+- §10 Tier 2: "Font weight values (button: 700, output: 700)"
+- These are the only two references — they agree on 700, but §7 should state it explicitly since it describes every other element's defaults.
 
-### 5. `output` font-weight: 700 vs 600
-- Spec §10 Tier 2: "output: 700"
-- `paumen.css:301` (default layer): `font-weight: 600`
-- `paumen.css:465` (skin layer): `font-weight: 700` — but this rule is **orphaned** outside any skin selector, sitting bare inside `@layer skin`
-- **Verdict:** The skin-layer `output` block (lines 463-466) is a misplaced rule, not a skin
+### 5. Max depth claim vs actual structure
+- §2: "Max structural depth: 4 (html → body → details → content). Depth 5 for row children"
+- But the depth model counts from body (depth 1), not html. The parenthetical "(html → body → details → content)" is 4 nodes but maps to depths 1-3 in the spec's own numbering.
+- Row children at depth 4 are the actual max, not depth 5 as stated. Depth 5 is only for nested inline content (e.g., `<i>` inside `<button>` inside `<section>`).
 
-### 6. `Outline` skin capitalization and identity crisis
-- Spec §3 skin table: `Outline` (capital O) — only instance with inconsistent casing
-- Spec §10 Tier 1: calls it "outlined (default)"
-- Spec §3 conflict group: "filled | ghost | outline"
-- CSS: **no `[data-skin~="outline"]` selector exists at all**
-- The outlined look comes from the default `button` base style (2px solid accent border)
-- **Verdict:** Is "outline/outlined" a skin or the default? If it's just the default, remove it from the skin table and conflict group. If it's a skin, implement it in CSS.
-
----
-
-## CONFLICTS
-
-### 7. Skin count mismatch
-- Spec §10: "5 values: filled, ghost, mute, outlined (default) elevated, freeform"
-- Actual count of those values: **6** (filled, ghost, mute, outlined, elevated, freeform)
-- If "outlined" is the default (not a skin), then there are 5 actual skins — but the list formatting is misleading with the missing comma between "outlined (default)" and "elevated"
-
-### 8. `data-colspan` auto behavior
-- Spec §3: "Children without `data-colspan` auto-span 1 column"
-- Reality: In a 12-col grid, no explicit span means CSS grid auto-placement — the element gets 1 column, but this isn't a "span 1" — it's auto-placement. Works in practice but the mental model is slightly off. A checkbox taking 1/12th of width is intentional; a button taking 1/12th is usually not.
-- Reference app relies on this for checkboxes (1 col) + label (10 col) + button (1 col) = 12. Works, but fragile if any element overflows its 1/12th slot.
-
-### 9. Popover cards vs overlay semantics
-- `paumen.css:120`: `[popover]` gets full card styling (grid, gap, padding, bg, border, radius)
-- Spec §5 Layer 2 says popovers are "out-of-flow overlays"
-- A tooltip (`<aside popover>`) getting card-level grid layout + padding may be excessive
-- A toast (`<output popover>`) getting grid display overrides its inline/block nature
+### 6. Ghost skin description inconsistency
+- §3 skin table says ghost gives "Transparent bg, no border"
+- §3 also says ghost sets color to `--text-mute` (via the mute skin behavior implied by the table formatting)
+- But below the table: "Hover fills to neutral-mute" — this sentence appears orphaned, floating between the ghost and mute rows. Unclear which skin it belongs to.
+- §6 Hover states: "Ghost shows --neutral-mute on interactive elements only" — correct and clear.
+- **Verdict:** The skin table formatting is ambiguous. The "Hover fills to neutral-mute" line after the table looks like it belongs to ghost but has no clear association.
 
 ---
 
 ## REDUNDANCIES
 
-### 10. Signal states defined 3 times
-- §3 `data-state`: lists the 7 values
-- §4 "Signal Hues": mentions danger/warning/success/info
-- §6 "Signal States": describes error/warning/success/loading/empty behaviors
-- All say "not yet implemented"
-- **Verdict:** Consolidate into one section, reference from others
+### 7. ✅ Signal states defined in 3 places (FIXED)
+- §3 `data-state`: listed the 7 values
+- §4 "Signal Hues": repeated danger/warning/success/info
+- §6 "Signal States": re-described error/warning/success/loading/empty behaviors
+- All said "not yet implemented"
+- **Fix applied:** Consolidated into §3 as the single canonical definition. §4 signal hues folded in. §6 now references §3.
+
+### 8. Freeform escape hatch described twice
+- §3 data-skin table: "Escape hatch. Removes system constraints from card interior. Cards only."
+- §5 Layout Model: "data-skin="freeform" on any card. Externally fits the body stack; internally unconstrained."
+- Minor — §5 adds useful detail. Could cross-reference instead of repeating.
+
+### 9. Non-collapsible card rule stated twice
+- §1: "Non-collapsible cards: use `<details open>` with chevron hidden via CSS."
+- §2 Rules: "Non-collapsible cards: `<details open>` with chevron hidden. Same DOM structure, same rules."
+- Nearly identical. Could state once and reference.
+
+---
+
+## CONFLICTS
+
+### 10. Row wrapper list differs between sections
+- §1 Element list: row wrappers are `<summary>` + `<section>`
+- §1 Deferred: `<header>`, `<footer>`, `<nav>` deferred as row wrappers
+- §7 CSS Architecture describes row wrapper styling for `section, summary` only
+- §4 Visual Depth Model: row wrapper layer lists "section, summary"
+- But §9 Reconciliation Log §S7 says "header, footer, nav deferred as row wrappers. Nav stays for popovers."
+- **Problem:** The spec is internally consistent on this, but the deferred status creates ambiguity — are they row wrappers or not? The spec should be clearer about what "deferred" means (recognized but not yet specced? or explicitly excluded?).
+
+### 11. Popover as card vs overlay
+- §1: popovers listed under "Popover Hosts" separate from cards
+- §4 Visual Depth Model: `[popover]` listed at Card layer with `--neutral-mute` bg alongside details and dialog
+- §5 Layout Model: popovers listed under "Layer 2 — Out-of-flow overlays"
+- **Conflict:** Are popovers cards (§4) or overlays (§5)? They're both, but the spec doesn't acknowledge this dual nature. A popover is visually a card but positionally an overlay — this should be stated explicitly.
 
 ---
 
 ## GAPS
 
-### 11. No responsive behavior for row wrappers
-- Spec §Constraints: "Works across screen sizes without per-page custom styling"
-- No breakpoints, no wrapping, no stacking. A 12-col grid with `gap: var(--s)` will crush content on 320px screens
-- The `clamp()` scale helps body/card spacing, but row children with fixed column ratios (e.g., `10+1+1`) have no mobile fallback
-- **Critical gap** for the "works across screen sizes" claim
+### 12. No responsive behavior defined
+- §Constraints: "Works across screen sizes without per-page custom styling"
+- No mechanism described anywhere. No breakpoints, no wrapping behavior, no stacking rules for row wrappers on small screens.
+- The `clamp()` scale helps spacing, but a 12-col grid with fixed column ratios (e.g., `10+1+1`) will crush on mobile.
+- **Critical gap** — the constraint is stated but unfulfilled.
 
-### 12. No `dialog`-specific styling
-- Spec §7: "Dialog: larger padding --m, max-inline-size, backdrop"
-- CSS: `dialog` shares the generic card rule. No `dialog`-specific padding, no max-inline-size, no `::backdrop` styling
-- No focus trap implementation mentioned (spec §1 says "focus trap" but that's native browser behavior only when using `showModal()`)
+### 13. Dialog spec is skeletal
+- §1: "modal overlay card with backdrop, focus trap, Escape-to-close. Interior follows same rules as any card."
+- §7: "Dialog: larger padding --m, max-inline-size, backdrop."
+- No actual values for max-inline-size. No backdrop color/opacity. No z-index. "Larger padding --m" is unclear — larger than what? --m is the same token cards use.
+- Focus trap is native to `showModal()` but the spec doesn't mention that this is browser-provided, not CSS.
 
-### 13. No `<p>` styling
-- Spec lists `<p>` as a content element
-- CSS only resets `margin: 0` — no font-size, no color, no line-height
-- Works by inheritance, but inconsistent with how `<small>`, `<label>`, `<aside>` all get explicit styling
+### 14. ✅ No `<a>` hover state (FIXED)
+- §6 Interactive States described hover for buttons and ghost skin but not for links.
+- §7 Default Layer: `a` gets accent color and no text-decoration, but no hover behavior.
+- **Fix applied:** Added "Links (`<a>`) show text-decoration underline on hover" to §6.
 
-### 14. No `<a>` hover state
-- `a` gets `color: var(--accent); text-decoration: none;`
-- No hover style (underline? darken?). Only the global `:focus-visible` ring
-- Most users expect a visual hover change on links
+### 15. ✅ `<ul>` ambiguity in inline formatting (FIXED)
+- §1 Inline Formatting listed `<ol>`/`<li>` but not `<ul>`
+- §9 Reconciliation Log §S8 mentioned `<ul>/<ol>/<li>`
+- **Fix applied:** Added `<ul>` to the §1 inline formatting list.
 
-### 15. `<ul>` ambiguity in inline formatting
-- Spec §1 lists: `<strong>`, `<code>`, `<ol>`/`<li>`, `<s>`
-- Reconciliation log §S8 mentions `<ul>/<ol>/<li>`
-- Is `<ul>` allowed or not?
+### 16. No `<p>` default styling specified
+- §1 lists `<p>` as a content element: "paragraph text only. NOT used for layout wrapping."
+- §7 Default Layer: no `p` selector described (only the reset margin). No font-size, color, or line-height.
+- Other content elements (`<small>`, `<label>`, `<aside>`) all have explicit styling described.
+- Presumably inherits from body, but should be stated.
 
-### 16. `prefers-reduced-motion` selector targets wrong classes
-- `paumen.css:396-398` targets `.ph` and `.ph-fill`
-- But the icon system uses `.ph-bold` and `.ph-duotone`, not `.ph-fill`
-- Animations are applied to `.ph-gear`, `.ph-trash`, `.ph-arrow-counter-clockwise` — none of which match `.ph` or `.ph-fill`
-- **Verdict:** The reduced-motion rule likely doesn't catch the actual animated icons
+### 17. Heading border behavior in row wrappers unspecified
+- §7: headings get `border-block-end: 1px solid --neutral-edge, padding --m`
+- Headings inside `<summary>` (a row wrapper) will have a bottom border while being a grid child in a 12-col layout
+- Is this intended? A heading spanning 12 cols with a bottom border inside a summary that itself has no chrome looks odd — the border extends only across the heading's grid area.
 
-### 17. Heading icons rule is empty
-- `paumen.css:322-323`: `:is(h1, h2, h3, h4) .ph-duotone { }` — empty rule block, does nothing
+### 18. Checkbox/radio column behavior in rows
+- §1 Category table: checkbox and radio are classified as "Content" (display: inline)
+- §7: checkbox/radio sized to `--m` with no border/padding/bg
+- In a 12-col row, a checkbox without `data-colspan` gets 1 column — works for task-list patterns but the spec doesn't clarify this is the expected usage pattern or if checkboxes should always be paired with labels in rows.
+
+---
+
+## FEASIBILITY
+
+### 19. `all: revert` for freeform may be too aggressive
+- §3/§5: freeform removes constraints via `all: revert` on children
+- `all: revert` reverts **every** CSS property to the browser default, including box-sizing, font, color. Content inside a freeform card loses the entire design system — tokens, colors, typography.
+- May want `all: revert-layer` instead (reverts only the current cascade layer) to preserve reset-layer normalization.
+
+### 20. Single spacing scale for both spacing and typography
+- §4 Scale TODO acknowledges this: "Evaluate splitting scale into separate padding/gap tokens vs. font-size tokens."
+- Currently `--m` is both the base font-size AND the card gap/padding. This means font-size and spacing are locked together — changing one changes the other.
+- Works at current values but may not scale. Should be resolved before leaving pre-prototype.
 
 ---
 
 ## SUMMARY
 
-| Category | Count | Severity |
+| Category | Count | Fixed |
 |---|---|---|
-| Spec vs CSS/HTML inconsistencies | 6 | High — undermines spec as "source of truth" |
-| Internal conflicts | 3 | Medium — confusing for LLM consumers |
-| Redundancies | 1 | Low — annoying but not harmful |
-| Gaps | 7 | Mixed — #11 (responsive) and #12 (dialog) are structural |
+| Internal inconsistencies | 6 | 0 |
+| Redundancies | 3 | 1 (#7) |
+| Conflicts | 2 | 0 |
+| Gaps | 7 | 2 (#14, #15) |
+| Feasibility concerns | 2 | 0 |
 
-### Meta-issue
-
-The reference app doesn't follow the spec. It uses `<article>` (cut), `<header>`/`<footer>`/`<nav>` (deferred), and wrong default values. If an LLM reads the spec and then looks at the reference app for examples, it will get contradictory signals. The spec and implementation need to be reconciled — which the reconciliation log (§9) was meant to do, but it appears the CSS/HTML weren't updated to match all the decisions recorded there.
+**Highest priority:** #1 (outline identity), #3 (active scale), #12 (responsive), #13 (dialog).
