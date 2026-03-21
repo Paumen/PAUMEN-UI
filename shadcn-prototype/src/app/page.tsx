@@ -81,11 +81,7 @@ export default function DailyPlanner() {
       {/* ═══ CARD 2 — Search Bar ═══ */}
       <Card>
         <CardContent className="flex items-center gap-2 py-3">
-          <Input
-            type="search"
-            placeholder="Search tasks…"
-            className="flex-1"
-          />
+          <Input type="search" placeholder="Search tasks…" className="flex-1" />
           <Button variant="ghost" size="icon" aria-label="Clear search">
             <X className="h-4 w-4" />
           </Button>
@@ -132,9 +128,7 @@ export default function DailyPlanner() {
             <CardHeader className="cursor-pointer flex flex-row items-center justify-between space-y-0">
               <CardTitle>Today&apos;s Tasks</CardTitle>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">
-                  3 pending
-                </span>
+                <span className="text-sm text-muted-foreground">3 pending</span>
                 <ChevronDown
                   className={`h-4 w-4 text-muted-foreground transition-transform ${
                     tasksOpen ? "rotate-180" : ""
@@ -277,10 +271,7 @@ export default function DailyPlanner() {
           {/* Reminder radio group */}
           <div className="grid grid-cols-4 items-center gap-3">
             <Label>Reminder</Label>
-            <RadioGroup
-              defaultValue="15"
-              className="col-span-3 flex gap-4"
-            >
+            <RadioGroup defaultValue="15" className="col-span-3 flex gap-4">
               <div className="flex items-center space-x-1">
                 <RadioGroupItem value="15" id="r-15" />
                 <Label htmlFor="r-15">15 min</Label>
@@ -335,12 +326,10 @@ export default function DailyPlanner() {
           </div>
 
           <div>
-            <h4 className="mb-2 text-sm font-semibold">
-              freeform equivalent
-            </h4>
+            <h4 className="mb-2 text-sm font-semibold">freeform equivalent</h4>
             <p className="text-sm text-muted-foreground">
-              No direct equivalent — shadcn/ui components always carry their
-              own styles. Custom content uses plain divs/JSX.
+              No direct equivalent — shadcn/ui components always carry their own
+              styles. Custom content uses plain divs/JSX.
             </p>
           </div>
         </CardContent>
@@ -397,7 +386,9 @@ export default function DailyPlanner() {
             <div className="col-span-7">
               <Slider
                 value={[accentChroma * 1000]}
-                onValueChange={(v) => setAccentChroma((Array.isArray(v) ? v[0] : v) / 1000)}
+                onValueChange={(v) =>
+                  setAccentChroma((Array.isArray(v) ? v[0] : v) / 1000)
+                }
                 min={0}
                 max={400}
                 step={5}
@@ -420,7 +411,9 @@ export default function DailyPlanner() {
             <div className="col-span-7">
               <Slider
                 value={[surfaceHue]}
-                onValueChange={(v) => setSurfaceHue(Array.isArray(v) ? v[0] : v)}
+                onValueChange={(v) =>
+                  setSurfaceHue(Array.isArray(v) ? v[0] : v)
+                }
                 min={0}
                 max={360}
                 step={1}
@@ -442,7 +435,9 @@ export default function DailyPlanner() {
             <div className="col-span-7">
               <Slider
                 value={[jump * 1000]}
-                onValueChange={(v) => setJump((Array.isArray(v) ? v[0] : v) / 1000)}
+                onValueChange={(v) =>
+                  setJump((Array.isArray(v) ? v[0] : v) / 1000)
+                }
                 min={0}
                 max={200}
                 step={5}
@@ -497,7 +492,8 @@ export default function DailyPlanner() {
             <br />
             &nbsp;&nbsp;{"{/* No shadcn constraints here */}"}
             <br />
-            &nbsp;&nbsp;{"{/* Custom CSS, third-party widgets, canvas elements */}"}
+            &nbsp;&nbsp;
+            {"{/* Custom CSS, third-party widgets, canvas elements */}"}
             <br />
             &lt;/Card&gt;
           </div>

@@ -1,6 +1,6 @@
 # Blueprint Lab Notebook — Sessions 1–5
 
-> **Role:** Chronological research journal — records *what was tried, discovered, and decided* in each session. Historical, not normative; defer to `blueprint_spec.md` for current system state.
+> **Role:** Chronological research journal — records _what was tried, discovered, and decided_ in each session. Historical, not normative; defer to `blueprint_spec.md` for current system state.
 > **Reading order:** Reference as needed. Start with `blueprint_spec.md` for what the system is, `blueprint_rationale.md` for why.
 
 ## Session 1 (March 15, 2026): Foundation
@@ -161,8 +161,8 @@ Critiqued F3 and F4 layout candidates with a focus on DOM self-description and L
 ### Key Topics
 
 - **F3 vs. F4 Layout Architecture:**
-    - **F3:** `data-cols` on sections and `data-span` on children, relying on implicit defaults.
-    - **F4:** `<article data-row="N-M">` wrapper rows with explicit column assignments.
+  - **F3:** `data-cols` on sections and `data-span` on children, relying on implicit defaults.
+  - **F4:** `<article data-row="N-M">` wrapper rows with explicit column assignments.
 - **DOM Self-Description:** F4 yields a fully self-describing DOM (element widths readable strictly from DOM attributes). F3 introduces implicit gaps where elements without `data-span` rely on CSS conventions invisible in the DOM.
 - **LLM Evaluation Critique:** Re-examined methodology. LLMs favored F3 because they processed isolated DOM text rather than rendered output — failed to flag F3's ambiguous width data, hallucinating assumptions instead.
 
