@@ -68,13 +68,13 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ### Content / Text
 
-- `<p>` — paragraph text only. NOT used for layout wrapping.
-- `<small>` — secondary/fine text.
-- `<label>` — ties text to a control.
-- `<a>` — link / navigation.
-- `<svg>` — icon / graphic. Inherits text color via `fill: currentColor`.
-- `<output>` — computed result / toast host. Has native `aria-live="polite"`.
-- `<aside>` — supplementary info / tooltip host.
+`<p>` — paragraph text only. NOT used for layout wrapping.
+`<small>` — secondary/fine text.
+`<label>` — ties text to a control.
+`<a>` — link / navigation.
+`<svg>` — icon / graphic. Inherits text color via `fill: currentColor`.
+`<output>` — computed result / toast host. Has native `aria-live="polite"`.
+`<aside>` — supplementary info / tooltip host.
 
 ### Implicit Inline Formatting (allowed within text elements)
 
