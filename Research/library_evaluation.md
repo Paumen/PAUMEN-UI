@@ -44,7 +44,7 @@
 
 ### Petite-Vue
 
-Same goal profile as Alpine with Vue syntax (`v-` prefix). ~6KB vs Alpine's ~17KB. Smaller ecosystem and community. Choose based on team familiarity, not architectural difference.
+Same goal profile as Alpine with Vue syntax (`v-` prefix). ~6KB vs Alpine's V3 ~14KB minified gzip. Smaller ecosystem and community. Choose based on team familiarity, not architectural difference.
 
 ### HTMX
 
