@@ -166,13 +166,17 @@ Common patterns:
 
 Supported colspan values: 1, 2, 3, 4, 6, 8, 9, 10, 11, 12. Values 5, 7 omitted — they don't produce clean ratios in a 12-column grid.
 
-### Signal State Attributes (not yet implemented in CSS)
+### data-state — Signal States (not yet implemented in CSS)
 
-Three boolean data attributes for application-level signal states that CSS pseudo-classes cannot detect. Applied to any element. Composable — an element can have multiple simultaneously (e.g., `data-error data-loading` during a retry).
+A single attribute with three allowed values for application-level states that CSS pseudo-classes cannot detect.
 
-**Strictly allowed:** `data-error`, `data-loading`, `data-success`. No other signal attributes permitted. `warning`, `info`, `skeleton`, `empty` are explicitly excluded.
+`data-state="error"` / `data-state="loading"` / `data-state="success"`
 
-**Why not `data-state="error"`?** Separate boolean attributes compose naturally (multiple states at once), bind cleanly with Alpine (`x-bind:data-error="hasError"`), and select simply in CSS (`[data-error]`). A single `data-state` attribute forces mutual exclusivity that doesn't match reality.
+**Strictly allowed values:** `error`, `loading`, `success`. No other values permitted. `warning`, `info`, `skeleton`, `empty` are explicitly excluded.
+
+**Selector:** `[data-state="error"]`, `[data-state="loading"]`, `[data-state="success"]`. Alpine binding: `x-bind:data-state="currentState"`.
+
+**Mutually exclusive by design.** An element is in one signal state or none. If an async operation fails, it's `error` — not simultaneously `loading`. If a retry begins, it returns to `loading`, replacing `error`.
 
 **Why no `data-empty`?** Native CSS pseudo-classes (`:empty`, `:placeholder-shown`, `:not(:has(> *))`, negated `:has()`) cover >95% of empty-state detection. The remaining edge case — a container with DOM children that is semantically empty — is handled by Alpine's `x-show`/`x-if`, not CSS.
 
@@ -356,13 +360,13 @@ For application-level states that no CSS pseudo-class can detect — specificall
 
 | State | Selector | Recommended CSS | When to use (and not) |
 |-------|----------|----------------|----------------------|
-| **Error** | `[data-error]` | `border-color: var(--color-danger); color: var(--color-danger)` | API failure, server error, custom async validation. **Not** for HTML validation — use `required`/`pattern` + `:user-invalid` instead. |
-| **Loading** | `[data-loading]` | `animation: pulse 1.5s ease-in-out infinite; opacity: 0.6` | Async operation in progress (fetch, save, compute). No native pseudo-class for this. |
-| **Success** | `[data-success]` | `border-color: var(--color-success)` | Action confirmed (save, submit, delete). Typically shown briefly then cleared. Distinct from `:user-valid` which is per-field. |
+| **Error** | `[data-state="error"]` | `border-color: var(--color-danger); color: var(--color-danger)` | API failure, server error, custom async validation. **Not** for HTML validation — use `required`/`pattern` + `:user-invalid` instead. |
+| **Loading** | `[data-state="loading"]` | `animation: pulse 1.5s ease-in-out infinite; opacity: 0.6` | Async operation in progress (fetch, save, compute). No native pseudo-class for this. |
+| **Success** | `[data-state="success"]` | `border-color: var(--color-success)` | Action confirmed (save, submit, delete). Typically shown briefly then cleared. Distinct from `:user-valid` which is per-field. |
 
 Signal hues (danger, success) are derived from accent — hue values only, saturation and lightness reuse the accent formula.
 
-**`:user-invalid` vs `data-error`:** Same visual (danger hue), different source. `:user-invalid` is free — the browser detects it from HTML attributes. `data-error` requires JS. Most form validation should be HTML-native; `data-error` is strictly for what the browser can't know:
+**`:user-invalid` vs `data-state="error"`:** Same visual (danger hue), different source. `:user-invalid` is free — the browser detects it from HTML attributes. `data-state="error"` requires JS. Most form validation should be HTML-native; `data-state="error"` is strictly for what the browser can't know:
 
 - **Server-side rejection** — username already taken, payment declined, email undeliverable
 - **Network failure** — fetch failed, timeout, offline
@@ -376,7 +380,7 @@ When deciding how to express a state, follow this priority:
 
 1. **HTML attribute first** — `required`, `disabled`, `readonly`, `open`, `min`/`max`, `pattern`, `type`. Free. The browser enforces them and CSS pseudo-classes detect them automatically.
 2. **CSS pseudo-class second** — `:empty`, `:placeholder-shown`, `:user-invalid`, `:user-valid`, `:read-only`, `:indeterminate`, `:popover-open`. Zero JS needed.
-3. **Data attribute last** — `data-error`, `data-loading`, `data-success`. Only for states originating from application logic (API calls, async operations) that the browser cannot observe.
+3. **Data attribute last** — `data-state="error"`, `data-state="loading"`, `data-state="success"`. Only for states originating from application logic (API calls, async operations) that the browser cannot observe.
 
 ---
 
@@ -544,7 +548,7 @@ Icons have two variants inline: a stroke (bold) version shown by default, and a 
 | `x-on` | Event binding — binds DOM events to expressions. Shorthand `@click` permitted |
 | `x-text` | Text output — sets `textContent` reactively |
 | `x-for` | List rendering — renders arrays. Must be on a `<template>` element |
-| `x-bind` | Attribute binding — dynamically sets attributes (`disabled`, `data-skin`, `data-error`, `data-loading`, `data-success`, `aria-*`). Shorthand `:attr` permitted |
+| `x-bind` | Attribute binding — dynamically sets attributes (`disabled`, `data-skin`, `data-state`, `aria-*`). Shorthand `:attr` permitted |
 
 ---
 
@@ -598,7 +602,7 @@ Element count: ~20 tag names. total bit higher counting input type variants and 
 
 ### Tier 3 — Deferred (acknowledged gaps, not yet implemented)
 
-- Signal state CSS implementation (`data-error`, `data-loading`, `data-success`) and signal hues (danger, success).
+- Signal state CSS implementation (`data-state="error|loading|success"`) and signal hues (danger, success).
 - `<header>`, `<footer>`, `<nav>` as row wrappers (currently deferred; nav stays for popovers).
 - Partial-width single elements (sizing skins vs row wrapper with empty cols).
 - CLAUDE.md (<200 lines) + component catalog skill file.

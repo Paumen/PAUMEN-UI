@@ -10,7 +10,7 @@ Target apps: single or few-page tools, mostly client-side. Productivity tools, d
 
 ## Current State
 
-**Core architecture complete.** The spec (element set, skins, color system, layout model, CSS architecture) is locked. A canonical stylesheet (`pre-prototype/paumen.css`) and working reference app (Daily Planner) exist. Signal states (`data-error`, `data-loading`, `data-success`) are defined but not yet implemented in CSS. Alpine.js is the only permitted JS framework (see §9 of the spec).
+**Core architecture complete.** The spec (element set, skins, color system, layout model, CSS architecture) is locked. A canonical stylesheet (`pre-prototype/paumen.css`) and working reference app (Daily Planner) exist. Signal states (`data-state="error|loading|success"`) are defined but not yet implemented in CSS. Alpine.js is the only permitted JS framework (see §9 of the spec).
 
 **Next priority:** Signal state implementation, LLM validation with diverse reference apps, and production CLAUDE.md. See `Research/next_steps.md` for the full roadmap.
 
