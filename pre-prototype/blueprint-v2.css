@@ -117,12 +117,15 @@
   }
 
   /* Row wrappers — canonical list (§1 + §5 + §7) */
-  section, summary, header, form, fieldset, footer, ul, ol {
+  section, summary, header, fieldset, footer, ul, ol {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: var(--m);
     align-items: center;
   }
+
+  /* Form: transparent wrapper — children participate in parent grid (§2 + §7) */
+  form { display: contents; }
 
   /* Summary and header are card header rows — larger font for icon buttons (§7) */
   summary, header { font-size: var(--l); }
