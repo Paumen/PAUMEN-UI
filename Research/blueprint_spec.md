@@ -166,19 +166,22 @@ Common patterns:
 
 Supported colspan values: 1, 2, 3, 4, 6, 8, 9, 10, 11, 12. Values 5, 7 omitted — they don't produce clean ratios in a 12-column grid.
 
-### data-state — Signal States (not yet implemented)
+### Signal State Attributes (not yet implemented in CSS)
 
-`error` / `warning` / `info` / `success` / `loading` / `skeleton` / `empty`
+Four boolean data attributes for application-level signal states. Applied to any element. Composable — an element can have multiple simultaneously (e.g., `data-empty data-loading` during initial fetch).
 
-Signal hues (danger, warning, success, info) are derived from accent — hue values only, saturation and lightness reuse the accent formula. Visual effects per state:
+| Attribute | Visual effect | Use case |
+|-----------|--------------|----------|
+| `data-error` | Border and text shift to danger hue | Validation failure, API error, parse error |
+| `data-loading` | Pulse animation | Async operation in progress |
+| `data-success` | Border/icon shifts to success hue | Action confirmed, save complete |
+| `data-empty` | Placeholder content shown | No items, zero results, first use |
 
-- **Error:** border and text shift to danger hue
-- **Warning:** border shifts to warning hue
-- **Success:** border/icon shifts to success hue
-- **Info:** border shifts to info hue
-- **Loading:** skeleton pulse animation
-- **Skeleton:** placeholder shimmer (content not yet loaded)
-- **Empty:** placeholder content shown
+Signal hues (danger, success) are derived from accent — hue values only, saturation and lightness reuse the accent formula.
+
+**Strictly allowed signal attributes:** `data-error`, `data-loading`, `data-success`, `data-empty`. No other signal attributes permitted. `warning`, `info`, `skeleton` are explicitly excluded — see rationale below.
+
+**Why not `data-state="error"`?** Separate boolean attributes compose naturally (multiple states at once), bind cleanly with Alpine (`x-bind:data-error="hasError"`), and select simply in CSS (`[data-error]`). A single `data-state` attribute forces mutual exclusivity that doesn't match reality.
 
 ---
 
@@ -333,7 +336,7 @@ Claude never writes state styles. All states are derived from element default + 
 
 ### Signal States
 
-See §3 `data-state` for the canonical definition of all signal states and their visual effects.
+See §3 signal state attributes (`data-error`, `data-loading`, `data-success`, `data-empty`) for the canonical definition and visual effects.
 
 ---
 
@@ -501,7 +504,7 @@ Icons have two variants inline: a stroke (bold) version shown by default, and a 
 | `x-on` | Event binding — binds DOM events to expressions. Shorthand `@click` permitted |
 | `x-text` | Text output — sets `textContent` reactively |
 | `x-for` | List rendering — renders arrays. Must be on a `<template>` element |
-| `x-bind` | Attribute binding — dynamically sets attributes (`disabled`, `data-skin`, `data-state`, `aria-*`). Shorthand `:attr` permitted |
+| `x-bind` | Attribute binding — dynamically sets attributes (`disabled`, `data-skin`, `data-error`, `data-loading`, `data-success`, `data-empty`, `aria-*`). Shorthand `:attr` permitted |
 
 ---
 
@@ -555,7 +558,7 @@ Element count: ~20 tag names. total bit higher counting input type variants and 
 
 ### Tier 3 — Deferred (acknowledged gaps, not yet implemented)
 
-- Signal states (`data-state`) and signal hues (danger, warning, success, info).
+- Signal state CSS implementation (`data-error`, `data-loading`, `data-success`, `data-empty`) and signal hues (danger, success).
 - `<header>`, `<footer>`, `<nav>` as row wrappers (currently deferred; nav stays for popovers).
 - Partial-width single elements (sizing skins vs row wrapper with empty cols).
 - CLAUDE.md (<200 lines) + component catalog skill file.
