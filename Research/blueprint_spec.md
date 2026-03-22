@@ -168,30 +168,15 @@ Supported colspan values: 1, 2, 3, 4, 6, 8, 9, 10, 11, 12. Values 5, 7 omitted �
 
 ### Signal State Attributes (not yet implemented in CSS)
 
-Three boolean data attributes for application-level signal states. Applied to any element. Composable — an element can have multiple simultaneously (e.g., `data-error data-loading` during a retry).
+Three boolean data attributes for application-level signal states that CSS pseudo-classes cannot detect. Applied to any element. Composable — an element can have multiple simultaneously (e.g., `data-error data-loading` during a retry).
 
-| Attribute | Visual effect | Use case |
-|-----------|--------------|----------|
-| `data-error` | Border and text shift to danger hue | Validation failure, API error, parse error |
-| `data-loading` | Pulse animation | Async operation in progress |
-| `data-success` | Border/icon shifts to success hue | Action confirmed, save complete |
-
-Signal hues (danger, success) are derived from accent — hue values only, saturation and lightness reuse the accent formula.
-
-**Strictly allowed signal attributes:** `data-error`, `data-loading`, `data-success`. No other signal attributes permitted. `warning`, `info`, `skeleton`, `empty` are explicitly excluded.
+**Strictly allowed:** `data-error`, `data-loading`, `data-success`. No other signal attributes permitted. `warning`, `info`, `skeleton`, `empty` are explicitly excluded.
 
 **Why not `data-state="error"`?** Separate boolean attributes compose naturally (multiple states at once), bind cleanly with Alpine (`x-bind:data-error="hasError"`), and select simply in CSS (`[data-error]`). A single `data-state` attribute forces mutual exclusivity that doesn't match reality.
 
-**Why no `data-empty`?** CSS pseudo-classes cover >95% of empty-state detection natively — no data attribute needed:
+**Why no `data-empty`?** Native CSS pseudo-classes (`:empty`, `:placeholder-shown`, `:not(:has(> *))`, negated `:has()`) cover >95% of empty-state detection. The remaining edge case — a container with DOM children that is semantically empty — is handled by Alpine's `x-show`/`x-if`, not CSS.
 
-| Pseudo-class | Detects |
-|-------------|---------|
-| `:empty` | Element with no children or text nodes |
-| `:not(:has(> *))` | Element with no child elements (ignores whitespace) |
-| `:placeholder-shown` | Input with no user-entered value |
-| `:has()` (negated) | Containers missing expected children, e.g. `ul:not(:has(> li))` |
-
-The remaining edge case — a container with DOM children (like a "No results" message) that is semantically empty — is a rendering decision handled by Alpine's `x-show`/`x-if`, not a CSS styling concern.
+See §6 for the full state reference: all pseudo-classes, recommended CSS properties, and the decision guide for choosing HTML attributes vs pseudo-classes vs data attributes.
 
 ---
 
@@ -334,19 +319,59 @@ All elements are content-intrinsic. Width is determined by placement (body grid 
 
 ## 6. State Automation
 
-Claude never writes state styles. All states are derived from element default + skin + color system via CSS.
+Claude never writes state styles. All states are derived from element default + skin + color system via CSS. This section is the canonical reference for every state the system handles.
 
-### Interactive States (via pseudo-classes)
+### Native Interactive States (pseudo-classes — all automated)
 
-- **Hover:** button (outlined default) fills to --neutral-mute. Filled skin darkens to --accent-dn. Ghost shows --neutral-mute on interactive elements only. Links (`<a>`) show text-decoration underline on hover.
-- **Active:** scale 0.96.
-- **Focus-visible:** --xs solid --accent ring, --xs offset. All interactive elements.
-- **Disabled:** opacity 0.5, cursor not-allowed. All controls.
-- **Checked/selected:** accent-color on checkbox/radio.
+| State | Selector | CSS properties | Applies to |
+|-------|----------|---------------|------------|
+| **Hover** | `:hover:not(:disabled)` | `background: var(--neutral-mute)` | button (default), button (ghost), summary (ghost) |
+| | `:hover:not(:disabled)` | `background: var(--accent-dn); border-color: var(--accent-dn)` | button (filled) |
+| | `:hover` | `text-decoration: underline` | `a` |
+| **Active** | `:active:not(:disabled)` | `transform: scale(0.98)` | button |
+| **Focus** | `:focus-visible` | `outline: var(--xs) solid var(--accent); outline-offset: var(--xs)` | button, input, textarea, select, a, summary |
+| **Disabled** | `:disabled` | `opacity: 0.5; cursor: not-allowed` | button, input, textarea, select |
+| **Checked** | `:checked` | `accent-color: var(--accent)` (native rendering) | input[type="checkbox"], input[type="radio"] |
 
-### Signal States
+### Native Content States (pseudo-classes — available for styling)
 
-See §3 signal state attributes (`data-error`, `data-loading`, `data-success`) for the canonical definition and visual effects.
+These pseudo-classes detect content/value state natively. No data attribute needed — CSS handles them directly.
+
+| State | Selector | What it detects | Typical use |
+|-------|----------|----------------|-------------|
+| **Empty element** | `:empty` | Element with no children or text nodes | Hide empty containers, show placeholder via `::before` |
+| **No child elements** | `:not(:has(> *))` | Element with no element children (ignores whitespace text) | Empty lists, empty card bodies |
+| **No matching children** | `:not(:has(> li))`, `:not(:has(> tr))` | Container missing expected children | Empty `ul`, empty `tbody` |
+| **Placeholder visible** | `:placeholder-shown` | Input/textarea with no user-entered value | Style unfilled inputs differently |
+| **Has content** | `:has(> *)` | Element has at least one child element | Conditional parent styling |
+| **Valid** | `:valid` | Input passes HTML validation constraints (`required`, `pattern`, `type`, `min`/`max`) | Green border on valid input |
+| **Invalid** | `:invalid` | Input fails HTML validation constraints | Red border on invalid input |
+| **Required** | `:required` | Input has `required` attribute | Mark required fields |
+| **Optional** | `:optional` | Input lacks `required` attribute | De-emphasize optional fields |
+| **Read-only** | `:read-only` | Input has `readonly` attribute | Dim non-editable inputs |
+| **In-range / Out-of-range** | `:in-range` / `:out-of-range` | Numeric/date input within or outside `min`/`max` | Range feedback on sliders, date pickers |
+| **Open** | `[open]` / `:open` | `<details>` is expanded; `<dialog>` is shown | Style expanded vs collapsed state |
+| **Popover open** | `:popover-open` | Popover element is currently shown | Style visible tooltips/menus |
+
+### Signal States (data attributes — not yet implemented in CSS)
+
+For application-level states that CSS pseudo-classes cannot detect. See §3 for full definition.
+
+| State | Selector | Recommended CSS | Use case |
+|-------|----------|----------------|----------|
+| **Error** | `[data-error]` | `border-color: var(--color-danger); color: var(--color-danger)` | API failure, parse error, server error |
+| **Loading** | `[data-loading]` | `animation: pulse 1.5s ease-in-out infinite; opacity: 0.6` | Async operation in progress |
+| **Success** | `[data-success]` | `border-color: var(--color-success)` | Action confirmed, save complete |
+
+Signal hues (danger, success) are derived from accent — hue values only, saturation and lightness reuse the accent formula.
+
+### State Decision Guide
+
+When deciding how to handle a state, follow this priority:
+
+1. **HTML attribute first** — `required`, `disabled`, `readonly`, `open`, `min`/`max`, `pattern`. These are free; the browser enforces them.
+2. **CSS pseudo-class second** — `:empty`, `:placeholder-shown`, `:valid`/`:invalid`, `:has()`. Zero JS needed; the browser detects the state.
+3. **Data attribute last** — `data-error`, `data-loading`, `data-success`. Only when the state originates from application logic (API calls, async operations) that the browser cannot observe.
 
 ---
 
