@@ -1,51 +1,20 @@
-/* ============================================================
-   PAUMEN Blueprint CSS
-   Canonical implementation of Research/blueprint_spec.md
-   ============================================================ */
+/* PAUMEN Blueprint CSS — Canonical implementation of Research/blueprint_spec.md */
 
-/* --- Four CSS Layers (§7) --- */
+/* Four CSS Layers (§7) */
 @layer reset, default, skin, grid;
 
-/* ============================================================
-   RESET LAYER (§7 — 3 rules)
-   ============================================================ */
+/* RESET (§7) */
 @layer reset {
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-
-  body,
-  h1,
-  h2,
-  h3,
-  h4,
-  p,
-  ul,
-  ol {
-    margin: 0;
-  }
-
-  button,
-  input,
-  textarea,
-  select {
-    font: inherit;
-    color: inherit;
-  }
-
-  li {
-    list-style: none;
-  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body, h1, h2, h3, h4, p, ul, ol { margin: 0; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  li { list-style: none; }
 }
 
-/* ============================================================
-   DEFAULT LAYER (§4 Color System + §5 Layout + §6 States + §7)
-   ============================================================ */
+/* DEFAULT (§4 Color + §5 Layout + §6 States + §7 Architecture) */
 @layer default {
 
-  /* --- Base Inputs (§4 — 5 values) --- */
+  /* Base Inputs — 5 values (§4) */
   :root {
     --accent-hue: 200;
     --accent-chroma: 0.14;
@@ -53,39 +22,22 @@
     --jump: 0.17;
     color-scheme: light dark;
 
-    /* Derived Palette — Accent (§4) */
+    /* Accent (§4) */
     --accent: oklch(58% var(--accent-chroma) var(--accent-hue));
     --accent-up: oklch(calc(58% + var(--jump)) var(--accent-chroma) var(--accent-hue));
     --accent-dn: oklch(calc(58% - var(--jump)) var(--accent-chroma) var(--accent-hue));
 
-    /* Derived Palette — Surface levels (§4) */
-    --neutral: light-dark(
-      oklch(96% 0.01 var(--surface-hue)),
-      oklch(16% 0.01 var(--surface-hue))
-    );
-    --neutral-mute: light-dark(
-      oklch(90% 0.01 var(--surface-hue)),
-      oklch(22% 0.01 var(--surface-hue))
-    );
-    --neutral-edge: light-dark(
-      oklch(82% 0.02 var(--surface-hue)),
-      oklch(34% 0.02 var(--surface-hue))
-    );
+    /* Surface levels (§4) */
+    --neutral: light-dark(oklch(96% 0.01 var(--surface-hue)), oklch(16% 0.01 var(--surface-hue)));
+    --neutral-mute: light-dark(oklch(90% 0.01 var(--surface-hue)), oklch(22% 0.01 var(--surface-hue)));
+    --neutral-edge: light-dark(oklch(82% 0.02 var(--surface-hue)), oklch(34% 0.02 var(--surface-hue)));
 
-    /* Derived Palette — Text (§4) */
-    --text: light-dark(
-      oklch(20% 0.01 var(--surface-hue)),
-      oklch(92% 0.01 var(--surface-hue))
-    );
-    --text-mute: light-dark(
-      oklch(40% 0.01 var(--surface-hue)),
-      oklch(72% 0.01 var(--surface-hue))
-    );
-
-    /* Text on accent — fixed near-white (§4) */
+    /* Text (§4) */
+    --text: light-dark(oklch(20% 0.01 var(--surface-hue)), oklch(92% 0.01 var(--surface-hue)));
+    --text-mute: light-dark(oklch(40% 0.01 var(--surface-hue)), oklch(72% 0.01 var(--surface-hue)));
     --text-on-accent: oklch(96% 0.01 var(--accent-hue));
 
-    /* Signal hues — derived from accent (§6): same chroma/lightness, different hue */
+    /* Signal hues — derived from accent (§6) */
     --danger-hue: 25;
     --success-hue: 145;
     --color-danger: oklch(58% var(--accent-chroma) var(--danger-hue));
@@ -100,7 +52,7 @@
     --xl: clamp(1.6rem, 6vw, 3.6rem);
   }
 
-  /* --- Body (§5 + §7) --- */
+  /* Body (§5 + §7) */
   body {
     display: grid;
     gap: var(--l);
@@ -113,9 +65,8 @@
     background: var(--neutral);
   }
 
-  /* --- Cards: details, dialog (§5 + §7) --- */
-  details,
-  dialog {
+  /* Cards + popovers — shared card-layer styling (§4 Visual Depth + §5) */
+  details, dialog, [popover] {
     display: grid;
     gap: var(--m);
     background: var(--neutral-mute);
@@ -124,7 +75,7 @@
     padding: var(--m);
   }
 
-  /* --- Dialog specifics (§7) --- */
+  /* Dialog specifics (§7) */
   dialog {
     padding: var(--l);
     max-inline-size: min(600px, 90vw);
@@ -134,50 +85,42 @@
     background: oklch(20% 0 0 / 0.5);
   }
 
-  /* --- Row wrappers: section, summary (§5 + §7) --- */
-  section,
-  summary {
+  /* Popover transitions (§6) */
+  [popover] {
+    opacity: 0;
+    transition: opacity 0.15s ease, overlay 0.15s ease, display 0.15s ease;
+    transition-behavior: allow-discrete;
+  }
+
+  [popover]:popover-open { opacity: 1; }
+
+  @starting-style {
+    [popover]:popover-open { opacity: 0; }
+  }
+
+  /* Row wrappers (§5 + §7) */
+  section, summary {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: var(--s);
     place-items: center start;
   }
 
-  /* summary: hide chevron only for non-collapsible cards (§2 + §10 S3) */
-  details[open]:not([name]) > summary {
-    list-style: none;
-  }
-  details[open]:not([name]) > summary::-webkit-details-marker {
-    display: none;
-  }
-  details[open]:not([name]) > summary::marker {
-    content: "";
-  }
+  /* Hide chevron on non-collapsible cards (§2) */
+  details[open]:not([name]) > summary { list-style: none; }
+  details[open]:not([name]) > summary::-webkit-details-marker { display: none; }
+  details[open]:not([name]) > summary::marker { content: ""; }
 
-  /* --- Form: transparent wrapper (§2 + §7) --- */
-  form {
-    display: contents;
-  }
+  /* Form: transparent wrapper (§2 + §7) */
+  form { display: contents; }
 
-  /* --- Headings (§7) --- */
-  h1,
-  h2 {
-    font-size: var(--xl);
-  }
+  /* Headings (§7) */
+  h1, h2 { font-size: var(--xl); }
+  h3 { font-size: var(--l); }
+  h4 { font-size: var(--m); }
 
-  h3 {
-    font-size: var(--l);
-  }
-
-  h4 {
-    font-size: var(--m);
-  }
-
-  /* --- Shared control base: button, input, textarea, select (§7) --- */
-  button,
-  input,
-  textarea,
-  select {
+  /* Shared control base (§7) */
+  button, input, textarea, select {
     border: 1px solid var(--neutral-edge);
     border-radius: var(--s);
     background: var(--neutral);
@@ -187,27 +130,19 @@
     transition: all 0.15s ease;
   }
 
-  /* --- Focus ring — all interactive elements (§6 + §7) --- */
-  button:focus-visible,
-  input:focus-visible,
-  textarea:focus-visible,
-  select:focus-visible,
-  summary:focus-visible,
-  a:focus-visible {
+  /* Focus ring (§6) */
+  :is(button, input, textarea, select, summary, a):focus-visible {
     outline: var(--xs) solid var(--accent);
     outline-offset: var(--xs);
   }
 
-  /* --- Disabled state (§6 + §7) --- */
-  button:disabled,
-  input:disabled,
-  textarea:disabled,
-  select:disabled {
+  /* Disabled (§6) */
+  :is(button, input, textarea, select):disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
-  /* --- Button (§7) --- */
+  /* Button (§7) */
   button {
     border: 2px solid var(--accent);
     cursor: pointer;
@@ -220,28 +155,16 @@
     gap: var(--xs);
   }
 
-  button:hover:not(:disabled) {
-    background: var(--neutral-mute);
-  }
+  button:hover:not(:disabled) { background: var(--neutral-mute); }
+  button:active:not(:disabled) { transform: scale(0.98); }
 
-  button:active:not(:disabled) {
-    transform: scale(0.98);
-  }
+  /* Links (§6) */
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
 
-  /* --- Links (§6) --- */
-  a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  /* --- Select — custom dropdown arrow (§7) --- */
+  /* Select — custom dropdown arrow (§7) */
   select {
     appearance: none;
-    /* Light/dark arrows — currentColor doesn't resolve inside data URIs */
     background-image: light-dark(
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23ddd' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
@@ -251,178 +174,75 @@
     padding-inline-end: calc(var(--s) + 1.5em);
   }
 
-  /* --- Range input (§7) --- */
-  input[type="range"] {
-    background: transparent;
+  /* Native inputs: range, checkbox, radio — reset shared-control base (§7) */
+  input[type="range"],
+  input[type="checkbox"],
+  input[type="radio"] {
     border: none;
     padding: 0;
+    background: transparent;
     accent-color: var(--accent);
   }
 
-  /* --- Checkbox / Radio (§7) --- */
   input[type="checkbox"],
   input[type="radio"] {
     width: var(--m);
     height: var(--m);
-    accent-color: var(--accent);
-    border: none;
-    padding: 0;
-    background: transparent;
     cursor: pointer;
   }
 
-  /* --- Icon System (§8) — stroke/fill swap --- */
-  [data-icon-fill] {
-    display: none;
-  }
+  /* Icon stroke/fill swap (§8) */
+  [data-icon-fill] { display: none; }
 
-  :is(a, button):hover [data-icon-fill],
-  :is(a, button):focus-visible [data-icon-fill] {
-    display: inline-block;
-  }
+  :is(a, button):is(:hover, :focus-visible) [data-icon-fill] { display: inline-block; }
+  :is(a, button):is(:hover, :focus-visible) i:has(~ [data-icon-fill]) { display: none; }
 
-  :is(a, button):hover i:has(~ [data-icon-fill]),
-  :is(a, button):focus-visible i:has(~ [data-icon-fill]) {
-    display: none;
-  }
-
-  /* --- Icon Animations (§8) — scoped per icon --- */
-  :is(a, button):hover .ph-gear,
-  :is(a, button):focus-visible .ph-gear {
+  /* Icon animations — scoped per icon (§8) */
+  :is(a, button):is(:hover, :focus-visible) .ph-gear {
     animation: spin 1s linear infinite;
   }
 
-  :is(a, button):hover .ph-trash,
-  :is(a, button):focus-visible .ph-trash {
+  :is(a, button):is(:hover, :focus-visible) .ph-trash {
     animation: bounce 0.4s ease;
-    color: oklch(58% 0.2 25);
+    color: var(--color-danger);
   }
 
-  :is(a, button):hover .ph-arrow-counter-clockwise,
-  :is(a, button):focus-visible .ph-arrow-counter-clockwise {
+  :is(a, button):is(:hover, :focus-visible) .ph-arrow-counter-clockwise {
     animation: sweep-ccw 0.5s ease-out;
   }
 
-  @keyframes spin {
-    to { rotate: 360deg; }
-  }
-
-  @keyframes bounce {
-    0%, 100% { translate: 0 0; }
-    50% { translate: 0 -4px; }
-  }
-
-  @keyframes sweep-ccw {
-    from { rotate: 0deg; }
-    to { rotate: -360deg; }
-  }
+  @keyframes spin { to { rotate: 360deg; } }
+  @keyframes bounce { 0%, 100% { translate: 0 0; } 50% { translate: 0 -4px; } }
+  @keyframes sweep-ccw { to { rotate: -360deg; } }
 
   @media (prefers-reduced-motion: reduce) {
-    :is(a, button):hover .ph-gear,
-    :is(a, button):focus-visible .ph-gear,
-    :is(a, button):hover .ph-trash,
-    :is(a, button):focus-visible .ph-trash,
-    :is(a, button):hover .ph-arrow-counter-clockwise,
-    :is(a, button):focus-visible .ph-arrow-counter-clockwise {
+    :is(a, button):is(:hover, :focus-visible) :is(.ph-gear, .ph-trash, .ph-arrow-counter-clockwise) {
       animation: none;
     }
   }
 
-  /* --- Popover hosts (§5 Layer 2) — card-like interior (§4) --- */
-  [popover] {
-    display: grid;
-    gap: var(--m);
-    background: var(--neutral-mute);
-    border: 1px solid var(--neutral-edge);
-    border-radius: var(--m);
-    padding: var(--m);
-    opacity: 0;
-    transition: opacity 0.15s ease, overlay 0.15s ease, display 0.15s ease;
-    transition-behavior: allow-discrete;
-  }
+  /* Signal States (§6) */
+  [data-state="error"] { border-color: var(--color-danger); color: var(--color-danger); }
+  [data-state="loading"] { animation: pulse 1.5s ease-in-out infinite; opacity: 0.6; }
+  [data-state="success"] { border-color: var(--color-success); }
 
-  /* --- Popover visible state (§6) --- */
-  [popover]:popover-open {
-    opacity: 1;
-  }
-
-  /* Entry animation starting state (§6) */
-  @starting-style {
-    [popover]:popover-open {
-      opacity: 0;
-    }
-  }
-
-  /* --- Signal States (§6 — data-state) --- */
-  [data-state="error"] {
-    border-color: var(--color-danger);
-    color: var(--color-danger);
-  }
-
-  [data-state="loading"] {
-    animation: pulse 1.5s ease-in-out infinite;
-    opacity: 0.6;
-  }
-
-  [data-state="success"] {
-    border-color: var(--color-success);
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 0.3; }
-  }
+  @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 0.3; } }
 }
 
-/* ============================================================
-   SKIN LAYER (§3 + §7)
-   ============================================================ */
+/* SKIN (§3 + §7) */
 @layer skin {
+  [data-skin~="filled"] { background: var(--accent); color: var(--text-on-accent); border-color: var(--accent); }
+  [data-skin~="filled"]:hover:not(:disabled) { background: var(--accent-dn); border-color: var(--accent-dn); }
 
-  /* filled — accent bg, light text, accent border (§3) */
-  [data-skin~="filled"] {
-    background: var(--accent);
-    color: var(--text-on-accent);
-    border-color: var(--accent);
-  }
+  [data-skin~="ghost"] { background: transparent; border-color: transparent; }
+  :is(button, a, summary)[data-skin~="ghost"]:hover { background: var(--neutral-mute); }
 
-  [data-skin~="filled"]:hover:not(:disabled) {
-    background: var(--accent-dn);
-    border-color: var(--accent-dn);
-  }
-
-  /* ghost — transparent bg, no border (§3) */
-  [data-skin~="ghost"] {
-    background: transparent;
-    border-color: transparent;
-  }
-
-  /* ghost interactive: hover shows neutral-mute (§3) */
-  :is(button, a, summary)[data-skin~="ghost"]:hover {
-    background: var(--neutral-mute);
-  }
-
-  /* mute — muted text color (§3) */
-  [data-skin~="mute"] {
-    color: var(--text-mute);
-  }
-
-  /* elevated — box-shadow for visual lift (§3) */
-  [data-skin~="elevated"] {
-    box-shadow:
-      0 1px 3px oklch(20% 0 0 / 0.1),
-      0 4px 12px oklch(20% 0 0 / 0.08);
-  }
-
-  /* freeform — escape hatch, cards only (§3) */
-  [data-skin~="freeform"] > *:not(summary) {
-    all: revert;
-  }
+  [data-skin~="mute"] { color: var(--text-mute); }
+  [data-skin~="elevated"] { box-shadow: 0 1px 3px oklch(20% 0 0 / 0.1), 0 4px 12px oklch(20% 0 0 / 0.08); }
+  [data-skin~="freeform"] > *:not(summary) { all: revert; }
 }
 
-/* ============================================================
-   GRID LAYER (§7 — data-colspan)
-   ============================================================ */
+/* GRID (§7) */
 @layer grid {
   [data-colspan="1"]  { grid-column: span 1; }
   [data-colspan="2"]  { grid-column: span 2; }
