@@ -68,7 +68,7 @@
   /* Cards — shared card-layer styling (§4 Visual Depth + §5) */
   details, dialog {
     display: grid;
-    gap: var(--m);
+    gap: var(--l);
     background: var(--neutral-mute);
     border: 1px solid var(--neutral-edge);
     border-radius: var(--m);
@@ -112,7 +112,7 @@
   section, summary {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    gap: var(--s);
+    gap: var(--m);
     place-items: center start;
   }
 
