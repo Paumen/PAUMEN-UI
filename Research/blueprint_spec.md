@@ -333,45 +333,44 @@ Claude never writes state styles. All states are derived from element default + 
 | **Disabled** | `:disabled` | `opacity: 0.5; cursor: not-allowed` | button, input, textarea, select |
 | **Checked** | `:checked` | `accent-color: var(--accent)` (native rendering) | input[type="checkbox"], input[type="radio"] |
 
-### Native Content States (pseudo-classes — available for styling)
+### Native Content & Validation States (pseudo-classes)
 
-These pseudo-classes detect content/value state natively. No data attribute needed — CSS handles them directly.
+These pseudo-classes detect state natively — no JS, no data attributes. Only states relevant to PAUMEN's target apps (forms, dashboards, small tools) are listed.
 
-| State | Selector | What it detects | Typical use |
-|-------|----------|----------------|-------------|
-| **Empty element** | `:empty` | Element with no children or text nodes | Hide empty containers, show placeholder via `::before` |
-| **No child elements** | `:not(:has(> *))` | Element with no element children (ignores whitespace text) | Empty lists, empty card bodies |
-| **No matching children** | `:not(:has(> li))`, `:not(:has(> tr))` | Container missing expected children | Empty `ul`, empty `tbody` |
-| **Placeholder visible** | `:placeholder-shown` | Input/textarea with no user-entered value | Style unfilled inputs differently |
-| **Has content** | `:has(> *)` | Element has at least one child element | Conditional parent styling |
-| **Valid** | `:valid` | Input passes HTML validation constraints (`required`, `pattern`, `type`, `min`/`max`) | Green border on valid input |
-| **Invalid** | `:invalid` | Input fails HTML validation constraints | Red border on invalid input |
-| **Required** | `:required` | Input has `required` attribute | Mark required fields |
-| **Optional** | `:optional` | Input lacks `required` attribute | De-emphasize optional fields |
-| **Read-only** | `:read-only` | Input has `readonly` attribute | Dim non-editable inputs |
-| **In-range / Out-of-range** | `:in-range` / `:out-of-range` | Numeric/date input within or outside `min`/`max` | Range feedback on sliders, date pickers |
-| **Open** | `[open]` / `:open` | `<details>` is expanded; `<dialog>` is shown | Style expanded vs collapsed state |
-| **Popover open** | `:popover-open` | Popover element is currently shown | Style visible tooltips/menus |
+| State | Selector | Recommended CSS | Why it matters |
+|-------|----------|----------------|----------------|
+| **Empty container** | `:empty`, `:not(:has(> li))` | `display: none` or placeholder via `::before` | Empty lists, empty card bodies. Eliminates `data-empty`. Variant `:not(:has(> *))` ignores whitespace. |
+| **Unfilled input** | `:placeholder-shown` | `border-color: var(--neutral-edge)` (or muted label) | Detect inputs the user hasn't touched. Useful for floating labels or "incomplete" styling. |
+| **Invalid (after interaction)** | `:user-invalid` | `border-color: var(--color-danger)` | HTML validation failed AND user has interacted. Covers `required`, `pattern`, `type`, `min`/`max` — no JS. Prefer over `:invalid` which fires on page load before user acts. |
+| **Valid (after interaction)** | `:user-valid` | `border-color: var(--color-success)` | Positive confirmation after user fills a field correctly. Subtle — don't overuse. |
+| **Read-only** | `:read-only` | `opacity: 0.7; cursor: default` | Non-editable inputs displaying computed/locked values (dashboards, calculated fields). |
+| **Indeterminate** | `:indeterminate` | `opacity: 0.6` (native rendering) | Checkbox "select all" when some items checked. Common in dashboard list patterns. |
+| **Details expanded** | `[open]` | (already handled — summary arrow rotates) | `<details>` is the primary card type; open/closed is core to the layout. |
+| **Popover visible** | `:popover-open` | `opacity: 1` (with transition from 0) | Tooltips (`aside[popover]`) and menus (`nav[popover]`). Enables enter/exit animations. |
+
+**Intentionally excluded:** `:valid`/`:invalid` (fire before user interacts — bad UX; use `:user-valid`/`:user-invalid`), `:required`/`:optional` (over-engineering for small tools — context makes this obvious), `:in-range`/`:out-of-range` (subsumed by `:user-invalid`), `:target` (hash navigation irrelevant to SPA-like tools).
 
 ### Signal States (data attributes — not yet implemented in CSS)
 
-For application-level states that CSS pseudo-classes cannot detect. See §3 for full definition.
+For application-level states that no CSS pseudo-class can detect — specifically, outcomes of async operations or server responses.
 
-| State | Selector | Recommended CSS | Use case |
-|-------|----------|----------------|----------|
-| **Error** | `[data-error]` | `border-color: var(--color-danger); color: var(--color-danger)` | API failure, parse error, server error |
-| **Loading** | `[data-loading]` | `animation: pulse 1.5s ease-in-out infinite; opacity: 0.6` | Async operation in progress |
-| **Success** | `[data-success]` | `border-color: var(--color-success)` | Action confirmed, save complete |
+| State | Selector | Recommended CSS | When to use (and not) |
+|-------|----------|----------------|----------------------|
+| **Error** | `[data-error]` | `border-color: var(--color-danger); color: var(--color-danger)` | API failure, server error, custom async validation. **Not** for HTML validation — use `required`/`pattern` + `:user-invalid` instead. |
+| **Loading** | `[data-loading]` | `animation: pulse 1.5s ease-in-out infinite; opacity: 0.6` | Async operation in progress (fetch, save, compute). No native pseudo-class for this. |
+| **Success** | `[data-success]` | `border-color: var(--color-success)` | Action confirmed (save, submit, delete). Typically shown briefly then cleared. Distinct from `:user-valid` which is per-field. |
 
 Signal hues (danger, success) are derived from accent — hue values only, saturation and lightness reuse the accent formula.
 
+**`:user-invalid` vs `data-error`:** These share the same visual treatment (danger hue) but differ in source. `:user-invalid` is free — the browser detects it from HTML attributes. `data-error` requires JS to set. Most form validation should be HTML-native; `data-error` is the fallback for what the browser can't know.
+
 ### State Decision Guide
 
-When deciding how to handle a state, follow this priority:
+When deciding how to express a state, follow this priority:
 
-1. **HTML attribute first** — `required`, `disabled`, `readonly`, `open`, `min`/`max`, `pattern`. These are free; the browser enforces them.
-2. **CSS pseudo-class second** — `:empty`, `:placeholder-shown`, `:valid`/`:invalid`, `:has()`. Zero JS needed; the browser detects the state.
-3. **Data attribute last** — `data-error`, `data-loading`, `data-success`. Only when the state originates from application logic (API calls, async operations) that the browser cannot observe.
+1. **HTML attribute first** — `required`, `disabled`, `readonly`, `open`, `min`/`max`, `pattern`, `type`. Free. The browser enforces them and CSS pseudo-classes detect them automatically.
+2. **CSS pseudo-class second** — `:empty`, `:placeholder-shown`, `:user-invalid`, `:user-valid`, `:read-only`, `:indeterminate`, `:popover-open`. Zero JS needed.
+3. **Data attribute last** — `data-error`, `data-loading`, `data-success`. Only for states originating from application logic (API calls, async operations) that the browser cannot observe.
 
 ---
 
