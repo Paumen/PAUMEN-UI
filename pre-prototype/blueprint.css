@@ -73,6 +73,17 @@
     border: 1px solid var(--neutral-edge);
     border-radius: var(--m);
     padding: var(--m);
+    transition: border-color 0.15s ease;
+  }
+
+  /* Smooth card open/close (prevent border flash) */
+  details > :not(summary) {
+    animation: card-open 0.15s ease;
+  }
+
+  @keyframes card-open {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   /* Dialog specifics (§7) */
@@ -102,6 +113,8 @@
     border-radius: var(--m);
     padding: var(--m);
     opacity: 1;
+    box-shadow: 0 4px 16px oklch(20% 0 0 / 0.2), 0 8px 32px oklch(20% 0 0 / 0.12);
+    z-index: 10;
   }
 
   @starting-style {
@@ -116,10 +129,11 @@
     place-items: center start;
   }
 
-  /* Hide chevron on non-collapsible cards (§2) */
-  details[open]:not([name]) > summary { list-style: none; }
-  details[open]:not([name]) > summary::-webkit-details-marker { display: none; }
-  details[open]:not([name]) > summary::marker { content: ""; }
+  /* Hide chevron and prevent collapse on non-collapsible cards (§2) */
+  details[data-fixed] > summary { list-style: none; pointer-events: none; }
+  details[data-fixed] > summary > * { pointer-events: auto; }
+  details[data-fixed] > summary::-webkit-details-marker { display: none; }
+  details[data-fixed] > summary::marker { content: ""; }
 
   /* Form: transparent wrapper (§2 + §7) */
   form { display: contents; }
@@ -150,8 +164,16 @@
 
   /* Disabled (§6) */
   :is(button, input, textarea, select):disabled {
-    opacity: 0.5;
+    opacity: 0.38;
     cursor: not-allowed;
+    filter: grayscale(0.4);
+  }
+
+  /* Readonly (§6) */
+  :is(input, textarea):read-only {
+    background: var(--neutral-mute);
+    border-style: dashed;
+    color: var(--text-mute);
   }
 
   /* Button (§7) */
@@ -233,7 +255,7 @@
     }
   }
 
-  /* Signal States (§6) */
+  /* Signal States (§6) — use doubled selector to override skin layer */
   [data-state="error"] { border-color: var(--color-danger); color: var(--color-danger); }
   [data-state="loading"] { animation: pulse 1.5s ease-in-out infinite; opacity: 0.6; }
   [data-state="success"] { border-color: var(--color-success); }
@@ -250,8 +272,12 @@
   :is(button, a, summary)[data-skin~="ghost"]:hover { background: var(--neutral-mute); }
 
   [data-skin~="mute"] { color: var(--text-mute); }
-  [data-skin~="elevated"] { box-shadow: 0 1px 3px oklch(20% 0 0 / 0.1), 0 4px 12px oklch(20% 0 0 / 0.08); }
+  [data-skin~="elevated"] { box-shadow: 0 1px 3px oklch(0% 0 0 / 0.15), 0 4px 12px oklch(0% 0 0 / 0.12), 0 0 0 1px oklch(50% 0 0 / 0.06); }
   [data-skin~="freeform"] > *:not(summary) { all: revert; }
+
+  /* Signal state overrides for filled skin (§6) — must come after base filled rules */
+  [data-skin~="filled"][data-state="error"] { background: var(--color-danger); border-color: var(--color-danger); color: var(--text-on-accent); }
+  [data-skin~="filled"][data-state="success"] { background: var(--color-success); border-color: var(--color-success); color: var(--text-on-accent); }
 }
 
 /* GRID (§7) */
