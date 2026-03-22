@@ -2,32 +2,6 @@
 
 ---
 
-## Phase Q: Signal States
-
-The spec defines `data-state` values but they are not yet implemented in `paumen.css`.
-
-### 1 Add signal hues to the token system
-
-- Define 4 signal hues: danger, warning, success, info
-- Each needs only a hue value — lightness and chroma derive from the existing accent scale logic
-- Add to the `:root` block in `paumen.css`
-
-### 2 Implement `data-state` attribute styling
-
-- States: `error`, `warning`, `success`, `info`, `loading`, `skeleton`, `empty`
-- Visual treatment per state (border-color shift, background tint, icon/text color)
-- `loading` and `skeleton` need animation keyframes (spinner, shimmer)
-- `empty` needs a muted placeholder pattern
-- Add to the `@layer skin` in the CSS architecture
-
-### 3 Test signal states in a reference card
-
-- Add a "validation form" or "status dashboard" card to the Daily Planner (or a new experiment) demonstrating all 7 states
-
-**Exit criteria:** All `data-state` values produce correct visual output in both light and dark mode.
-
----
-
 ## Phase R: LLM Validation (Highest Risk)
 
 Risk 8 in the rationale ("LLM Cannot Think in Flat Grids") is flagged as the highest-priority risk. The entire architecture depends on LLMs being able to work with F4's flat DOM model.
