@@ -450,7 +450,7 @@ li {
 - **Non-collapsible cards** (`details[data-fixed]`): summary gets `list-style: none; pointer-events: none`, children get `pointer-events: auto`. Chevron markers hidden.
 - **Popover base** (`[popover]`): `opacity: 0; background: transparent; border: none; padding: 0`. All visual card styling is on `:popover-open` only — prevents flash of unstyled element when popover closes.
 - **Popover open** (`:popover-open`): card styling (--neutral-mute bg, border, radius, padding) + `box-shadow` + `z-index: 10` for overlay depth.
-- **Row wrappers** (`section, summary`): display grid, grid-template-columns repeat(12, 1fr), gap --s, place-items center start. Transparent — no visual styling.
+- **Row wrappers** (`section, summary`): display grid, grid-template-columns repeat(12, 1fr), gap --s, place-items center start. Transparent — no visual styling. Summary gets `font-size: var(--l)` — card headers are visually larger, and icon buttons in summaries inherit the correct size without inline styles.
 - **Form:** display contents.
 - **Dialog:** padding --l, max-inline-size min(600px, 90vw), `::backdrop` with `oklch(20% 0 0 / 0.5)`. Focus trap is browser-native via `showModal()`.
 - **Headings h1–h4:** Sizes: h1/h2 --xl, h3 --l, h4 --m.
@@ -725,5 +725,5 @@ Findings from manual UAT testing of the pre-prototype Settings reference app. Ea
 
 ### Open Issues (from UAT, not yet resolved)
 
-- **Inline style on menu icon button:** `style="font-size: var(--l)"` was needed to make the hamburger icon large enough. This violates the "inline styles are forbidden" constraint. Needs a spec-compliant solution — either an icon-size skin or a CSS rule for icon buttons in summaries.
+- ~~Inline style on menu icon button~~ **Resolved.** Summary now has `font-size: var(--l)` in CSS. Icon buttons in summaries inherit the correct size. Inline style removed.
 - **Nav popover close flash:** Still present despite base-state fix (1 remaining partial fail). May need `display: none` immediately on close via JS, or popover exit animation timing adjustment.

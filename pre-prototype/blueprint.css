@@ -127,6 +127,9 @@
     place-items: center start;
   }
 
+  /* Summary is the card header row — larger base size for icon buttons (§7) */
+  summary { font-size: var(--l); }
+
   /* Hide chevron and prevent collapse on non-collapsible cards (§2) */
   details[data-fixed] > summary { list-style: none; pointer-events: none; }
   details[data-fixed] > summary > * { pointer-events: auto; }
