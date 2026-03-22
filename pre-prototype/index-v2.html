@@ -40,6 +40,10 @@
     }
   },
   removeTag(tag) { this.tags = this.tags.filter(t => t !== tag); },
+  navTo(id) {
+    document.getElementById('nav-menu').hidePopover();
+    document.querySelectorAll('details[id$=&quot;-card&quot;]').forEach(d => d.open = (d.id === id));
+  },
   async saveSettings() {
     this.saveState = 'loading';
     await new Promise(r => setTimeout(r, 1500));
@@ -54,34 +58,28 @@
 }">
 
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- CARD 1: Page Header (non-collapsible — details open, §2)  -->
+  <!-- CARD 1: Page Header (non-collapsible — article+header, §1) -->
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <details open data-fixed @toggle.prevent="$el.open = true">
-    <summary>
+  <article>
+    <header>
       <h1 data-colspan="10">Settings</h1>
       <!-- Popover trigger — nav popover = dropdown menu (§5 Layer 2) -->
-      <button data-colspan="2" data-skin="ghost" popovertarget="nav-menu" aria-label="Menu" @click.stop>
+      <button data-colspan="2" data-skin="ghost" popovertarget="nav-menu" aria-label="Menu">
         <i class="ph-bold ph-list" aria-hidden="true"></i>
         <i class="ph-duotone ph-list" aria-hidden="true" data-icon-fill></i>
       </button>
-    </summary>
+    </header>
     <p>Manage your account, appearance, notifications, and more. Changes are saved when you click <strong>Save</strong>.</p>
-  </details>
 
-  <!-- Dropdown menu popover — nav[popover] (§8 Popover Hosts) -->
-  <nav popover id="nav-menu">
-    <button data-skin="ghost" onclick="navTo('profile-card')">Profile</button>
-    <button data-skin="ghost" onclick="navTo('appearance-card')">Appearance</button>
-    <button data-skin="ghost" onclick="navTo('notifications-card')">Notifications</button>
-    <button data-skin="ghost" onclick="navTo('schedule-card')">Schedule</button>
-    <button data-skin="ghost" onclick="navTo('danger-card')">Danger Zone</button>
-  </nav>
-  <script>
-    function navTo(id) {
-      document.getElementById('nav-menu').hidePopover();
-      document.querySelectorAll('details[id$="-card"]').forEach(d => d.open = (d.id === id));
-    }
-  </script>
+    <!-- Dropdown menu popover — nav[popover] (§5 popover DOM placement: inside card, outside header) -->
+    <nav popover id="nav-menu">
+      <button data-skin="ghost" @click="navTo('profile-card')">Profile</button>
+      <button data-skin="ghost" @click="navTo('appearance-card')">Appearance</button>
+      <button data-skin="ghost" @click="navTo('notifications-card')">Notifications</button>
+      <button data-skin="ghost" @click="navTo('schedule-card')">Schedule</button>
+      <button data-skin="ghost" @click="navTo('danger-card')">Danger Zone</button>
+    </nav>
+  </article>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- CARD 2: Profile Settings (collapsible — details, §1/§2)   -->
@@ -97,38 +95,26 @@
       <small data-colspan="1" data-skin="mute">Required</small>
     </summary>
     <form @submit.prevent="saveSettings()">
-      <section>
-        <label data-colspan="3" for="profile-name">Full Name</label>
-        <input data-colspan="9" type="text" id="profile-name" placeholder="Jane Doe" required
-               x-model="profileName" autocomplete="name">
-      </section>
-      <section>
-        <label data-colspan="3" for="profile-email">Email</label>
-        <input data-colspan="9" type="email" id="profile-email" placeholder="jane@example.com" required
-               x-model="profileEmail" autocomplete="email">
-      </section>
-      <section>
-        <label data-colspan="3" for="profile-password">Password</label>
-        <input data-colspan="9" type="password" id="profile-password" placeholder="••••••••"
-               minlength="8" autocomplete="new-password">
-      </section>
-      <section>
-        <label data-colspan="3" for="profile-url">Website</label>
-        <input data-colspan="9" type="url" id="profile-url" placeholder="https://example.com"
-               autocomplete="url">
-      </section>
-      <section>
-        <label data-colspan="3" for="profile-phone">Phone</label>
-        <input data-colspan="9" type="tel" id="profile-phone" placeholder="+1 555 000 0000"
-               autocomplete="tel">
-      </section>
-      <section>
-        <label data-colspan="3" for="profile-bio">Bio</label>
-        <textarea data-colspan="9" id="profile-bio" placeholder="Tell us about yourself…" rows="3"
-                  x-model="profileBio"></textarea>
-      </section>
-      <p data-skin="mute"><small>Your profile is visible to other users. See our <a href="#">privacy policy</a>.</small></p>
+      <label data-colspan="3" for="profile-name">Full Name</label>
+      <input data-colspan="9" type="text" id="profile-name" placeholder="Jane Doe" required
+             x-model="profileName" autocomplete="name">
+      <label data-colspan="3" for="profile-email">Email</label>
+      <input data-colspan="9" type="email" id="profile-email" placeholder="jane@example.com" required
+             x-model="profileEmail" autocomplete="email">
+      <label data-colspan="3" for="profile-password">Password</label>
+      <input data-colspan="9" type="password" id="profile-password" placeholder="••••••••"
+             minlength="8" autocomplete="new-password">
+      <label data-colspan="3" for="profile-url">Website</label>
+      <input data-colspan="9" type="url" id="profile-url" placeholder="https://example.com"
+             autocomplete="url">
+      <label data-colspan="3" for="profile-phone">Phone</label>
+      <input data-colspan="9" type="tel" id="profile-phone" placeholder="+1 555 000 0000"
+             autocomplete="tel">
+      <label data-colspan="3" for="profile-bio">Bio</label>
+      <textarea data-colspan="9" id="profile-bio" placeholder="Tell us about yourself…" rows="3"
+                x-model="profileBio"></textarea>
     </form>
+    <p data-skin="mute"><small>Your profile is visible to other users. See our <a href="#">privacy policy</a>.</small></p>
   </details>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
@@ -180,12 +166,12 @@
         <input type="radio" name="color-scheme" value="auto"> Auto
       </label>
     </section>
-  </details>
 
-  <!-- Tooltip popover — aside[popover] (moved outside details so it works when card is closed) -->
-  <aside popover id="tooltip-appearance">
-    <p><strong>Tip:</strong> Accent hue controls the primary color across the entire app. Try different values to find your style.</p>
-  </aside>
+    <!-- Tooltip popover — aside[popover] (§5 popover DOM placement: inside details, outside summary) -->
+    <aside popover id="tooltip-appearance">
+      <p><strong>Tip:</strong> Accent hue controls the primary color across the entire app. Try different values to find your style.</p>
+    </aside>
+  </details>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- CARD 4: Notifications (collapsible)                        -->
@@ -276,14 +262,14 @@
   </details>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- CARD 6: Save Actions (non-collapsible — details open)      -->
+  <!-- CARD 6: Save Actions (non-collapsible — article+header, §1) -->
   <!-- Demonstrates: data-state="loading|success", filled/ghost   -->
   <!--   skins, gear/reset icon animations, x-bind:data-state    -->
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <details open data-fixed @toggle.prevent="$el.open = true">
-    <summary>
+  <article>
+    <header>
       <h3 data-colspan="12">Actions</h3>
-    </summary>
+    </header>
     <section>
       <button data-colspan="4" data-skin="ghost" @click="
         profileName = ''; profileEmail = ''; profileBio = '';
@@ -307,7 +293,7 @@
         Save
       </button>
     </section>
-  </details>
+  </article>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- CARD 7: Danger Zone (collapsible)                          -->
@@ -348,13 +334,11 @@
     <h2>Delete Account?</h2>
     <p>This will permanently delete your account and all associated data. This action <strong>cannot</strong> be undone.</p>
     <form method="dialog">
-      <section>
-        <button data-colspan="6" value="cancel">Cancel</button>
-        <button data-colspan="6" data-skin="filled" value="confirm"
-                @click.prevent="$refs.confirmDialog.close(); deleteAccount()">
-          Confirm Delete
-        </button>
-      </section>
+      <button data-colspan="6" value="cancel">Cancel</button>
+      <button data-colspan="6" data-skin="filled" value="confirm"
+              @click.prevent="$refs.confirmDialog.close(); deleteAccount()">
+        Confirm Delete
+      </button>
     </form>
   </dialog>
 
