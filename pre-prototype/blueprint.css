@@ -76,18 +76,22 @@
     transition: border-color 0.15s ease;
   }
 
-  /* Smooth card content reveal (prevent native style flash) */
+  /* Smooth card content reveal — @starting-style prevents first-frame flash */
   details {
     overflow: hidden;
   }
 
   details > :not(summary) {
-    animation: card-reveal 0.2s ease both;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
 
-  @keyframes card-reveal {
-    from { opacity: 0; transform: translateY(-4px); }
-    to { opacity: 1; transform: translateY(0); }
+  @starting-style {
+    details > :not(summary) {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
   }
 
   /* Dialog specifics (§7) */
@@ -164,6 +168,12 @@
     outline-offset: var(--xs);
     position: relative;
     z-index: 1;
+  }
+
+  /* User-invalid — shows after user interacts then leaves an invalid field (§6) */
+  :is(input, textarea, select):user-invalid {
+    border-color: var(--color-danger);
+    outline-color: var(--color-danger);
   }
 
   /* Disabled (§6) */
