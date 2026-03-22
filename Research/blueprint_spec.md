@@ -58,39 +58,28 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 - `<textarea>` — multi-line text.
 - `<select>` — dropdown choice.
 
-### Headings
-
-- `<h1>` through `<h4>` — heading hierarchy. h5/h6 dropped.
 
 ### Content / Text
-
-`<p>` — paragraph text only. NOT used for layout wrapping. Inherits body defaults (color, font-size) — no explicit styling needed.
-`<small>` — secondary/fine text.
+- `<h1>` through `<h4>` — heading hierarchy. h5/h6 dropped
+`<p>`
+— paragraph text only. NOT used for layout wrapping. Inherits body defaults (color, font-size) — no explicit styling needed.
 `<label>` — ties text to a control.
-`<a>` — link / navigation.
-`<svg>` — icon / graphic. Inherits text color via `fill: currentColor`.
-`<output>` — computed result / toast host. Has native `aria-live="polite"`.
 `<aside>` — supplementary info / tooltip host.
 
 ### Implicit Inline Formatting (allowed within text elements)
 
-`<strong>`, `<code>`, `<ul>`/`<ol>`/`<li>`, `<s>`
+`<strong>`, `<code>`, `<ul>`/`<ol>`/`<li>`, `<s>, `<small>`, `<a>`, `<svg>`
 
 ### Popover Hosts (semantic element + popover attribute)
 
 - Tooltip → `<aside popover>` — supplementary info
-- Toast/notification → `<output popover>` — announced result (native aria-live)
 - Dropdown menu → `<nav popover>` — container with buttons/links.
 
 ### Deferred (not in current system, or only for different use case — future candidates)
 
 - `<header>` — potential button group at top of card.
 - `<footer>` — potential button group at bottom of card.
-- `<nav>` — stays for popover menus only (`<nav popover>`). Deferred as general row wrapper.
-
-### Cut Elements
-
-`<fieldset>`, `<img>`, `<table>`, `<hr>`, `<article>`.
+- `<nav>` — stays for popover menus only (`<nav popover>`). Deferred as general row wrapper, maybe for button group later.
 
 ### Category → Display Type
 
@@ -100,7 +89,6 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 | Wrapper     | grid (12-col) | Groups elements into rows       | section, summary                                                          |
 | Transparent | contents      | Submission scope only           | form                                                                      |
 | Component   | inline-block  | Self-contained interactive unit | button, text inputs, textarea, select, range, [popover]                   |
-| Content     | inline        | Leaf-level text/graphic         | h1–h4, p, small, label, a, svg, checkbox, radio, date/time, output, aside |
 
 ---
 
@@ -133,7 +121,7 @@ Max structural depth: 4 (html → body → details → content). Depth 5 for row
 
 ---
 
-## 3. Data Attributes
+## 3. Custom Attributes
 
 ### data-skin — Composable Visual Modifications
 
@@ -318,7 +306,6 @@ Body is a grid with `gap: var(--l)`, `max-inline-size: 800px`, `margin-inline: a
 **Layer 2 — Out-of-flow overlays:**
 
 - `<aside popover>` — tooltip
-- `<output popover>` — toast/notification
 - `<nav popover>` — dropdown menu
 - `<dialog>` — modal (backdrop + focus trap + Escape)
 
@@ -371,7 +358,9 @@ h1,
 h2,
 h3,
 h4,
-p {
+p,
+ul,
+ol {
   margin: 0;
 }
 button,
@@ -381,12 +370,15 @@ select {
   font: inherit;
   color: inherit;
 }
+li {
+  list-style: none;
+}
 ```
 
 ### Default Layer
 
 - **Body:** grid, gap --l, max-inline-size 800px, margin-inline auto, padding --m, font-family Nunito (system-ui fallback), --m base size, --text color, --neutral bg.
-- **Cards** (`details, dialog ): --neutral-mute bg, border 1px solid --neutral-edge, radius --m, padding --m, display grid, gap --m.
+- **Containers** (`details, dialog ): --neutral-mute bg, border 1px solid --neutral-edge, radius --m, padding --m, display grid, gap --m.
 - **Row wrappers** (`section, summary`): display grid, grid-template-columns repeat(12, 1fr), gap --s, place-items center start. Transparent — no visual styling.
 - **Form:** display contents.
 - **Dialog:** padding --l, max-inline-size min(600px, 90vw), `::backdrop` with `oklch(20% 0 0 / 0.5)`. Focus trap is browser-native via `showModal()`.
@@ -395,7 +387,6 @@ select {
 - **Focus ring:** --xs solid --accent, --xs offset. Unified across all interactive elements.
 - **Disabled:** opacity 0.5, cursor not-allowed. Unified across all controls.
 - **Button:** border 2px solid --accent, cursor pointer, transparent bg, --accent color, font-weight 700, inline-flex, place-items/content center, gap --xs. Hover fills to --neutral-mute. Active: scale 0.96.
-- **Output:** font-weight 700.
 - **Select:** custom dropdown arrow (SVG data URI), appearance:none.
 - **Range:** stripped to native (transparent bg, no border/padding, accent-color).
 - **Checkbox/radio:** sized to --m, accent-color, no border/padding/bg, cursor pointer.
@@ -537,7 +528,7 @@ Element count: ~19 unique tag names. ~23 total entries counting input type varia
 - Color system: oklch, light-dark(), 5 base inputs.
 - Max depth 4 (body → card → row wrapper → child). Depth 5 for row children only.
 - Body: max-inline-size 800px, margin-inline auto.
-- Popover hosts: aside (tooltip), output (toast), nav (dropdown).
+- Popover hosts: aside (tooltip), nav (dropdown).
 
 ### Tier 2 — Tunable (visual tokens, adjustable through testing)
 
