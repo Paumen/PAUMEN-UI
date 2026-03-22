@@ -86,6 +86,9 @@
     background: oklch(20% 0 0 / 0.5);
   }
 
+  /* Popover: hide when closed (author display:grid overrides UA display:none) */
+  [popover]:not(:popover-open) { display: none; }
+
   /* Popover transitions (§6) */
   [popover] {
     opacity: 0;
