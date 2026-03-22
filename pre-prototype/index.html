@@ -79,19 +79,7 @@
   <script>
     function navTo(id) {
       document.getElementById('nav-menu').hidePopover();
-      document.querySelectorAll('details[id$="-card"]').forEach(d => d.open = false);
-      const target = document.getElementById(id);
-      if (!target) return;
-      // 1. Hide content before opening (prevents native style flash)
-      target.classList.add('card-entering');
-      // 2. Open the card (content renders but is hidden via .card-entering)
-      target.open = true;
-      // 3. Remove class after browser has painted — triggers CSS transition
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          target.classList.remove('card-entering');
-        });
-      });
+      document.querySelectorAll('details[id$="-card"]').forEach(d => d.open = (d.id === id));
     }
   </script>
 
