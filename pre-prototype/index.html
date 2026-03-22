@@ -56,11 +56,11 @@
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- CARD 1: Page Header (non-collapsible — details open, §2)  -->
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <details open>
+  <details open data-fixed>
     <summary>
       <h1 data-colspan="10">Settings</h1>
       <!-- Popover trigger — nav popover = dropdown menu (§5 Layer 2) -->
-      <button data-colspan="2" data-skin="ghost" popovertarget="nav-menu" aria-label="Menu" @click.stop>
+      <button data-colspan="2" data-skin="ghost" popovertarget="nav-menu" aria-label="Menu" @click.stop style="font-size: var(--l);">
         <i class="ph-bold ph-list" aria-hidden="true"></i>
         <i class="ph-duotone ph-list" aria-hidden="true" data-icon-fill></i>
       </button>
@@ -149,11 +149,6 @@
       </button>
     </summary>
 
-    <!-- Tooltip popover — aside[popover] -->
-    <aside popover id="tooltip-appearance">
-      <p><strong>Tip:</strong> Accent hue controls the primary color across the entire app. Try different values to find your style.</p>
-    </aside>
-
     <section>
       <label data-colspan="4" for="accent-hue">Accent Hue</label>
       <input data-colspan="6" type="range" id="accent-hue" min="0" max="360" step="1"
@@ -186,6 +181,11 @@
       </label>
     </section>
   </details>
+
+  <!-- Tooltip popover — aside[popover] (moved outside details so it works when card is closed) -->
+  <aside popover id="tooltip-appearance">
+    <p><strong>Tip:</strong> Accent hue controls the primary color across the entire app. Try different values to find your style.</p>
+  </aside>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- CARD 4: Notifications (collapsible)                        -->
@@ -256,7 +256,7 @@
 
     <section>
       <label data-colspan="4" for="max-items">Max Items</label>
-      <input data-colspan="8" type="number" id="max-items" value="10" min="1" max="100" readonly>
+      <input data-colspan="8" type="number" id="max-items" value="10" min="1" max="100" readonly tabindex="-1">
     </section>
 
     <h4>Tags</h4>
@@ -282,7 +282,7 @@
   <!-- Demonstrates: data-state="loading|success", filled/ghost   -->
   <!--   skins, gear/reset icon animations, x-bind:data-state    -->
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <details open>
+  <details open data-fixed>
     <summary>
       <h3 data-colspan="12">Actions</h3>
     </summary>
