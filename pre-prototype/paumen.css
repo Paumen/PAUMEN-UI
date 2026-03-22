@@ -22,7 +22,9 @@
   h2,
   h3,
   h4,
-  p {
+  p,
+  ul,
+  ol {
     margin: 0;
   }
   button,
@@ -32,6 +34,10 @@
     font: inherit;
     color: inherit;
   }
+  ul,
+  li {
+    list-style: none;
+   }
 }
 
 /* ══════════════════════════════════════════════════
@@ -95,6 +101,63 @@
 
     --icon-s: 1.075rem;
     --icon-m: 1.225rem;
+
+    /* ── Fluid inline-spacing scale ─────────────
+       Geometric 5-step scale derived from three root params.
+       Ratio 1.8 between steps; base at step 3 (exponent 0).
+       Steps 1-2 round to 0.125rem (≈2px), steps 3-5 to 0.25rem (≈4px).
+       Usage: padding-inline: var(--sp-3);
+              padding-block:  calc(var(--sp-3) * var(--sp-block-ratio));
+       ────────────────────────────────────────── */
+
+    /* Root fluid parameters — tune these to reshape the whole scale */
+    --size-min: 0.5rem;        /* base step floor  (≈8px)  */
+    --size-val: 1cqi;          /* base step fluid   (container-relative) */
+    --size-max: 0.75rem;       /* base step ceiling (≈12px) */
+    --size-ratio: 1.8;         /* geometric ratio between adjacent steps */
+
+    /* Block-to-inline axis ratio — block padding = 75% of inline */
+    --sp-block-ratio: 0.75;
+
+    /* Step 1 — tightest  (ratio^-2 ≈ 0.309) ≈ 2–4px */
+    --sp-1: round(nearest,
+      clamp(
+        calc(var(--size-min) * pow(var(--size-ratio), -2)),
+        calc(var(--size-val) * pow(var(--size-ratio), -2)),
+        calc(var(--size-max) * pow(var(--size-ratio), -2))
+      ), 0.125rem);
+
+    /* Step 2 — snug      (ratio^-1 ≈ 0.556) ≈ 4–6px */
+    --sp-2: round(nearest,
+      clamp(
+        calc(var(--size-min) * pow(var(--size-ratio), -1)),
+        calc(var(--size-val) * pow(var(--size-ratio), -1)),
+        calc(var(--size-max) * pow(var(--size-ratio), -1))
+      ), 0.125rem);
+
+    /* Step 3 — base      (ratio^0  = 1)      ≈ 8–12px */
+    --sp-3: round(nearest,
+      clamp(
+        var(--size-min),
+        var(--size-val),
+        var(--size-max)
+      ), 0.25rem);
+
+    /* Step 4 — comfortable (ratio^1  = 1.8)  ≈ 14–20px */
+    --sp-4: round(nearest,
+      clamp(
+        calc(var(--size-min) * var(--size-ratio)),
+        calc(var(--size-val) * var(--size-ratio)),
+        calc(var(--size-max) * var(--size-ratio))
+      ), 0.25rem);
+
+    /* Step 5 — spacious  (ratio^2  ≈ 3.24)   ≈ 24–32px */
+    --sp-5: round(nearest,
+      clamp(
+        calc(var(--size-min) * pow(var(--size-ratio), 2)),
+        calc(var(--size-val) * pow(var(--size-ratio), 2)),
+        calc(var(--size-max) * pow(var(--size-ratio), 2))
+      ), 0.25rem);
   }
 
   /* ── Body (depth 1) ─────────────────────────── */
@@ -131,6 +194,7 @@
   /* No visual chrome — transparent, no border */
 
   section,
+  li,
   header,
   footer,
   nav,

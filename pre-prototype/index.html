@@ -36,7 +36,7 @@
         <button data-colspan="4" href="#">This Week</button>
         <button data-colspan="4" href="#">Archive</button>
       </nav>
-      <section>
+      <form role="search">
         <input type="search" placeholder="Search tasks…" data-colspan="10" />
         <button data-skin="ghost" aria-label="Clear search">
           <i class="ph-bold ph-x" aria-hidden="true"></i
@@ -50,7 +50,7 @@
             data-icon-fill
           ></i>
         </button>
-      </section>
+      </form>
     </article>
 
     <!-- ══════════════════════════════════════════════
@@ -98,38 +98,34 @@
         <h3 data-colspan="12">Today's Tasks</h3>
       </summary>
 
-      <section>
-        <input type="checkbox" id="task-1" />
-        <label for="task-1" data-colspan="10"
-          >Review project proposal and leave comments</label
-        >
-        <button data-colspan="1" data-skin="ghost" aria-label="Delete task">
-          <i class="ph-bold ph-trash" aria-hidden="true"></i
-          ><i class="ph-duotone ph-trash" aria-hidden="true" data-icon-fill></i>
-        </button>
-      </section>
+      <ul>
+        <li class="task-row">
+          <input type="checkbox" id="task-1" />
+          <label for="task-1" data-colspan="10">Review project proposal and leave comments</label>
+          <button data-colspan="1" data-skin="ghost" aria-label="Delete task">
+            <i class="ph-bold ph-trash" aria-hidden="true"></i
+            ><i class="ph-duotone ph-trash" aria-hidden="true" data-icon-fill></i>
+          </button>
+        </li>
 
-      <section>
-        <input type="checkbox" id="task-2" />
-        <label for="task-2" data-colspan="10"
-          >Schedule team sync for Q2 planning</label
-        >
-        <button data-colspan="1" data-skin="ghost" aria-label="Delete task">
-          <i class="ph-bold ph-trash" aria-hidden="true"></i
-          ><i class="ph-duotone ph-trash" aria-hidden="true" data-icon-fill></i>
-        </button>
-      </section>
+        <li class="task-row">
+          <input type="checkbox" id="task-2" />
+          <label for="task-2" data-colspan="10">Schedule team sync for Q2 planning</label>
+          <button data-colspan="1" data-skin="ghost" aria-label="Delete task">
+            <i class="ph-bold ph-trash" aria-hidden="true"></i
+            ><i class="ph-duotone ph-trash" aria-hidden="true" data-icon-fill></i>
+          </button>
+        </li>
 
-      <section>
-        <input type="checkbox" id="task-3" checked />
-        <label for="task-3" data-colspan="10" data-skin="mute"
-          ><s>Send weekly status update email</s></label
-        >
-        <button data-colspan="1" data-skin="ghost" aria-label="Delete task">
-          <i class="ph-bold ph-trash" aria-hidden="true"></i
-          ><i class="ph-duotone ph-trash" aria-hidden="true" data-icon-fill></i>
-        </button>
-      </section>
+        <li class="task-row">
+          <input type="checkbox" id="task-3" checked />
+          <label for="task-3" data-colspan="10" data-skin="mute"><s>Send weekly status update email</s></label>
+          <button data-colspan="1" data-skin="ghost" aria-label="Delete task">
+            <i class="ph-bold ph-trash" aria-hidden="true"></i
+            ><i class="ph-duotone ph-trash" aria-hidden="true" data-icon-fill></i>
+          </button>
+        </li>
+      </ul>
     </details>
 
     <!-- ══════════════════════════════════════════════
