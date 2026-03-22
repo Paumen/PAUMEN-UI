@@ -362,7 +362,13 @@ For application-level states that no CSS pseudo-class can detect — specificall
 
 Signal hues (danger, success) are derived from accent — hue values only, saturation and lightness reuse the accent formula.
 
-**`:user-invalid` vs `data-error`:** These share the same visual treatment (danger hue) but differ in source. `:user-invalid` is free — the browser detects it from HTML attributes. `data-error` requires JS to set. Most form validation should be HTML-native; `data-error` is the fallback for what the browser can't know.
+**`:user-invalid` vs `data-error`:** Same visual (danger hue), different source. `:user-invalid` is free — the browser detects it from HTML attributes. `data-error` requires JS. Most form validation should be HTML-native; `data-error` is strictly for what the browser can't know:
+
+- **Server-side rejection** — username already taken, payment declined, email undeliverable
+- **Network failure** — fetch failed, timeout, offline
+- **Cross-field validation** — end date before start date, password confirmation mismatch, total exceeds budget
+- **Async verification** — address lookup invalid, API key rejected, file upload corrupted
+- **Business logic** — insufficient balance, schedule conflict, rate limit exceeded
 
 ### State Decision Guide
 
