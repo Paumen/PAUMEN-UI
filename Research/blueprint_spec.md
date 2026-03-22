@@ -521,7 +521,7 @@ After removing `<article>` and making `<details>` the default card, and simplify
 - **S19:** Escape hatch via `data-skin="freeform"` on cards.
 - **S20:** Spec values reconciled with shipped CSS (spacing scale, color tokens, token-to-property mappings).
 
-Element count: ~19 unique tag names. ~23 total entries counting input type variants and h1–h4.
+Element count: ~20 tag names. total bit higher counting input type variants and h1–h4.
 
 ---
 
@@ -550,7 +550,6 @@ Element count: ~19 unique tag names. ~23 total entries counting input type varia
 - Font family (currently Nunito).
 - Font weight values (button: 700, output: 700).
 - Heading sizes (h1/h2: --xl, h3: --l, h4: --m).
-- Icon tokens (--icon-s, --icon-m).
 - Transition durations and easings.
 - Box-shadow values for elevated skin.
 
