@@ -36,7 +36,7 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ### Cards (body children, depth 2 — display: grid, gap --m, single-column stack)
 
-- `<details>` + `<summary>` — **default card type.** Collapsible by default via native toggle. Non-collapsible cards: use `<details open>` with chevron hidden via CSS. Summary acts as built-in header row wrapper.
+- `<details>` + `<summary>` — **default card type.** Collapsible by default via native toggle. Non-collapsible cards: use `<details open data-fixed>` with chevron hidden and toggle prevented via CSS + Alpine. Summary acts as built-in header row wrapper.
 - `<dialog>` — modal overlay card with backdrop, focus trap, Escape-to-close. Interior follows same rules as any card.
 
 ### Transparent Wrapper (display: contents — no visual chrome, no depth)
@@ -117,7 +117,7 @@ Max structural depth: 4 (html → body → details → content). Depth 5 for row
 
 - Cards are body-level only. Row wrappers are card-level only.
 - Single elements are direct card children.
-- Non-collapsible cards: `<details open>` with chevron hidden. Same DOM structure, same rules.
+- Non-collapsible cards: `<details open data-fixed>` with chevron hidden and toggle prevented. Same DOM structure, same rules. Requires Alpine `@toggle.prevent="$el.open = true"` to prevent JS-driven toggles. CSS hides chevron and disables summary click via `pointer-events: none` (re-enabled on children).
 
 ---
 
@@ -131,7 +131,7 @@ Applied to any element. Selected via `[data-skin~="value"]`.
 - **`filled`** — accent background, light text, accent border. Hover darkens to `--accent-dn`.
 - **`ghost`** — transparent background, no border. Interactive elements: hover shows `--neutral-mute` background. Non-interactive: static.
 - **`mute`** — `--text-mute` color.
-- **`elevated`** — `box-shadow` for visual lift.
+- **`elevated`** — `box-shadow` for visual lift. Shadow base uses `oklch(0% 0 0)` (pure black) — not a lighter value, which is invisible against dark backgrounds. Includes a subtle `0 0 0 1px` ring for edge definition in dark mode.
 - **`freeform`** — escape hatch. Removes system constraints from card interior via `all: revert`. Cards only. The author takes full responsibility for interior styling.
 
 **Skin conflict groups** (mutually exclusive): filled | ghost (pick at most one).
@@ -166,7 +166,20 @@ Common patterns:
 
 Supported colspan values: 1, 2, 3, 4, 6, 8, 9, 10, 11, 12. Values 5, 7 omitted — they don't produce clean ratios in a 12-column grid.
 
-### data-state — Signal States (not yet implemented in CSS)
+### data-fixed — Non-Collapsible Card Lock
+
+Applied to `<details open>` to prevent collapse. CSS hides the chevron and sets `pointer-events: none` on `<summary>` (re-enabled on children so buttons still work). Requires Alpine `@toggle.prevent="$el.open = true"` because CSS alone cannot prevent JS-driven toggles.
+
+```html
+<details open data-fixed @toggle.prevent="$el.open = true">
+  <summary>
+    <h3 data-colspan="12">Actions</h3>
+  </summary>
+  <!-- content always visible, summary not clickable as toggle -->
+</details>
+```
+
+### data-state — Signal States
 
 A single attribute with three allowed values for application-level states that CSS pseudo-classes cannot detect.
 
@@ -311,6 +324,10 @@ Body is a grid with `gap: var(--l)`, `max-inline-size: 800px`, `margin-inline: a
 - `<nav popover>` — dropdown menu
 - `<dialog>` — modal (backdrop + focus trap + Escape)
 
+**Popover DOM placement rule:** `<aside popover>` and `<nav popover>` must be **body-level siblings**, not nested inside `<details>`. If placed inside a `<details>`, the popover is hidden when the card is closed — making trigger buttons on the summary non-functional. The trigger button goes inside the card's `<summary>`; the popover element goes outside, as a sibling after the `</details>`.
+
+**Popover CSS architecture:** The `[popover]` base state must be visually empty (`background: transparent; border: none; padding: 0; opacity: 0`). All card styling (background, border, padding, shadow) applies only via `:popover-open`. This prevents a flash of unstyled content on the closing frame — when `:popover-open` drops, the element is still briefly visible before `display: none` takes effect.
+
 ### Sizing Model
 
 All elements are content-intrinsic. Width is determined by placement (body grid → card, card grid → full width, row wrapper → colspan). Height is determined by content + padding. No element has an explicit width, height, or min-height. Cards, rows, and controls grow to fit their content. This is not a simplification — it is the sizing model.
@@ -334,7 +351,7 @@ Claude never writes state styles. All states are derived from element default + 
 | | `:hover` | `text-decoration: underline` | `a` |
 | **Active** | `:active:not(:disabled)` | `transform: scale(0.98)` | button |
 | **Focus** | `:focus-visible` | `outline: var(--xs) solid var(--accent); outline-offset: var(--xs)` | button, input, textarea, select, a, summary |
-| **Disabled** | `:disabled` | `opacity: 0.5; cursor: not-allowed` | button, input, textarea, select |
+| **Disabled** | `:disabled` | `opacity: 0.38; cursor: not-allowed; filter: grayscale(0.4)` | button, input, textarea, select |
 | **Checked** | `:checked` | `accent-color: var(--accent)` (native rendering) | input[type="checkbox"], input[type="radio"] |
 
 ### Native Content & Validation States (pseudo-classes)
@@ -345,24 +362,26 @@ These pseudo-classes detect state natively — no JS, no data attributes. Only s
 |-------|----------|----------------|----------------|
 | **Empty container** | `:empty`, `:not(:has(> li))` | `display: none` or placeholder via `::before` | Empty lists, empty card bodies. Eliminates `data-empty`. Variant `:not(:has(> *))` ignores whitespace. |
 | **Unfilled input** | `:placeholder-shown` | `border-color: var(--neutral-edge)` (or muted label) | Detect inputs the user hasn't touched. Useful for floating labels or "incomplete" styling. |
-| **Invalid (after interaction)** | `:user-invalid` | `border-color: var(--color-danger)` | HTML validation failed AND user has interacted. Covers `required`, `pattern`, `type`, `min`/`max` — no JS. Prefer over `:invalid` which fires on page load before user acts. |
+| **Invalid (after interaction)** | `:user-invalid` | `border-color: var(--color-danger); outline-color: var(--color-danger)` | HTML validation failed AND user has interacted. Covers `required`, `pattern`, `type`, `min`/`max` — no JS. Prefer over `:invalid` which fires on page load before user acts. **Implemented in CSS.** |
 | **Valid (after interaction)** | `:user-valid` | `border-color: var(--color-success)` | Positive confirmation after user fills a field correctly. Subtle — don't overuse. |
-| **Read-only** | `:read-only` | `opacity: 0.7; cursor: default` | Non-editable inputs displaying computed/locked values (dashboards, calculated fields). |
+| **Read-only** | `:read-only` | `background: var(--neutral-edge); border-style: dashed; color: var(--text-mute); cursor: default; outline: none` | Non-editable inputs displaying computed/locked values. Must use `tabindex="-1"` in HTML to remove from tab order. Background must differ from card (`--neutral-mute`) — uses `--neutral-edge` for contrast. |
 | **Indeterminate** | `:indeterminate` | `opacity: 0.6` (native rendering) | Checkbox "select all" when some items checked. Common in dashboard list patterns. |
 | **Details expanded** | `[open]` | (already handled — summary arrow rotates) | `<details>` is the primary card type; open/closed is core to the layout. |
 | **Popover visible** | `:popover-open` | `opacity: 1` (with transition from 0) | Tooltips (`aside[popover]`) and menus (`nav[popover]`). Enables enter/exit animations. |
 
 **Intentionally excluded:** `:valid`/`:invalid` (fire before user interacts — bad UX; use `:user-valid`/`:user-invalid`), `:required`/`:optional` (over-engineering for small tools — context makes this obvious), `:in-range`/`:out-of-range` (subsumed by `:user-invalid`), `:target` (hash navigation irrelevant to SPA-like tools).
 
-### Signal States (data attributes — not yet implemented in CSS)
+### Signal States (data attributes — implemented)
 
 For application-level states that no CSS pseudo-class can detect — specifically, outcomes of async operations or server responses.
 
-| State | Selector | Recommended CSS | When to use (and not) |
+| State | Selector | CSS properties | When to use (and not) |
 |-------|----------|----------------|----------------------|
 | **Error** | `[data-state="error"]` | `border-color: var(--color-danger); color: var(--color-danger)` | API failure, server error, custom async validation. **Not** for HTML validation — use `required`/`pattern` + `:user-invalid` instead. |
 | **Loading** | `[data-state="loading"]` | `animation: pulse 1.5s ease-in-out infinite; opacity: 0.6` | Async operation in progress (fetch, save, compute). No native pseudo-class for this. |
 | **Success** | `[data-state="success"]` | `border-color: var(--color-success)` | Action confirmed (save, submit, delete). Typically shown briefly then cleared. Distinct from `:user-valid` which is per-field. |
+
+**Filled + signal state interaction:** When `data-skin="filled"` and `data-state` are both present, the signal state replaces the entire filled appearance — background, border-color, and text all shift to the signal color. These overrides must live **outside CSS layers** (unlayered CSS) because `@layer skin` filled rules override `@layer default` signal rules regardless of specificity. See §7 CSS Architecture.
 
 Signal hues (danger, success) are derived from accent — hue values only, saturation and lightness reuse the accent formula.
 
@@ -386,11 +405,13 @@ When deciding how to express a state, follow this priority:
 
 ## 7. CSS Architecture
 
-### Four Layers
+### Four Layers + Unlayered Overrides
 
 ```css
 @layer reset, default, skin, grid;
 ```
+
+Signal state overrides for filled skins (`[data-skin~="filled"][data-state="..."]`) must live **outside all layers** (unlayered CSS). Unlayered CSS always wins over all `@layer` rules regardless of specificity. This is necessary because `@layer skin` filled rules would otherwise override `@layer default` signal states.
 
 ### Reset (3 rules)
 
@@ -425,15 +446,20 @@ li {
 ### Default Layer
 
 - **Body:** grid, gap --l, max-inline-size 800px, margin-inline auto, padding --m, font-family Nunito (system-ui fallback), --m base size, --text color, --neutral bg.
-- **Containers** (`details, dialog ): --neutral-mute bg, border 1px solid --neutral-edge, radius --m, padding --m, display grid, gap --m.
-- **Row wrappers** (`section, summary`): display grid, grid-template-columns repeat(12, 1fr), gap --s, place-items center start. Transparent — no visual styling.
+- **Containers** (`details, dialog`): --neutral-mute bg, border 1px solid --neutral-edge, radius --m, padding --m, display grid, gap --m, `transition: border-color 0.15s ease`. `details` also gets `overflow: hidden`.
+- **Non-collapsible cards** (`details[data-fixed]`): summary gets `list-style: none; pointer-events: none`, children get `pointer-events: auto`. Chevron markers hidden.
+- **Popover base** (`[popover]`): `opacity: 0; background: transparent; border: none; padding: 0`. All visual card styling is on `:popover-open` only — prevents flash of unstyled element when popover closes.
+- **Popover open** (`:popover-open`): card styling (--neutral-mute bg, border, radius, padding) + `box-shadow` + `z-index: 10` for overlay depth.
+- **Row wrappers** (`section, summary`): display grid, grid-template-columns repeat(12, 1fr), gap --s, place-items center start. Transparent — no visual styling. Summary gets `font-size: var(--l)` — card headers are visually larger, and icon buttons in summaries inherit the correct size without inline styles.
 - **Form:** display contents.
 - **Dialog:** padding --l, max-inline-size min(600px, 90vw), `::backdrop` with `oklch(20% 0 0 / 0.5)`. Focus trap is browser-native via `showModal()`.
 - **Headings h1–h4:** Sizes: h1/h2 --xl, h3 --l, h4 --m.
 - **Shared control base** (`button, input, textarea, select`): border 1px solid --neutral-edge, radius --s, --neutral bg, --text color, padding --s, width 100%, transition.
 - **Focus ring:** --xs solid --accent, --xs offset. Unified across all interactive elements.
-- **Disabled:** opacity 0.5, cursor not-allowed. Unified across all controls.
-- **Button:** border 2px solid --accent, cursor pointer, transparent bg, --accent color, font-weight 700, inline-flex, place-items/content center, gap --xs. Hover fills to --neutral-mute. Active: scale 0.96.
+- **User-invalid:** `:user-invalid` — border-color and outline-color set to --color-danger. Fires only after user interaction.
+- **Disabled:** opacity 0.38, cursor not-allowed, filter grayscale(0.4). Unified across all controls.
+- **Readonly:** background --neutral-edge (must contrast with card bg --neutral-mute), border-style dashed, color --text-mute, cursor default, outline none. HTML should include `tabindex="-1"`.
+- **Button:** border 2px solid --accent, cursor pointer, transparent bg, --accent color, font-weight 700, inline-flex, place-items/content center, gap --xs. Hover fills to --neutral-mute. Active: scale 0.98.
 - **Select:** custom dropdown arrow (SVG data URI), appearance:none.
 - **Range:** stripped to native (transparent bg, no border/padding, accent-color).
 - **Checkbox/radio:** sized to --m, accent-color, no border/padding/bg, cursor pointer.
@@ -579,7 +605,7 @@ Element count: ~20 tag names. total bit higher counting input type variants and 
 - Card type: `<details>` default, `<dialog>` for modals.
 - Row wrappers: `<summary>` + `<section>`
 - Grid architecture: F4 (1-col stack + row wrappers), 12-column.
-- Four CSS layers: reset → default → skin → grid.
+- Four CSS layers: reset → default → skin → grid. Plus unlayered signal state overrides.
 - Claude never writes CSS.
 - No CSS classes — element selectors + attribute selectors only (icon classes excepted).
 - No div or span.
@@ -587,7 +613,8 @@ Element count: ~20 tag names. total bit higher counting input type variants and 
 - Color system: oklch, light-dark(), 5 base inputs.
 - Max depth 4 (body → card → row wrapper → child). Depth 5 for row children only.
 - Body: max-inline-size 800px, margin-inline auto.
-- Popover hosts: aside (tooltip), nav (dropdown).
+- Popover hosts: aside (tooltip), nav (dropdown). Must be body-level siblings, never inside `<details>`.
+- Non-collapsible cards: `data-fixed` attribute + Alpine `@toggle.prevent`.
 
 ### Tier 2 — Tunable (visual tokens, adjustable through testing)
 
@@ -602,10 +629,101 @@ Element count: ~20 tag names. total bit higher counting input type variants and 
 
 ### Tier 3 — Deferred (acknowledged gaps, not yet implemented)
 
-- Signal state CSS implementation (`data-state="error|loading|success"`) and signal hues (danger, success).
+- ~~Signal state CSS implementation (`data-state="error|loading|success"`) and signal hues (danger, success).~~ **Done.** Implemented in CSS. Signal states in default layer + unlayered overrides for filled skins.
 - `<header>`, `<footer>`, `<nav>` as row wrappers (currently deferred; nav stays for popovers).
 - Partial-width single elements (sizing skins vs row wrapper with empty cols).
 - CLAUDE.md (<200 lines) + component catalog skill file.
 - Validator script (HTML parser to flag unauthorized elements/styles/skins).
 - Reference app (planned for end of stage 1).
 - Split spacing scale into padding/gap tokens vs. font-size tokens.
+
+---
+
+## 12. UAT Findings Log
+
+Findings from manual UAT testing of the pre-prototype Settings reference app. Each finding represents a spec gap or ambiguity that caused incorrect implementation. Codified here to prevent recurrence.
+
+### Popover Close Flash (Critical)
+
+**Symptom:** When `<nav popover>` dropdown closes, a white/bordered rectangle flashes for one frame before disappearing.
+
+**Root cause:** `[popover]` base state had visible CSS (background, border, padding inherited from browser defaults). When `:popover-open` drops, the element is still rendered for one frame before `display: none` kicks in — showing the unstyled base state.
+
+**Fix:** `[popover]` base state must be visually empty: `background: transparent; border: none; padding: 0; opacity: 0`. All visual card styling belongs exclusively on `:popover-open`.
+
+**Spec update:** §5 Layout, §7 CSS Architecture.
+
+### Popover Inside Details (Critical)
+
+**Symptom:** Clicking the "?" help button on the Appearance card header does nothing when the card is collapsed — even though the button is visible on the summary.
+
+**Root cause:** `<aside popover>` was nested inside `<details>`. When `<details>` is closed, all content except `<summary>` is hidden (`display: none`), including the popover target element. The browser can't open a popover that has `display: none`.
+
+**Fix:** Popover elements (`<aside popover>`, `<nav popover>`) must be body-level siblings, placed after the `</details>` that contains their trigger button.
+
+**Spec update:** §5 Layout — new DOM placement rule.
+
+### Signal States vs CSS Layers (Critical)
+
+**Symptom:** Save button "Saved!" state showed no green. Delete button error state showed no red. Both stayed at their normal accent color.
+
+**Root cause:** Signal state rules (`[data-state="success"]`) were in `@layer default`. Filled skin rules (`[data-skin~="filled"]`) were in `@layer skin`. CSS layers: later layers always win regardless of specificity. The skin layer's `border-color: var(--accent)` and `background: var(--accent)` overrode the signal state's `border-color: var(--color-success)`.
+
+**Fix:** Signal state overrides for filled skins must be **unlayered** (outside any `@layer` block). Unlayered CSS always beats all layers.
+
+**Spec update:** §6 Signal States, §7 CSS Architecture, §11 Tier 1.
+
+### Non-Collapsible Cards (High)
+
+**Symptom:** Actions card could still be collapsed by clicking the heading, despite `<details open>` with chevron hidden.
+
+**Root cause:** CSS can hide the chevron marker, but clicking any part of `<summary>` still triggers the native `<details>` toggle. `pointer-events: none` on `<summary>` was bypassed by child elements with `pointer-events: auto` — click events on children bubble up and trigger the toggle.
+
+**Fix:** `data-fixed` attribute + Alpine `@toggle.prevent="$el.open = true"`. CSS handles visual (hide chevron, disable summary cursor). Alpine handles behavioral (intercept toggle event, force open).
+
+**Spec update:** §1, §2, §3 (new `data-fixed` attribute), §11 Tier 1.
+
+### Disabled State Barely Visible (Medium)
+
+**Symptom:** "Export Data" disabled button was hard to distinguish from enabled buttons.
+
+**Root cause:** Spec said `opacity: 0.5` which is insufficiently distinct, especially with accent-colored borders.
+
+**Fix:** `opacity: 0.38; filter: grayscale(0.4); cursor: not-allowed`. The grayscale strips accent color, making disabled state obvious.
+
+**Spec update:** §6 State Automation, §7 Default Layer.
+
+### Readonly Indistinguishable from Editable (Medium)
+
+**Symptom:** "Max Items: 10" looked identical to other input fields. Appeared as a random number rather than a locked field.
+
+**Root cause:** Spec said `opacity: 0.7; cursor: default` — still looks like a normal input. Also used `--neutral-mute` background which matches the card background, making the field invisible.
+
+**Fix:** `background: var(--neutral-edge); border-style: dashed; color: var(--text-mute); cursor: default; outline: none; tabindex="-1"`. Dashed border + different background clearly signals "non-editable." `tabindex="-1"` removes from tab order.
+
+**Spec update:** §6 State Automation, §7 Default Layer.
+
+### Elevated Skin Invisible in Dark Mode (Medium)
+
+**Symptom:** Schedule & Tags card showed no elevation difference from other cards in dark mode.
+
+**Root cause:** Shadow base used `oklch(20% 0 0)` — a dark gray that's invisible against dark backgrounds.
+
+**Fix:** Use `oklch(0% 0 0)` (pure black) for shadow + add `0 0 0 1px oklch(50% 0 0 / 0.06)` ring for edge definition.
+
+**Spec update:** §3 elevated skin description.
+
+### :user-invalid Not Implemented (Low)
+
+**Symptom:** Clearing a required field and tabbing away showed no validation hint in Edge.
+
+**Root cause:** `:user-invalid` was listed in the spec as a recommended pseudo-class but had no CSS implementation. Edge doesn't show browser-native validation UI on blur — only on form submission.
+
+**Fix:** Added `:user-invalid { border-color: var(--color-danger); outline-color: var(--color-danger) }` to CSS. Now works across all browsers after user interaction.
+
+**Spec update:** §6 Content & Validation States table — marked as implemented.
+
+### Open Issues (from UAT, not yet resolved)
+
+- ~~Inline style on menu icon button~~ **Resolved.** Summary now has `font-size: var(--l)` in CSS. Icon buttons in summaries inherit the correct size. Inline style removed.
+- **Nav popover close flash:** Still present despite base-state fix (1 remaining partial fail). May need `display: none` immediately on close via JS, or popover exit animation timing adjustment.
