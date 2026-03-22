@@ -177,6 +177,7 @@
     background: var(--neutral);
     color: var(--text);
     padding: var(--s);
+    width: 100%;
     transition: all 0.15s ease;
   }
 
@@ -213,12 +214,12 @@
     gap: var(--xs);
   }
 
-  button:hover {
+  button:hover:not(:disabled) {
     background: var(--neutral-mute);
   }
 
-  button:active {
-    scale: 0.96;
+  button:active:not(:disabled) {
+    transform: scale(0.98);
   }
 
   /* --- Links (§6) --- */
@@ -329,6 +330,21 @@
     border: 1px solid var(--neutral-edge);
     border-radius: var(--m);
     padding: var(--m);
+    opacity: 0;
+    transition: opacity 0.15s ease, overlay 0.15s ease, display 0.15s ease;
+    transition-behavior: allow-discrete;
+  }
+
+  /* --- Popover visible state (§6) --- */
+  [popover]:popover-open {
+    opacity: 1;
+  }
+
+  /* Entry animation starting state (§6) */
+  @starting-style {
+    [popover]:popover-open {
+      opacity: 0;
+    }
   }
 }
 
@@ -344,7 +360,7 @@
     border-color: var(--accent);
   }
 
-  [data-skin~="filled"]:hover {
+  [data-skin~="filled"]:hover:not(:disabled) {
     background: var(--accent-dn);
     border-color: var(--accent-dn);
   }
