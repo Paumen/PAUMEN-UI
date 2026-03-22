@@ -502,7 +502,56 @@ Icons have two variants inline: a stroke (bold) version shown by default, and a 
 
 ---
 
-## 9. Reconciliation Log
+## 9. Interactivity Model — Alpine.js Directives
+
+All client-side behavior uses Alpine.js. Claude never writes vanilla JS event listeners, DOM manipulation, or framework boilerplate. Five directives are spec-locked; all others require explicit approval.
+
+### Essential Directives (Tier 1 — Locked)
+
+| Directive | Role | Usage |
+|-----------|------|-------|
+| `x-data` | State declaration | Defines reactive state on any element. Every interactive component has exactly one `x-data` scope. |
+| `x-on` | Event binding | Binds DOM events (click, input, submit, keydown, etc.) to expressions. Shorthand `@click` permitted. |
+| `x-text` | Text output | Sets `textContent` reactively. Preferred over `x-html` for all plain-text display. |
+| `x-for` | List rendering | Renders arrays. Must be on a `<template>` element as direct child of its parent. |
+| `x-bind` | Attribute binding | Dynamically sets attributes (`disabled`, `data-skin`, `data-state`, `aria-*`). Shorthand `:attr` permitted. |
+
+### Core Directives (Tier 2 — Available, no approval needed)
+
+| Directive | Role | When to use |
+|-----------|------|-------------|
+| `x-show` | Conditional display | Toggle visibility (CSS `display:none`). Preferred over `x-if` for most conditional UI. |
+| `x-effect` | Side effects | Derived calculations, auto-save to localStorage, syncing computed values. |
+| `x-model` | Two-way binding | Binds form controls (input, textarea, select, checkbox, radio) to state. |
+| `x-init` | Initialization | Load from localStorage, start timers, one-time setup. Runs after `x-data`. |
+
+### Marginal Directives (Tier 3 — Use only when essential, with justification)
+
+| Directive | Role | Caution |
+|-----------|------|---------|
+| `x-if` | Conditional render | Removes/adds DOM nodes. Use `x-show` instead unless DOM presence matters (e.g., form validation). |
+| `x-html` | HTML output | Sets `innerHTML`. Security risk — only for trusted content (markdown preview, formatted output). |
+| `x-ref` | DOM reference | Direct DOM access. Only for imperative APIs (canvas, drag-and-drop, focus management). |
+
+### Rules
+
+- **One `x-data` scope per component.** Nested `x-data` is permitted for isolated sub-components (e.g., individual list items with local state) but not for splitting a single component's state.
+- **No `x-html` with user input.** All user-supplied content uses `x-text`.
+- **`x-for` requires `<template>`.** The `<template>` tag is the sole exception to the ~20 tag element set — it produces no DOM node itself.
+- **`$store` for shared state.** When multiple components need the same data, use `Alpine.store()` in an `x-init` or inline script, not prop drilling.
+- **Event modifiers are free.** `.prevent`, `.stop`, `.debounce`, `.window`, `.once` — use as needed, no approval required.
+
+### Setup
+
+```html
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
+```
+
+Loaded with `defer` — after DOM is parsed, before `DOMContentLoaded`. No build step.
+
+---
+
+## 10. Reconciliation Log
 
 After removing `<article>` and making `<details>` the default card, and simplifying row wrappers to `<section>` + `<summary>` only:
 
@@ -522,7 +571,7 @@ Element count: ~19 unique tag names. ~23 total entries counting input type varia
 
 ---
 
-## 10. Spec Criticality Tiers
+## 11. Spec Criticality Tiers
 
 ### Tier 1 — Locked (structural, do not change without explicit decision)
 
@@ -538,6 +587,7 @@ Element count: ~19 unique tag names. ~23 total entries counting input type varia
 - Max depth 4 (body → card → row wrapper → child). Depth 5 for row children only.
 - Body: max-inline-size 800px, margin-inline auto.
 - Popover hosts: aside (tooltip), output (toast), nav (dropdown).
+- Interactivity: Alpine.js only. Five essential directives: x-data, x-on, x-text, x-for, x-bind. Claude never writes vanilla JS.
 
 ### Tier 2 — Tunable (visual tokens, adjustable through testing)
 
