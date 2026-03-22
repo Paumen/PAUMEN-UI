@@ -32,21 +32,23 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ---
 
-## 1. HTML Elements — ~20 Tags
+## 1. HTML Elements — ~25 Tags
 
-### Cards (body children, depth 2 — display: grid, gap --m, single-column stack)
+### Container (body children, depth 2 — display: grid, gap --l, single-column stack)
 
-- `<details>` + `<summary>` — **default card type.** Collapsible by default via native toggle. Non-collapsible cards: use `<details open data-fixed>` with chevron hidden and toggle prevented via CSS + Alpine. Summary acts as built-in header row wrapper.
+- `<details>` + `<summary>` — **default containter type.** Collapsible by default via native toggle.
+- `<article>` + `<header>`collapsible details/summary is preferred, strictly when there's very specific reason that requires non-collapsible container, use article + header instead.
 - `<dialog>` — modal overlay card with backdrop, focus trap, Escape-to-close. Interior follows same rules as any card.
 
-### Transparent Wrapper (display: contents — no visual chrome, no depth)
+### Row  (inside containers, depth 3 — display: grid, 12-column, gap --m, no visual chrome)
 
-- `<form>` — submission scope only. Wraps inputs inside any card type. Never a visual container.
-
-### Row Wrappers (inside cards, depth 3 — display: grid, 12-column, gap --s, no visual chrome)
-
-- `<summary>` — details header row (inside `<details>` only). Clickable toggle target. Title row (typically h1–h4 + optional icon/action).
+- `<summary>` — details header row (inside `<details>` only). Clickable toggle target. Title row, by default same font styles as `<h3>`, only use h1-h4 for specific reason to deviate. Optional icon/action.
 - `<section>` — generic multi-element row. Only used when 2+ elements share a horizontal row. Single elements are direct card children.
+- `<form>` Wraps labels and inputs. Per default 12 columns and as many rows as needed. Per default labels take 3/12 columns, inputs 9/12 columns. Buttons 6 columns, unless icon buttons. Icon buttons come on same row as inputs at the end, taking away column from inputs.
+- `<fieldset>` + `<legend>` for example for <input type="checkbox">` / `<input type="radio">`
+- `<footer>` Footer can be used as row at the bottom of a container to for example group two buttons.
+- `<ul>`/`<ol>`/`<li>` for lists.
+- `<p>` paragraph text only. 
 
 ### Interactive Elements
 
@@ -55,69 +57,58 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 - `<input type="range">` — slider. Native styling only.
 - `<input type="date">` / `<input type="time">` — native pickers.
 - `<input type="checkbox">` / `<input type="radio">` — binary/exclusive toggles.
-- `<textarea>` — multi-line text.
+- `<textarea>` — multi-line text. Same formatting as <input>
 - `<select>` — dropdown choice.
 
-
 ### Content / Text
-- `<h1>` through `<h4>` — heading hierarchy. h5/h6 dropped
-`<p>`
-— paragraph text only. NOT used for layout wrapping. Inherits body defaults (color, font-size) — no explicit styling needed.
+- `<h1>` through `<h4>` — Per default `<summary>` and sometimes `<header>` are first rows in containers and already apply same formatting as <h3>, only uses h1-h4 if specific reason to deviate fro. thism. heading hierarchy.
 `<label>` — ties text to a control.
 `<aside>` — supplementary info / tooltip host.
 
 ### Implicit Inline Formatting (allowed within text elements)
 
-`<strong>`, `<code>`, `<ul>`/`<ol>`/`<li>`, `<s>, `<small>`, `<a>`, `<svg>`
+`<strong>`, `<code>`, `<s>, `<small>`, `<a>`, `<svg>`
 
 ### Popover Hosts (semantic element + popover attribute)
 
 - Tooltip → `<aside popover>` — supplementary info
 - Dropdown menu → `<nav popover>` — container with buttons/links.
 
-### Deferred (not in current system, or only for different use case — future candidates)
-
-- `<header>` — potential button group at top of card.
-- `<footer>` — potential button group at bottom of card.
-- `<nav>` — stays for popover menus only (`<nav popover>`). Deferred as general row wrapper, maybe for button group later.
-
 ### Category → Display Type
 
 | Category    | Display       | Role                            | Elements                                                                  |
 | ----------- | ------------- | ------------------------------- | ------------------------------------------------------------------------- |
-| Card        | grid          | Holds and arranges children     | details, dialog                                                           |
-| Wrapper     | grid (12-col) | Groups elements into rows       | section, summary                                                          |
-| Transparent | contents      | Submission scope only           | form                                                                      |
+| Container        | grid          | Holds and arranges children     | details, dialog                                                           |
+| Rows     | grid (12-col) | Groups elements into rows       | section, summary, header, form, field set, footer, list                                                          |
 | Component   | inline-block  | Self-contained interactive unit | button, text inputs, textarea, select, range, [popover]                   |
 
 ---
 
-## 2. DOM Structure
+## 2. DOM Structure example
 
 ```
 body                              depth 1  (grid, gap --l, max 800px centered)
- └ details                        depth 2  (card, 1-col stack, grid, gap --m)
-    ├ summary [row wrapper]       depth 3  (12-col grid, gap --s)
-    │  ├ h3                       depth 4  (row child, fills cell)
+ └ details                        depth 2  (card, 1-col stack, grid, gap --l)
+    ├ summary [row wrapper]       depth 3  (12-col grid, gap --m)
+    │  ├ text                     depth 4 
     │  └ svg                      depth 4  (row child, fills cell)
-    ├ form                        ----     (display:contents, transparent)
-    │  ├ input                    depth 3  (direct card child, full width)
-    │  ├ section [row wrapper]    depth 3  (12-col grid, gap --s)
-    │  │  ├ button                depth 4  (row child, fills cell)
-    │  │  └ button                depth 4  (row child, fills cell)
-    │  └ textarea                 depth 3  (direct card child, full width)
-    └ section [row wrapper]       depth 3  (12-col grid, gap --s)
-       ├ button                   depth 4  (row child)
-       └ button                   depth 4  (row child)
+    ├ form                        depth 3 (12-col)
+       ├ label                    depth 4  (3-col)
+       ├ input                    depth 4  (9-col)
+       ├ label                    depth 4  (3-col) 
+       ├ input                    depth 4  (9-col)
+       ├ label                    depth 4  (3-col)
+       ├ textarea                 depth 4  (9-col)
+       ├ button                   depth 4  (6-col)
+       └ button                   depth 4  (6-col)
 ```
 
-Max structural depth: 4 (html → body → details → content). Depth 5 for row children and HTML-mandated nesting (svg inside button, small inside p). Form is `display: contents` — transparent to the depth model.
+Max structural depth: 4 (html → body → details → content). Depth 5 for row children and HTML-mandated nesting (svg inside button, small inside p). 
 
 ### Rules
 
-- Cards are body-level only. Row wrappers are card-level only.
+- Containers are body-level only. Row wrappers are card-level only.
 - Single elements are direct card children.
-- Non-collapsible cards: `<details open data-fixed>` with chevron hidden and toggle prevented. Same DOM structure, same rules. Requires Alpine `@toggle.prevent="$el.open = true"` to prevent JS-driven toggles. CSS hides chevron and disables summary click via `pointer-events: none` (re-enabled on children).
 
 ---
 
@@ -143,7 +134,7 @@ How many of the 12 columns a child occupies inside a row wrapper. Children witho
 ```html
 <details open>
   <summary>
-    <h3 data-colspan="12">Search</h3>
+    Search
   </summary>
   <section>
     <input type="text" placeholder="Search…" data-colspan="10" />
@@ -157,26 +148,16 @@ Common patterns:
 
 | Split        | Colspan values | Use case                            |
 | ------------ | -------------- | ----------------------------------- |
-| 50 / 50      | 6 + 6          | Button pair, label + input          |
-| 75 / 25      | 9 + 3          | Input + action                      |
-| 83 / 8 / 8   | 10 + 1 + 1     | Search bar (input + 2 icon buttons) |
+| 50 / 50      | 6 + 6          | Button pair            |
+| 25 / 75      | 3 + 9          | label + input          |
+| 75 / 25      | 9 + 3          | Input + action         |
+| 84 / 8 / 8   | 10 + 1 + 1     | Search bar (input + 2 icon buttons) |
 | 33 / 33 / 33 | 4 + 4 + 4      | Three equal columns                 |
-| 67 / 33      | 8 + 4          | Content + sidebar element           |
 | Full width   | 12             | Span-full child inside a row        |
 
 Supported colspan values: 1, 2, 3, 4, 6, 8, 9, 10, 11, 12. Values 5, 7 omitted — they don't produce clean ratios in a 12-column grid.
 
-### data-fixed — Non-Collapsible Card Lock
 
-Applied to `<details open>` to prevent collapse. CSS hides the chevron and sets `pointer-events: none` on `<summary>` (re-enabled on children so buttons still work). Requires Alpine `@toggle.prevent="$el.open = true"` because CSS alone cannot prevent JS-driven toggles.
-
-```html
-<details open data-fixed @toggle.prevent="$el.open = true">
-  <summary>
-    <h3 data-colspan="12">Actions</h3>
-  </summary>
-  <!-- content always visible, summary not clickable as toggle -->
-</details>
 ```
 
 ### data-state — Signal States
@@ -204,7 +185,7 @@ See §6 for the full state reference: all pseudo-classes, recommended CSS proper
 ```css
 --accent-hue: 200;
 --accent-chroma: 0.14;
---surface-hue: 250;
+--surface-hue: 220;
 --jump: 0.17;
 color-scheme: light dark;
 ```
@@ -254,7 +235,7 @@ color-scheme: light dark;
 | Layer       | Background       | Elements                        |
 | ----------- | ---------------- | ------------------------------- |
 | Body        | `--neutral`      | body                            |
-| Card        | `--neutral-mute` | details, dialog, [popover]*     |
+| Container        | `--neutral-mute` | details, dialog, [popover]*     |
 | Row wrapper | transparent      | section, summary                |
 | Control     | `--neutral`      | button, input, textarea, select |
 
@@ -281,13 +262,13 @@ Used for: spacing (gap, padding), font-size, border-radius, outline width/offset
 
 ### Cards as Single-Column Stacks (F4 Architecture)
 
-Cards (details, dialog) are always single-column grids. Every direct child occupies a full-width row. No attribute needed.
+Containers (details, dialog) are always single-column grids. Every direct child occupies a full-width row. No attribute needed.
 
 ```css
 details,
 dialog {
   display: grid;
-  gap: var(--m);
+  gap: var(--l);
 }
 ```
 
@@ -295,12 +276,12 @@ Multi-element rows are handled by row wrappers. Single elements are direct card 
 
 ### Row Wrappers (12-Column Grid)
 
-Row wrappers (`<section>`, `<summary>`) wrap 2+ elements that share a horizontal row. No visual chrome — transparent background, no border. 12-column grid via CSS. Children claim columns via `data-colspan="N"`.
+Row wrappers (`<section>`, `<summary>`, etc.) wrap 2+ elements that share a horizontal row. No visual chrome — transparent background, no border. 12-column grid via CSS. Children claim columns via `data-colspan="N"`.
 
 ```html
 <details open>
   <summary>
-    <h3 data-colspan="12">Settings</h3>
+    Settings
   </summary>
   <section>
     <button data-colspan="6">Cancel</button>
@@ -411,7 +392,7 @@ When deciding how to express a state, follow this priority:
 @layer reset, default, skin, grid;
 ```
 
-Signal state overrides for filled skins (`[data-skin~="filled"][data-state="..."]`) must live **outside all layers** (unlayered CSS). Unlayered CSS always wins over all `@layer` rules regardless of specificity. This is necessary because `@layer skin` filled rules would otherwise override `@layer default` signal states.
+Signal state overrides for filled skins (`[data-skin~="filled"][data-state="..."]`) must live **in last layers**. This is necessary because `@layer skin` filled rules would otherwise override `@layer default` signal states.
 
 ### Reset (3 rules)
 
@@ -509,7 +490,7 @@ Composable via `[data-skin~="value"]`:
 }
 ```
 
-Selectors are global (not scoped to row wrapper children) — flat specificity. Only take effect inside a grid parent. Gap is --s (tighter than card's --m) because row children are siblings in a single line.
+Selectors are global (not scoped to row wrapper children) — flat specificity. Only take effect inside a grid parent. Gap is --m (tighter than container's --l) because row children are siblings in a single line.
 
 ---
 
@@ -580,150 +561,12 @@ Icons have two variants inline: a stroke (bold) version shown by default, and a 
 
 ## 10. Reconciliation Log
 
-After removing `<article>` and making `<details>` the default card, and simplifying row wrappers to `<section>` + `<summary>` only:
-
-- **S1:** No nested cards. Cards are flat, body-level only.
-- **S2:** form = always `display: contents`, never a visual container.
-- **S3:** `<details>` = default card. `<details open>` with chevron hidden = non-collapsible card.
+- **S1:** No nested containers. Containers are flat, body-level only.
 - **S4:** dialog interior = same rules as any card. One interior pattern for all card types.
-- **S6:** `<article>` cut. Replaced by `<details>` as default card.
-- **S7:** `<header>`, `<footer>`, `<nav>` deferred as row wrappers. Nav stays for popover menus.
-- **S8:** Inline formatting (`<strong>`, `<code>`, `<s>`, `<ul>`/`<ol>`/`<li>`) implicit, not spec-listed.
-- **S15:** Drop `data-colcount`. Always 12.
 - **S18:** summary = row wrapper (12-col grid). Built-in header for details cards.
 - **S19:** Escape hatch via `data-skin="freeform"` on cards.
 - **S20:** Spec values reconciled with shipped CSS (spacing scale, color tokens, token-to-property mappings).
 
-Element count: ~20 tag names. total bit higher counting input type variants and h1–h4.
+Element count: ~25 tag names. total bit higher counting input type variants and h1–h4.
 
 ---
-
-## 11. Spec Criticality Tiers
-
-### Tier 1 — Locked (structural, do not change without explicit decision)
-
-- Card type: `<details>` default, `<dialog>` for modals.
-- Row wrappers: `<summary>` + `<section>`
-- Grid architecture: F4 (1-col stack + row wrappers), 12-column.
-- Four CSS layers: reset → default → skin → grid. Plus unlayered signal state overrides.
-- Claude never writes CSS.
-- No CSS classes — element selectors + attribute selectors only (icon classes excepted).
-- No div or span.
-- Skins via `data-skin`, composable, 5 values: filled, ghost, mute, elevated, freeform. Default (unskinned) appearance is not a `data-skin` value.
-- Color system: oklch, light-dark(), 5 base inputs.
-- Max depth 4 (body → card → row wrapper → child). Depth 5 for row children only.
-- Body: max-inline-size 800px, margin-inline auto.
-- Popover hosts: aside (tooltip), nav (dropdown). Must be body-level siblings, never inside `<details>`.
-- Non-collapsible cards: `data-fixed` attribute + Alpine `@toggle.prevent`.
-
-### Tier 2 — Tunable (visual tokens, adjustable through testing)
-
-- Spacing scale values (--xs, --s, --m, --l, --xl clamp ranges).
-- Color values (accent-hue, jump, neutral-mute/edge lightness percentages).
-- Token-to-property mappings (which token for card gap, card radius, control radius, etc.).
-- Font family (currently Nunito).
-- Font weight values (button: 700, output: 700).
-- Heading sizes (h1/h2: --xl, h3: --l, h4: --m).
-- Transition durations and easings.
-- Box-shadow values for elevated skin.
-
-### Tier 3 — Deferred (acknowledged gaps, not yet implemented)
-
-- ~~Signal state CSS implementation (`data-state="error|loading|success"`) and signal hues (danger, success).~~ **Done.** Implemented in CSS. Signal states in default layer + unlayered overrides for filled skins.
-- `<header>`, `<footer>`, `<nav>` as row wrappers (currently deferred; nav stays for popovers).
-- Partial-width single elements (sizing skins vs row wrapper with empty cols).
-- CLAUDE.md (<200 lines) + component catalog skill file.
-- Validator script (HTML parser to flag unauthorized elements/styles/skins).
-- Reference app (planned for end of stage 1).
-- Split spacing scale into padding/gap tokens vs. font-size tokens.
-
----
-
-## 12. UAT Findings Log
-
-Findings from manual UAT testing of the pre-prototype Settings reference app. Each finding represents a spec gap or ambiguity that caused incorrect implementation. Codified here to prevent recurrence.
-
-### Popover Close Flash (Critical)
-
-**Symptom:** When `<nav popover>` dropdown closes, a white/bordered rectangle flashes for one frame before disappearing.
-
-**Root cause:** `[popover]` base state had visible CSS (background, border, padding inherited from browser defaults). When `:popover-open` drops, the element is still rendered for one frame before `display: none` kicks in — showing the unstyled base state.
-
-**Fix:** `[popover]` base state must be visually empty: `background: transparent; border: none; padding: 0; opacity: 0`. All visual card styling belongs exclusively on `:popover-open`.
-
-**Spec update:** §5 Layout, §7 CSS Architecture.
-
-### Popover Inside Details (Critical)
-
-**Symptom:** Clicking the "?" help button on the Appearance card header does nothing when the card is collapsed — even though the button is visible on the summary.
-
-**Root cause:** `<aside popover>` was nested inside `<details>`. When `<details>` is closed, all content except `<summary>` is hidden (`display: none`), including the popover target element. The browser can't open a popover that has `display: none`.
-
-**Fix:** Popover elements (`<aside popover>`, `<nav popover>`) must be body-level siblings, placed after the `</details>` that contains their trigger button.
-
-**Spec update:** §5 Layout — new DOM placement rule.
-
-### Signal States vs CSS Layers (Critical)
-
-**Symptom:** Save button "Saved!" state showed no green. Delete button error state showed no red. Both stayed at their normal accent color.
-
-**Root cause:** Signal state rules (`[data-state="success"]`) were in `@layer default`. Filled skin rules (`[data-skin~="filled"]`) were in `@layer skin`. CSS layers: later layers always win regardless of specificity. The skin layer's `border-color: var(--accent)` and `background: var(--accent)` overrode the signal state's `border-color: var(--color-success)`.
-
-**Fix:** Signal state overrides for filled skins must be **unlayered** (outside any `@layer` block). Unlayered CSS always beats all layers.
-
-**Spec update:** §6 Signal States, §7 CSS Architecture, §11 Tier 1.
-
-### Non-Collapsible Cards (High)
-
-**Symptom:** Actions card could still be collapsed by clicking the heading, despite `<details open>` with chevron hidden.
-
-**Root cause:** CSS can hide the chevron marker, but clicking any part of `<summary>` still triggers the native `<details>` toggle. `pointer-events: none` on `<summary>` was bypassed by child elements with `pointer-events: auto` — click events on children bubble up and trigger the toggle.
-
-**Fix:** `data-fixed` attribute + Alpine `@toggle.prevent="$el.open = true"`. CSS handles visual (hide chevron, disable summary cursor). Alpine handles behavioral (intercept toggle event, force open).
-
-**Spec update:** §1, §2, §3 (new `data-fixed` attribute), §11 Tier 1.
-
-### Disabled State Barely Visible (Medium)
-
-**Symptom:** "Export Data" disabled button was hard to distinguish from enabled buttons.
-
-**Root cause:** Spec said `opacity: 0.5` which is insufficiently distinct, especially with accent-colored borders.
-
-**Fix:** `opacity: 0.38; filter: grayscale(0.4); cursor: not-allowed`. The grayscale strips accent color, making disabled state obvious.
-
-**Spec update:** §6 State Automation, §7 Default Layer.
-
-### Readonly Indistinguishable from Editable (Medium)
-
-**Symptom:** "Max Items: 10" looked identical to other input fields. Appeared as a random number rather than a locked field.
-
-**Root cause:** Spec said `opacity: 0.7; cursor: default` — still looks like a normal input. Also used `--neutral-mute` background which matches the card background, making the field invisible.
-
-**Fix:** `background: var(--neutral-edge); border-style: dashed; color: var(--text-mute); cursor: default; outline: none; tabindex="-1"`. Dashed border + different background clearly signals "non-editable." `tabindex="-1"` removes from tab order.
-
-**Spec update:** §6 State Automation, §7 Default Layer.
-
-### Elevated Skin Invisible in Dark Mode (Medium)
-
-**Symptom:** Schedule & Tags card showed no elevation difference from other cards in dark mode.
-
-**Root cause:** Shadow base used `oklch(20% 0 0)` — a dark gray that's invisible against dark backgrounds.
-
-**Fix:** Use `oklch(0% 0 0)` (pure black) for shadow + add `0 0 0 1px oklch(50% 0 0 / 0.06)` ring for edge definition.
-
-**Spec update:** §3 elevated skin description.
-
-### :user-invalid Not Implemented (Low)
-
-**Symptom:** Clearing a required field and tabbing away showed no validation hint in Edge.
-
-**Root cause:** `:user-invalid` was listed in the spec as a recommended pseudo-class but had no CSS implementation. Edge doesn't show browser-native validation UI on blur — only on form submission.
-
-**Fix:** Added `:user-invalid { border-color: var(--color-danger); outline-color: var(--color-danger) }` to CSS. Now works across all browsers after user interaction.
-
-**Spec update:** §6 Content & Validation States table — marked as implemented.
-
-### Open Issues (from UAT, not yet resolved)
-
-- ~~Inline style on menu icon button~~ **Resolved.** Summary now has `font-size: var(--l)` in CSS. Icon buttons in summaries inherit the correct size. Inline style removed.
-- **Nav popover close flash:** Still present despite base-state fix (1 remaining partial fail). May need `display: none` immediately on close via JS, or popover exit animation timing adjustment.
