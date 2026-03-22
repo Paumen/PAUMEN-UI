@@ -79,12 +79,7 @@
   <script>
     function navTo(id) {
       document.getElementById('nav-menu').hidePopover();
-      // Close all cards first, then open target after a frame to prevent flash
-      document.querySelectorAll('details[id$="-card"]').forEach(d => d.open = false);
-      requestAnimationFrame(() => {
-        const target = document.getElementById(id);
-        if (target) target.open = true;
-      });
+      document.querySelectorAll('details[id$="-card"]').forEach(d => d.open = (d.id === id));
     }
   </script>
 

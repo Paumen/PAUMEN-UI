@@ -76,22 +76,9 @@
     transition: border-color 0.15s ease;
   }
 
-  /* Smooth card content reveal — @starting-style prevents first-frame flash */
+  /* Card content overflow */
   details {
     overflow: hidden;
-  }
-
-  details > :not(summary) {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-
-  @starting-style {
-    details > :not(summary) {
-      opacity: 0;
-      transform: translateY(-4px);
-    }
   }
 
   /* Dialog specifics (§7) */
@@ -108,6 +95,9 @@
   /* Popover transitions (§6) */
   [popover] {
     opacity: 0;
+    background: transparent;
+    border: none;
+    padding: 0;
     transition: opacity 0.15s ease, overlay 0.15s ease, display 0.15s ease;
     transition-behavior: allow-discrete;
   }
