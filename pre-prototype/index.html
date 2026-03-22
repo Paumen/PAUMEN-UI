@@ -97,38 +97,26 @@
       <small data-colspan="1" data-skin="mute">Required</small>
     </summary>
     <form @submit.prevent="saveSettings()">
-      <section>
-        <label data-colspan="3" for="profile-name">Full Name</label>
-        <input data-colspan="9" type="text" id="profile-name" placeholder="Jane Doe" required
-               x-model="profileName" autocomplete="name">
-      </section>
-      <section>
-        <label data-colspan="3" for="profile-email">Email</label>
-        <input data-colspan="9" type="email" id="profile-email" placeholder="jane@example.com" required
-               x-model="profileEmail" autocomplete="email">
-      </section>
-      <section>
-        <label data-colspan="3" for="profile-password">Password</label>
-        <input data-colspan="9" type="password" id="profile-password" placeholder="••••••••"
-               minlength="8" autocomplete="new-password">
-      </section>
-      <section>
-        <label data-colspan="3" for="profile-url">Website</label>
-        <input data-colspan="9" type="url" id="profile-url" placeholder="https://example.com"
-               autocomplete="url">
-      </section>
-      <section>
-        <label data-colspan="3" for="profile-phone">Phone</label>
-        <input data-colspan="9" type="tel" id="profile-phone" placeholder="+1 555 000 0000"
-               autocomplete="tel">
-      </section>
-      <section>
-        <label data-colspan="3" for="profile-bio">Bio</label>
-        <textarea data-colspan="9" id="profile-bio" placeholder="Tell us about yourself…" rows="3"
-                  x-model="profileBio"></textarea>
-      </section>
-      <p data-skin="mute"><small>Your profile is visible to other users. See our <a href="#">privacy policy</a>.</small></p>
+      <label data-colspan="3" for="profile-name">Full Name</label>
+      <input data-colspan="9" type="text" id="profile-name" placeholder="Jane Doe" required
+             x-model="profileName" autocomplete="name">
+      <label data-colspan="3" for="profile-email">Email</label>
+      <input data-colspan="9" type="email" id="profile-email" placeholder="jane@example.com" required
+             x-model="profileEmail" autocomplete="email">
+      <label data-colspan="3" for="profile-password">Password</label>
+      <input data-colspan="9" type="password" id="profile-password" placeholder="••••••••"
+             minlength="8" autocomplete="new-password">
+      <label data-colspan="3" for="profile-url">Website</label>
+      <input data-colspan="9" type="url" id="profile-url" placeholder="https://example.com"
+             autocomplete="url">
+      <label data-colspan="3" for="profile-phone">Phone</label>
+      <input data-colspan="9" type="tel" id="profile-phone" placeholder="+1 555 000 0000"
+             autocomplete="tel">
+      <label data-colspan="3" for="profile-bio">Bio</label>
+      <textarea data-colspan="9" id="profile-bio" placeholder="Tell us about yourself…" rows="3"
+                x-model="profileBio"></textarea>
     </form>
+    <p data-skin="mute"><small>Your profile is visible to other users. See our <a href="#">privacy policy</a>.</small></p>
   </details>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
@@ -348,13 +336,11 @@
     <h2>Delete Account?</h2>
     <p>This will permanently delete your account and all associated data. This action <strong>cannot</strong> be undone.</p>
     <form method="dialog">
-      <section>
-        <button data-colspan="6" value="cancel">Cancel</button>
-        <button data-colspan="6" data-skin="filled" value="confirm"
-                @click.prevent="$refs.confirmDialog.close(); deleteAccount()">
-          Confirm Delete
-        </button>
-      </section>
+      <button data-colspan="6" value="cancel">Cancel</button>
+      <button data-colspan="6" data-skin="filled" value="confirm"
+              @click.prevent="$refs.confirmDialog.close(); deleteAccount()">
+        Confirm Delete
+      </button>
     </form>
   </dialog>
 
