@@ -32,18 +32,18 @@ Single or few-page tools, mostly client-side, possibly with a small server. Prod
 
 ### Dependencies
 
-imaplaceholder
+```html
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
   href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap"
   rel="stylesheet"
 />
-imaplaceholder
+```
 
 ---
 
-## 1. HTML Elements — ~25 Tags
+## 1. HTML Elements — ~25 Base Elements (~35 Including Variants)
 
 ### Container (body children, depth 2 — display: grid, gap --l, single-column stack)
 
@@ -51,7 +51,9 @@ imaplaceholder
 - `<article>` + `<header>` — non-collapsible container. Use strictly when there's a specific reason that requires always-visible content (e.g., primary dashboard panel, main form that should never be hidden).
 - `<dialog>` — modal overlay card with backdrop, focus trap, Escape-to-close. Interior follows same rules as any card.
 
-### Row  (inside containers, depth 3 — display: grid, 12-column, gap --m, no visual chrome)
+### Row Wrappers (inside containers, depth 3 — display: grid, 12-column, gap --m, no visual chrome)
+
+Canonical row-wrapper list: `<section>`, `<summary>`, `<header>`, `<form>`, `<fieldset>`, `<footer>`, `<ul>`, `<ol>`. All other references to row wrappers in this spec defer to this list.
 
 - `<summary>` — details header row (inside `<details>` only). Clickable toggle target. Title row, by default same font styles as `<h3>`, only use h1-h4 for specific reason to deviate. Optional icon/action.
 - `<header>` — article header row (inside `<article>` only). Non-interactive title row, same default font styles as `<h3>`.
@@ -59,8 +61,11 @@ imaplaceholder
 - `<form>` — wraps labels and inputs. 12-column grid. Per default labels take 3/12 columns, inputs 9/12 columns. Buttons 6 columns, unless icon buttons. Icon buttons come on same row as inputs at the end, taking away column from inputs.
 - `<fieldset>` + `<legend>` for example for `<input type="checkbox">` / `<input type="radio">`
 - `<footer>` — footer can be used as row at the bottom of a container to for example group two buttons.
-- `<ul>`/`<ol>`/`<li>` for lists.
-- `<p>` paragraph text only.
+- `<ul>`/`<ol>` for lists.
+
+### Row Children (depth 4)
+
+- `<li>` — list item, child of `<ul>` or `<ol>`. Inherits the 12-column grid cell behavior from its parent list element. Sized via `data-colspan`.
 
 ### Interactive Elements
 
@@ -73,6 +78,7 @@ imaplaceholder
 - `<select>` — dropdown choice.
 
 ### Content / Text
+- `<p>` — paragraph text. Direct card child (full width) — not a row wrapper.
 - `<h1>` through `<h4>` — per default `<summary>` and `<header>` are first rows in containers and already apply same formatting as `<h3>`, only use h1-h4 if specific reason to deviate from this heading hierarchy.
 - `<label>` — ties text to a control.
 - `<aside>` — supplementary info / tooltip host.
@@ -84,35 +90,38 @@ imaplaceholder
 ### Popover Hosts (semantic element + popover attribute)
 
 - Tooltip → `<aside popover>` — supplementary info
-- Dropdown menu → `<nav popover>` — container with buttons/links.
+- Dropdown menu → `<nav popover>` — container with buttons/links. `<nav>` is only used with the `popover` attribute — it is not a general-purpose element in this system.
 
 ### Category → Display Type
 
 | Category    | Display       | Role                            | Elements                                                                  |
 | ----------- | ------------- | ------------------------------- | ------------------------------------------------------------------------- |
 | Container   | grid          | Holds and arranges children     | details, article, dialog                                                  |
-| Rows        | grid (12-col) | Groups elements into rows       | section, summary, header, form, fieldset, footer, list                    |
-| Component   | inline-block  | Self-contained interactive unit | button, text inputs, textarea, select, range, [popover]                   |
+| Row Wrapper | grid (12-col) | Groups elements into rows       | section, summary, header, form, fieldset, footer, ul, ol                  |
+| Row Child   | (grid cell)   | Content inside row wrappers     | li, and all components when placed in a row                               |
+| Component   | inline-block  | Self-contained interactive unit | button, text inputs, textarea, select, range                              |
+| Content     | block         | Text and informational elements | p, h1–h4, label, aside                                                   |
+| Popover     | (API-managed) | Out-of-flow overlay             | aside[popover], nav[popover]                                              |
 
 ---
 
 ## 2. DOM Structure example
 
 ```
-body                              depth 1  (grid, gap --l, max 800px centered)
-└ details                        depth 2  (card, 1-col stack, grid, gap --l)
-├ summary [row wrapper]       depth 3  (12-col grid, gap --m)
-│  ├ text                     depth 4
-│  └ svg                      depth 4  (row child, fills cell)
-├ form                        depth 3  (12-col grid, gap --m)
-├ label                    depth 4  (3-col)
-├ input                    depth 4  (9-col)
-├ label                    depth 4  (3-col)
-├ input                    depth 4  (9-col)
-├ label                    depth 4  (3-col)
-├ textarea                 depth 4  (9-col)
-├ button                   depth 4  (6-col)
-└ button                   depth 4  (6-col)
+body                                  depth 1  (grid, gap --l, max 800px centered)
+└ details                             depth 2  (card, 1-col stack, grid, gap --l)
+  ├ summary [row wrapper]             depth 3  (12-col grid, gap --m)
+  │ ├ text                            depth 4
+  │ └ svg                             depth 4  (row child, fills cell)
+  └ form [row wrapper]                depth 3  (12-col grid, gap --m)
+    ├ label                           depth 4  (3-col)
+    ├ input                           depth 4  (9-col)
+    ├ label                           depth 4  (3-col)
+    ├ input                           depth 4  (9-col)
+    ├ label                           depth 4  (3-col)
+    ├ textarea                        depth 4  (9-col)
+    ├ button                          depth 4  (6-col)
+    └ button                          depth 4  (6-col)
 ```
  
 Max structural depth: 4 (html → body → container → content). Depth 5 for row children, inline content (icons inside buttons), and HTML-mandated nesting (svg inside button, small inside p).
@@ -136,26 +145,26 @@ Applied to any element. Selected via `[data-skin~="value"]`.
 - **`ghost`** — transparent background, no border. Interactive elements: hover shows `--neutral-mute` background. Non-interactive: static.
 - **`mute`** — `--text-mute` color.
 - **`elevated`** — `box-shadow` for visual lift. Shadow base uses `oklch(0% 0 0)` (pure black) — not a lighter value, which is invisible against dark backgrounds. Includes a subtle `0 0 0 1px` ring for edge definition in dark mode.
-- **`freeform`** — escape hatch. Removes system constraints from card interior via `all: revert`. Cards only. The author takes full responsibility for interior styling.
+- **`freeform`** — escape hatch. Removes system constraints from card interior via `all: revert` on children (`[data-skin~="freeform"] > * { all: revert; }`). The card itself retains grid participation, font inheritance, and color tokens. Cards only. The author takes full responsibility for interior styling.
 
 **Skin conflict groups** (mutually exclusive): filled | ghost (pick at most one).
 
 ### data-colspan — Row Child Width
 
-How many of the 12 columns a child occupies inside a row wrapper. Children without `data-colspan` auto-span 1 column.
+How many of the 12 columns a child occupies inside a row wrapper. Children without `data-colspan` use CSS grid auto-placement (`auto`). Use `data-colspan` for explicit sizing — it is required for any element that needs a specific width in the row.
 
-imaplaceholder
+```html
 <details open>
   <summary>
     Search
   </summary>
   <section>
     <input type="text" placeholder="Search…" data-colspan="10" />
-    <button>×</button>
-    <button data-skin="filled">⌕</button>
+    <button><i class="ph-bold ph-x" aria-hidden="true"></i></button>
+    <button data-skin="filled"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i></button>
   </section>
 </details>
-imaplaceholder
+```
 
 Common patterns:
 
@@ -190,7 +199,7 @@ See §6 for the full state reference: all pseudo-classes, recommended CSS proper
 
 ### Base Inputs (5 values)
 
-imaplaceholder
+```css
 :root {
   color-scheme: light dark;
 
@@ -202,11 +211,11 @@ imaplaceholder
   --danger-hue: 25;
   --success-hue: 145;
 }
-imaplaceholder
+```
 
 ### Derived Palette
 
-imaplaceholder
+```css
 /* Accent */
 --accent: oklch(58% var(--accent-chroma) var(--accent-hue));
 --accent-up: oklch(
@@ -216,9 +225,9 @@ imaplaceholder
   calc(58% - var(--jump)) var(--accent-chroma) var(--accent-hue)
 );
 
-/* Signal colors — same lightness/chroma as accent, different hue */
---color-danger: oklch(58% var(--accent-chroma) var(--danger-hue));
---color-success: oklch(58% var(--accent-chroma) var(--success-hue));
+/* Signal colors — minimum chroma floor ensures visibility regardless of accent theme */
+--color-danger: oklch(58% max(var(--accent-chroma), 0.12) var(--danger-hue));
+--color-success: oklch(58% max(var(--accent-chroma), 0.12) var(--success-hue));
 
 /* Surface levels — light-dark() for automatic dark mode */
 --neutral: light-dark(
@@ -246,7 +255,7 @@ imaplaceholder
 
 /* Text on accent — fixed near-white */
 --text-on-accent: oklch(96% 0.01 var(--accent-hue));
-imaplaceholder
+```
 
 ### Visual Depth Model
 
@@ -261,14 +270,14 @@ imaplaceholder
 
 ### Scale
 
-imaplaceholder
+```css
 --0: 0;
 --xs: clamp(0.2rem, 0.4vw, 0.4rem);
 --s: clamp(0.4rem, 1vw, 0.8rem);
 --m: clamp(0.8rem, 2vw, 1.6rem);
 --l: clamp(1.2rem, 4vw, 2.4rem);
 --xl: clamp(1.6rem, 6vw, 3.6rem);
-imaplaceholder
+```
 
 Used for: spacing (gap, padding), font-size, border-radius, outline width/offset, etc.
 
@@ -282,22 +291,22 @@ Used for: spacing (gap, padding), font-size, border-radius, outline width/offset
 
 Containers (details, article, dialog) are always single-column grids. Every direct child occupies a full-width row. No attribute needed.
 
-imaplaceholder
+```css
 details,
 article,
 dialog {
   display: grid;
   gap: var(--l);
 }
-imaplaceholder
+```
 
 Multi-element rows are handled by row wrappers. Single elements are direct card children.
 
 ### Row Wrappers (12-Column Grid)
 
-Row wrappers (`<section>`, `<summary>`, `<header>`, `<form>`, `<footer>`, `<fieldset>`, `<ul>`, `<ol>`) wrap 2+ elements that share a horizontal row. No visual chrome — transparent background, no border. 12-column grid via CSS. Children claim columns via `data-colspan="N"`.
+Row wrappers (see canonical list in §1) wrap 2+ elements that share a horizontal row. No visual chrome — transparent background, no border. 12-column grid via CSS. Children claim columns via `data-colspan="N"`.
 
-imaplaceholder
+```html
 <details open>
   <summary>
     Settings
@@ -308,7 +317,7 @@ imaplaceholder
   </section>
   <input type="text" placeholder="Name" />
 </details>
-imaplaceholder
+```
 
 ### Body Grid
 
@@ -326,11 +335,10 @@ Body is a grid with `gap: var(--l)`, `max-inline-size: 800px`, `margin-inline: a
 
 **Popover DOM placement rule:** `<aside popover>` and `<nav popover>` must be placed **inside their parent `<details>` but outside `<summary>`**. This keeps trigger and popover close in the DOM (simplifying Alpine.js wiring via shared `x-data` scope) while ensuring the popover is not hidden when the summary is the only visible element of a closed `<details>`. The trigger button goes inside `<summary>`; the popover element goes after `</summary>` as a direct child of `<details>`.
 
-**Popover CSS architecture:** The popover transition uses the modern `@starting-style` and `transition-behavior: allow-discrete` pattern. The base `[popover]` state sets `display: block` (or `inline-block`) and `opacity: 0` with no visual card styling. All card styling (background, border, padding, shadow) is applied inside `:popover-open`, together with an `opacity: 1` transition. `@starting-style` provides the initial state for the opening animation, and `transition-behavior: allow-discrete` enables transitions on discrete properties like `display`. This prevents a flash of unstyled content on close.
+**Popover CSS architecture:** The popover transition uses the modern `@starting-style` and `transition-behavior: allow-discrete` pattern. The base `[popover]` state sets `opacity: 0` with no visual card styling — the Popover API natively handles `display` (hidden until opened), so no manual `display` override is needed. All card styling (background, border, padding, shadow) is applied inside `:popover-open`, together with an `opacity: 1` transition. `@starting-style` provides the initial state for the opening animation, and `transition-behavior: allow-discrete` enables transitions on discrete properties like `display`. This prevents a flash of unstyled content on close.
 
-imaplaceholder
+```css
 [popover] {
-  display: block;
   opacity: 0;
   background: transparent;
   border: none;
@@ -350,7 +358,7 @@ imaplaceholder
     opacity: 0;
   }
 }
-imaplaceholder
+```
 
 ### Sizing Model
 
@@ -430,15 +438,15 @@ When deciding how to express a state, follow this priority:
 
 ### Five Layers + Unlayered Overrides for Edge Cases
 
-imaplaceholder
+```css
 @layer reset, default, skin, grid, overrides;
-imaplaceholder
+```
 
 Signal state overrides for filled skins (`[data-skin~="filled"][data-state="..."]`) live in the **`overrides` layer**, which comes after all other layers. This guarantees they override the filled skin rules while keeping the architecture clean.
 
 ### Reset (3 rules)
 
-imaplaceholder
+```css
 *,
 *::before,
 *::after {
@@ -464,14 +472,14 @@ select {
 li {
   list-style: none;
 }
-imaplaceholder
+```
 
 ### Default Layer
 
 - **Root:** `color-scheme: light dark` on `:root`. Activates `light-dark()` for all color tokens.
 - **Body:** grid, gap --l, max-inline-size 800px, margin-inline auto, padding --m, font-family Nunito (system-ui fallback), --m base size, --text color, --neutral bg.
-- **Containers** (`details, article, dialog`): --neutral-mute bg, border 1px solid --neutral-edge, radius --m, padding --m, display grid, gap --l, `transition: border-color 0.15s ease`. `details` also gets `overflow: hidden`.
-- **Popover base** (`[popover]`): `display: block; opacity: 0; background: transparent; border: none; padding: 0; transition: opacity 0.2s, display 0.2s allow-discrete;`
+- **Containers** (`details, article, dialog`): --neutral-mute bg, border 1px solid --neutral-edge, radius --m, padding --m, display grid, gap --l, `overflow: hidden`, `transition: border-color 0.15s ease`.
+- **Popover base** (`[popover]`): `opacity: 0; background: transparent; border: none; padding: 0; transition: opacity 0.2s, display 0.2s allow-discrete;` — no `display` override; the Popover API handles visibility natively.
 - **Popover open** (`:popover-open`): card styling (--neutral-mute bg, border, radius, padding) + `box-shadow` + `z-index: 10` for overlay depth; `opacity: 1`.
 - **Popover starting style** (`@starting-style`): `[popover]:popover-open { opacity: 0; }` — provides the initial state for the opening animation.
 - **Row wrappers** (`section, summary, header, form, footer, fieldset, ul, ol`): display grid, grid-template-columns repeat(12, 1fr), gap --m, place-items center start. Transparent — no visual styling. Summary gets `font-size: var(--l)` — card headers are visually larger, and icon buttons in summaries inherit the correct size without inline styles. Header gets the same `font-size: var(--l)` treatment as summary.
@@ -497,7 +505,7 @@ Composable via `[data-skin~="value"]`:
 
 ### Grid Layer
 
-imaplaceholder
+```css
 @layer grid {
   [data-colspan="1"] {
     grid-column: span 1;
@@ -530,7 +538,7 @@ imaplaceholder
     grid-column: span 12;
   }
 }
-imaplaceholder
+```
 
 Selectors are global (not scoped to row wrapper children) — flat specificity. Only take effect inside a grid parent. Gap is --m because row children are siblings in a single line.
 
@@ -546,23 +554,23 @@ The icon system is an optional visual enhancement layer. It uses Phosphor Icons 
 
 ### Setup
 
-imaplaceholder
+```html
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-imaplaceholder
+```
 
 ### Stroke → Fill Swap
 
 Icons have two variants inline: a stroke (bold) version shown by default, and a fill (duotone) version shown on hover/focus. The fill variant is marked with `data-icon-fill` and hidden by default.
 
-imaplaceholder
+```html
 <button>
   <i class="ph-bold ph-gear" aria-hidden="true"></i>
   <i class="ph-duotone ph-gear" aria-hidden="true" data-icon-fill></i>
   Settings
 </button>
-imaplaceholder
+```
 
-imaplaceholder
+```css
 [data-icon-fill] {
   display: none;
 }
@@ -576,7 +584,7 @@ imaplaceholder
 :is(a, button):focus-visible i:has(~ [data-icon-fill]) {
   display: none;
 }
-imaplaceholder
+```
 
 ### Icon Animations (scoped to specific icons, never global)
 
@@ -607,12 +615,8 @@ imaplaceholder
 
 ## 10. Reconciliation Log
 
-- **S1:** No nested containers. Containers are flat, body-level only.
-- **S4:** dialog interior = same rules as any card. One interior pattern for all card types.
-- **S18:** summary = row wrapper (12-col grid). Built-in header for details cards.
-- **S19:** Escape hatch via `data-skin="freeform"` on cards.
-- **S20:** Spec values reconciled with shipped CSS (spacing scale, color tokens, token-to-property mappings).
+Moved to `blueprint_lab_notebook.md` — this spec is the canonical source of truth for what the system _is_, not its history.
 
-Element count: ~25 tag names. Total bit higher counting input type variants and h1–h4.
+Element count: ~25 base elements (~35 including input type variants, h1–h4, and popover hosts).
 
 ---

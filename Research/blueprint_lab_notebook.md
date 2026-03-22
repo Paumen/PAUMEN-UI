@@ -171,3 +171,15 @@ Critiqued F3 and F4 layout candidates with a focus on DOM self-description and L
 LLMs inherently treat the absence of explicit information as an "obvious default" rather than identifying missing information. A non-self-describing DOM undermines the primary objective of an LLM-assisted development framework.
 
 @Research/Blueprint_expirement_6.html
+
+---
+
+## Reconciliation Log (moved from blueprint_spec.md)
+
+Key decisions reconciled across sessions:
+
+- **Flat containers (S1):** No nested containers. Containers are flat, body-level only.
+- **Dialog interior (S4):** dialog interior = same rules as any card. One interior pattern for all card types.
+- **Summary as row wrapper (S18):** summary = row wrapper (12-col grid). Built-in header for details cards.
+- **Freeform escape hatch (S19):** Escape hatch via `data-skin="freeform"` on cards.
+- **CSS reconciliation (S20):** Spec values reconciled with shipped CSS (spacing scale, color tokens, token-to-property mappings).
