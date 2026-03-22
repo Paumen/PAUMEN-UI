@@ -70,12 +70,18 @@
 
   <!-- Dropdown menu popover — nav[popover] (§8 Popover Hosts) -->
   <nav popover id="nav-menu">
-    <button data-skin="ghost" onclick="document.getElementById('nav-menu').hidePopover(); document.getElementById('profile-card').open = true">Profile</button>
-    <button data-skin="ghost" onclick="document.getElementById('nav-menu').hidePopover(); document.getElementById('appearance-card').open = true">Appearance</button>
-    <button data-skin="ghost" onclick="document.getElementById('nav-menu').hidePopover(); document.getElementById('notifications-card').open = true">Notifications</button>
-    <button data-skin="ghost" onclick="document.getElementById('nav-menu').hidePopover(); document.getElementById('schedule-card').open = true">Schedule</button>
-    <button data-skin="ghost" onclick="document.getElementById('nav-menu').hidePopover(); document.getElementById('danger-card').open = true">Danger Zone</button>
+    <button data-skin="ghost" onclick="navTo('profile-card')">Profile</button>
+    <button data-skin="ghost" onclick="navTo('appearance-card')">Appearance</button>
+    <button data-skin="ghost" onclick="navTo('notifications-card')">Notifications</button>
+    <button data-skin="ghost" onclick="navTo('schedule-card')">Schedule</button>
+    <button data-skin="ghost" onclick="navTo('danger-card')">Danger Zone</button>
   </nav>
+  <script>
+    function navTo(id) {
+      document.getElementById('nav-menu').hidePopover();
+      document.querySelectorAll('details[id$="-card"]').forEach(d => d.open = (d.id === id));
+    }
+  </script>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- CARD 2: Profile Settings (collapsible — details, §1/§2)   -->
