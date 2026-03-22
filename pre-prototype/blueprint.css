@@ -76,7 +76,7 @@
     transition: border-color 0.15s ease;
   }
 
-  /* Smooth card content reveal — @starting-style prevents first-frame flash */
+  /* Smooth card content reveal */
   details {
     overflow: hidden;
   }
@@ -87,11 +87,10 @@
     transition: opacity 0.2s ease, transform 0.2s ease;
   }
 
-  @starting-style {
-    details > :not(summary) {
-      opacity: 0;
-      transform: translateY(-4px);
-    }
+  /* Applied by navTo() JS — hides content on the frame it opens */
+  details.card-entering > :not(summary) {
+    opacity: 0;
+    transform: translateY(-4px);
   }
 
   /* Dialog specifics (§7) */
