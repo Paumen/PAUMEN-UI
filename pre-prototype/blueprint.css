@@ -76,14 +76,18 @@
     transition: border-color 0.15s ease;
   }
 
-  /* Smooth card open/close (prevent border flash) */
-  details > :not(summary) {
-    animation: card-open 0.15s ease;
+  /* Smooth card content reveal (prevent native style flash) */
+  details {
+    overflow: hidden;
   }
 
-  @keyframes card-open {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  details > :not(summary) {
+    animation: card-reveal 0.2s ease both;
+  }
+
+  @keyframes card-reveal {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   /* Dialog specifics (§7) */
@@ -171,9 +175,10 @@
 
   /* Readonly (§6) */
   :is(input, textarea):read-only {
-    background: var(--neutral-mute);
+    background: var(--neutral-edge);
     border-style: dashed;
     color: var(--text-mute);
+    cursor: default;
   }
 
   /* Button (§7) */
@@ -275,10 +280,13 @@
   [data-skin~="elevated"] { box-shadow: 0 1px 3px oklch(0% 0 0 / 0.15), 0 4px 12px oklch(0% 0 0 / 0.12), 0 0 0 1px oklch(50% 0 0 / 0.06); }
   [data-skin~="freeform"] > *:not(summary) { all: revert; }
 
-  /* Signal state overrides for filled skin (§6) — must come after base filled rules */
-  [data-skin~="filled"][data-state="error"] { background: var(--color-danger); border-color: var(--color-danger); color: var(--text-on-accent); }
-  [data-skin~="filled"][data-state="success"] { background: var(--color-success); border-color: var(--color-success); color: var(--text-on-accent); }
 }
+
+/* Signal state overrides — unlayered CSS wins over all layers (§6) */
+[data-state="error"] { border-color: var(--color-danger) !important; }
+[data-state="success"] { border-color: var(--color-success) !important; }
+[data-skin~="filled"][data-state="error"] { background: var(--color-danger); border-color: var(--color-danger); color: var(--text-on-accent); }
+[data-skin~="filled"][data-state="success"] { background: var(--color-success); border-color: var(--color-success); color: var(--text-on-accent); }
 
 /* GRID (§7) */
 @layer grid {
