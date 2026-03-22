@@ -70,11 +70,11 @@
 
   <!-- Dropdown menu popover — nav[popover] (§8 Popover Hosts) -->
   <nav popover id="nav-menu">
-    <button data-skin="ghost" onclick="document.getElementById('profile-card').open = true">Profile</button>
-    <button data-skin="ghost" onclick="document.getElementById('appearance-card').open = true">Appearance</button>
-    <button data-skin="ghost" onclick="document.getElementById('notifications-card').open = true">Notifications</button>
-    <button data-skin="ghost" onclick="document.getElementById('schedule-card').open = true">Schedule</button>
-    <button data-skin="ghost" onclick="document.getElementById('danger-card').open = true">Danger Zone</button>
+    <button data-skin="ghost" onclick="document.getElementById('nav-menu').hidePopover(); document.getElementById('profile-card').open = true">Profile</button>
+    <button data-skin="ghost" onclick="document.getElementById('nav-menu').hidePopover(); document.getElementById('appearance-card').open = true">Appearance</button>
+    <button data-skin="ghost" onclick="document.getElementById('nav-menu').hidePopover(); document.getElementById('notifications-card').open = true">Notifications</button>
+    <button data-skin="ghost" onclick="document.getElementById('nav-menu').hidePopover(); document.getElementById('schedule-card').open = true">Schedule</button>
+    <button data-skin="ghost" onclick="document.getElementById('nav-menu').hidePopover(); document.getElementById('danger-card').open = true">Danger Zone</button>
   </nav>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
