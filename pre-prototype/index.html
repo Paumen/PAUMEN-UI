@@ -60,7 +60,7 @@
     <summary>
       <h1 data-colspan="10">Settings</h1>
       <!-- Popover trigger — nav popover = dropdown menu (§5 Layer 2) -->
-      <button data-colspan="2" data-skin="ghost" popovertarget="nav-menu" aria-label="Menu">
+      <button data-colspan="2" data-skin="ghost" popovertarget="nav-menu" aria-label="Menu" @click.stop>
         <i class="ph-bold ph-list" aria-hidden="true"></i>
         <i class="ph-duotone ph-list" aria-hidden="true" data-icon-fill></i>
       </button>
@@ -137,7 +137,7 @@
         Appearance
       </h3>
       <!-- Tooltip trigger — aside[popover] (§5 Layer 2) -->
-      <button data-colspan="2" data-skin="ghost" popovertarget="tooltip-appearance" aria-label="Help">
+      <button data-colspan="2" data-skin="ghost" popovertarget="tooltip-appearance" aria-label="Help" @click.stop>
         <i class="ph-bold ph-question" aria-hidden="true"></i>
         <i class="ph-duotone ph-question" aria-hidden="true" data-icon-fill></i>
       </button>
