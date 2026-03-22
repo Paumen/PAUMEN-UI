@@ -85,6 +85,12 @@
     /* Text on accent — fixed near-white (§4) */
     --text-on-accent: oklch(96% 0.01 var(--accent-hue));
 
+    /* Signal hues — derived from accent (§6): same chroma/lightness, different hue */
+    --danger-hue: 25;
+    --success-hue: 145;
+    --color-danger: oklch(58% var(--accent-chroma) var(--danger-hue));
+    --color-success: oklch(58% var(--accent-chroma) var(--success-hue));
+
     /* Scale (§4) */
     --0: 0;
     --xs: clamp(0.2rem, 0.4vw, 0.4rem);
@@ -345,6 +351,26 @@
     [popover]:popover-open {
       opacity: 0;
     }
+  }
+
+  /* --- Signal States (§6 — data-state) --- */
+  [data-state="error"] {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+  }
+
+  [data-state="loading"] {
+    animation: pulse 1.5s ease-in-out infinite;
+    opacity: 0.6;
+  }
+
+  [data-state="success"] {
+    border-color: var(--color-success);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.3; }
   }
 }
 
