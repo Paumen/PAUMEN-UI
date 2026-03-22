@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blueprint CSS — Test Page</title>
+  <link rel="stylesheet" href="blueprint.css">
+</head>
+<body>
+
+  <!-- Page title -->
+  <section>
+    <h1 data-colspan="12">Blueprint Test</h1>
+  </section>
+
+  <!-- Buttons & Skins -->
+  <details open>
+    <summary><h3 data-colspan="12">Buttons &amp; Skins</h3></summary>
+    <section>
+      <button data-colspan="3">Default</button>
+      <button data-colspan="3" data-skin="filled">Filled</button>
+      <button data-colspan="3" data-skin="ghost">Ghost</button>
+      <button data-colspan="3" disabled>Disabled</button>
+    </section>
+  </details>
+
+  <!-- Text Inputs -->
+  <details open>
+    <summary><h3 data-colspan="12">Text Inputs</h3></summary>
+    <section>
+      <input data-colspan="6" type="text" placeholder="Text input">
+      <input data-colspan="6" type="text" placeholder="Disabled" disabled>
+    </section>
+    <section>
+      <textarea data-colspan="12" rows="3" placeholder="Textarea…"></textarea>
+    </section>
+  </details>
+
+  <!-- Select, Range, Checkboxes -->
+  <details open>
+    <summary><h3 data-colspan="12">Controls</h3></summary>
+    <section>
+      <select data-colspan="6">
+        <option>Option A</option>
+        <option>Option B</option>
+        <option>Option C</option>
+      </select>
+      <input data-colspan="6" type="range" min="0" max="100" value="50">
+    </section>
+    <section>
+      <label data-colspan="3" style="display:flex;align-items:center;gap:var(--xs)">
+        <input type="checkbox"> Checkbox
+      </label>
+      <label data-colspan="3" style="display:flex;align-items:center;gap:var(--xs)">
+        <input type="radio" name="r"> Radio A
+      </label>
+      <label data-colspan="3" style="display:flex;align-items:center;gap:var(--xs)">
+        <input type="radio" name="r"> Radio B
+      </label>
+    </section>
+  </details>
+
+  <!-- Cards with skins -->
+  <details open data-skin="elevated">
+    <summary><h3 data-colspan="12">Elevated Card</h3></summary>
+    <section>
+      <p data-colspan="12">This card uses the <code>elevated</code> skin for a box-shadow lift.</p>
+    </section>
+  </details>
+
+  <details open data-skin="ghost">
+    <summary><h3 data-colspan="12">Ghost Card</h3></summary>
+    <section>
+      <p data-colspan="12">This card uses the <code>ghost</code> skin — transparent background, no border.</p>
+    </section>
+  </details>
+
+  <!-- Muted text -->
+  <section>
+    <p data-colspan="6">Normal text color.</p>
+    <p data-colspan="6" data-skin="mute">Muted text color.</p>
+  </section>
+
+  <!-- Grid colspan demo -->
+  <details open>
+    <summary><h3 data-colspan="12">Grid Colspan</h3></summary>
+    <section>
+      <div data-colspan="3" style="background:var(--neutral-mute);padding:var(--s);border-radius:var(--s);text-align:center">3</div>
+      <div data-colspan="3" style="background:var(--neutral-mute);padding:var(--s);border-radius:var(--s);text-align:center">3</div>
+      <div data-colspan="3" style="background:var(--neutral-mute);padding:var(--s);border-radius:var(--s);text-align:center">3</div>
+      <div data-colspan="3" style="background:var(--neutral-mute);padding:var(--s);border-radius:var(--s);text-align:center">3</div>
+    </section>
+    <section>
+      <div data-colspan="4" style="background:var(--neutral-mute);padding:var(--s);border-radius:var(--s);text-align:center">4</div>
+      <div data-colspan="8" style="background:var(--neutral-mute);padding:var(--s);border-radius:var(--s);text-align:center">8</div>
+    </section>
+    <section>
+      <div data-colspan="6" style="background:var(--neutral-mute);padding:var(--s);border-radius:var(--s);text-align:center">6</div>
+      <div data-colspan="6" style="background:var(--neutral-mute);padding:var(--s);border-radius:var(--s);text-align:center">6</div>
+    </section>
+    <section>
+      <div data-colspan="12" style="background:var(--neutral-mute);padding:var(--s);border-radius:var(--s);text-align:center">12</div>
+    </section>
+  </details>
+
+  <!-- Dialog test -->
+  <section>
+    <button data-colspan="4" onclick="document.getElementById('dlg').showModal()">Open Dialog</button>
+  </section>
+
+  <dialog id="dlg">
+    <section>
+      <h3 data-colspan="12">Dialog Title</h3>
+    </section>
+    <section>
+      <p data-colspan="12">This is a modal dialog styled by the blueprint.</p>
+    </section>
+    <section>
+      <button data-colspan="4" data-skin="filled" onclick="document.getElementById('dlg').close()">Close</button>
+    </section>
+  </dialog>
+
+</body>
+</html>
