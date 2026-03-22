@@ -493,7 +493,19 @@ Icons have two variants inline: a stroke (bold) version shown by default, and a 
 
 ---
 
-## 9. Reconciliation Log
+## 9. Interactivity — Alpine.js Directives
+
+| Directive | Role |
+|-----------|------|
+| `x-data` | State declaration — defines reactive state on an element |
+| `x-on` | Event binding — binds DOM events to expressions. Shorthand `@click` permitted |
+| `x-text` | Text output — sets `textContent` reactively |
+| `x-for` | List rendering — renders arrays. Must be on a `<template>` element |
+| `x-bind` | Attribute binding — dynamically sets attributes (`disabled`, `data-skin`, `data-state`, `aria-*`). Shorthand `:attr` permitted |
+
+---
+
+## 10. Reconciliation Log
 
 After removing `<article>` and making `<details>` the default card, and simplifying row wrappers to `<section>` + `<summary>` only:
 
@@ -513,7 +525,7 @@ Element count: ~19 unique tag names. ~23 total entries counting input type varia
 
 ---
 
-## 10. Spec Criticality Tiers
+## 11. Spec Criticality Tiers
 
 ### Tier 1 — Locked (structural, do not change without explicit decision)
 
