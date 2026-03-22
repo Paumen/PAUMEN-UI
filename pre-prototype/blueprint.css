@@ -76,6 +76,7 @@
   }
 
   /* Dialog specifics (§7) */
+  dialog:not([open]) { display: none; }
   dialog {
     padding: var(--l);
     max-inline-size: min(600px, 90vw);
