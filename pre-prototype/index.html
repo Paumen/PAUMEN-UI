@@ -79,7 +79,12 @@
   <script>
     function navTo(id) {
       document.getElementById('nav-menu').hidePopover();
-      document.querySelectorAll('details[id$="-card"]').forEach(d => d.open = (d.id === id));
+      // Close all cards first, then open target after a frame to prevent flash
+      document.querySelectorAll('details[id$="-card"]').forEach(d => d.open = false);
+      requestAnimationFrame(() => {
+        const target = document.getElementById(id);
+        if (target) target.open = true;
+      });
     }
   </script>
 
@@ -210,16 +215,14 @@
     </section>
 
     <section>
-      <label data-colspan="12">Digest Frequency</label>
-    </section>
-    <section>
-      <label data-colspan="4">
+      <label data-colspan="3">Digest Frequency</label>
+      <label data-colspan="3">
         <input type="radio" name="digest" value="daily" x-model="notifyDigest"> Daily
       </label>
-      <label data-colspan="4">
+      <label data-colspan="3">
         <input type="radio" name="digest" value="weekly" x-model="notifyDigest"> Weekly
       </label>
-      <label data-colspan="4">
+      <label data-colspan="3">
         <input type="radio" name="digest" value="never" x-model="notifyDigest"> Never
       </label>
     </section>
