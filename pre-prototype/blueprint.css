@@ -137,14 +137,14 @@
     place-items: center start;
   }
 
-  /* summary: remove default marker/chevron for non-collapsible cards */
-  summary {
+  /* summary: hide chevron only for non-collapsible cards (§2 + §10 S3) */
+  details[open]:not([name]) > summary {
     list-style: none;
   }
-  summary::-webkit-details-marker {
+  details[open]:not([name]) > summary::-webkit-details-marker {
     display: none;
   }
-  summary::marker {
+  details[open]:not([name]) > summary::marker {
     content: "";
   }
 
@@ -177,7 +177,6 @@
     background: var(--neutral);
     color: var(--text);
     padding: var(--s);
-    width: 100%;
     transition: all 0.15s ease;
   }
 
@@ -223,6 +222,11 @@
   }
 
   /* --- Links (§6) --- */
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
   a:hover {
     text-decoration: underline;
   }
@@ -230,7 +234,11 @@
   /* --- Select — custom dropdown arrow (§7) --- */
   select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    /* Light/dark arrows — currentColor doesn't resolve inside data URIs */
+    background-image: light-dark(
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23ddd' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    );
     background-repeat: no-repeat;
     background-position: right var(--s) center;
     padding-inline-end: calc(var(--s) + 1.5em);
@@ -313,8 +321,10 @@
     }
   }
 
-  /* --- Popover hosts (§5 Layer 2) --- */
+  /* --- Popover hosts (§5 Layer 2) — card-like interior (§4) --- */
   [popover] {
+    display: grid;
+    gap: var(--m);
     background: var(--neutral-mute);
     border: 1px solid var(--neutral-edge);
     border-radius: var(--m);
