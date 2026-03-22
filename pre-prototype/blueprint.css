@@ -1,14 +1,16 @@
-/* PAUMEN Blueprint CSS — Canonical implementation of Research/blueprint_spec.md */
+/* PAUMEN Blueprint CSS v2 — Canonical implementation of Research/blueprint_spec.md */
 
-/* Four CSS Layers (§7) */
-@layer reset, default, skin, grid;
+/* Five CSS Layers (§7) */
+@layer reset, default, skin, grid, overrides;
 
 /* RESET (§7) */
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
   body, h1, h2, h3, h4, p, ul, ol { margin: 0; }
+  ul, ol { padding: 0; }
   button, input, textarea, select { font: inherit; color: inherit; }
   li { list-style: none; }
+  fieldset { border: none; padding: 0; margin: 0; }
 }
 
 /* DEFAULT (§4 Color + §5 Layout + §6 States + §7 Architecture) */
@@ -37,11 +39,11 @@
     --text-mute: light-dark(oklch(40% 0.01 var(--surface-hue)), oklch(72% 0.01 var(--surface-hue)));
     --text-on-accent: oklch(96% 0.01 var(--accent-hue));
 
-    /* Signal hues — derived from accent (§6) */
+    /* Signal hues — chroma floor ensures visibility regardless of accent theme (§6) */
     --danger-hue: 25;
     --success-hue: 145;
-    --color-danger: oklch(58% var(--accent-chroma) var(--danger-hue));
-    --color-success: oklch(58% var(--accent-chroma) var(--success-hue));
+    --color-danger: oklch(58% max(var(--accent-chroma), 0.12) var(--danger-hue));
+    --color-success: oklch(58% max(var(--accent-chroma), 0.12) var(--success-hue));
 
     /* Scale (§4) */
     --0: 0;
@@ -65,20 +67,16 @@
     background: var(--neutral);
   }
 
-  /* Cards — shared card-layer styling (§4 Visual Depth + §5) */
-  details, dialog {
+  /* Containers — shared card-layer styling (§4 Visual Depth + §5 + §7) */
+  details, article, dialog {
     display: grid;
     gap: var(--l);
     background: var(--neutral-mute);
     border: 1px solid var(--neutral-edge);
     border-radius: var(--m);
     padding: var(--m);
-    transition: border-color 0.15s ease;
-  }
-
-  /* Card content overflow */
-  details {
     overflow: hidden;
+    transition: border-color 0.15s ease;
   }
 
   /* Dialog specifics (§7) */
@@ -92,14 +90,13 @@
     background: oklch(20% 0 0 / 0.5);
   }
 
-  /* Popover transitions (§6) */
+  /* Popover transitions (§5 + §6) */
   [popover] {
     opacity: 0;
     background: transparent;
     border: none;
     padding: 0;
-    transition: opacity 0.15s ease, overlay 0.15s ease, display 0.15s ease;
-    transition-behavior: allow-discrete;
+    transition: opacity 0.2s, display 0.2s allow-discrete;
   }
 
   /* Popover: card styling only when open (§4 Visual Depth + §5) */
@@ -119,25 +116,16 @@
     [popover]:popover-open { opacity: 0; }
   }
 
-  /* Row wrappers (§5 + §7) */
-  section, summary {
+  /* Row wrappers — canonical list (§1 + §5 + §7) */
+  section, summary, header, form, fieldset, footer, ul, ol {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: var(--m);
     place-items: center start;
   }
 
-  /* Summary is the card header row — larger base size for icon buttons (§7) */
-  summary { font-size: var(--l); }
-
-  /* Hide chevron and prevent collapse on non-collapsible cards (§2) */
-  details[data-fixed] > summary { list-style: none; pointer-events: none; }
-  details[data-fixed] > summary > * { pointer-events: auto; }
-  details[data-fixed] > summary::-webkit-details-marker { display: none; }
-  details[data-fixed] > summary::marker { content: ""; }
-
-  /* Form: transparent wrapper (§2 + §7) */
-  form { display: contents; }
+  /* Summary and header are card header rows — larger font for icon buttons (§7) */
+  summary, header { font-size: var(--l); }
 
   /* Headings (§7) */
   h1, h2 { font-size: var(--xl); }
@@ -183,6 +171,7 @@
     color: var(--text-mute);
     cursor: default;
     outline: none;
+    pointer-events: none;
   }
 
   /* Button (§7) */
@@ -264,7 +253,7 @@
     }
   }
 
-  /* Signal States (§6) — use doubled selector to override skin layer */
+  /* Signal States (§6) */
   [data-state="error"] { border-color: var(--color-danger); color: var(--color-danger); }
   [data-state="loading"] { animation: pulse 1.5s ease-in-out infinite; opacity: 0.6; }
   [data-state="success"] { border-color: var(--color-success); }
@@ -282,15 +271,8 @@
 
   [data-skin~="mute"] { color: var(--text-mute); }
   [data-skin~="elevated"] { box-shadow: 0 1px 3px oklch(0% 0 0 / 0.15), 0 4px 12px oklch(0% 0 0 / 0.12), 0 0 0 1px oklch(50% 0 0 / 0.06); }
-  [data-skin~="freeform"] > *:not(summary) { all: revert; }
-
+  [data-skin~="freeform"] > *:not(summary):not(header) { all: revert; }
 }
-
-/* Signal state overrides — unlayered CSS wins over all layers (§6) */
-[data-state="error"] { border-color: var(--color-danger) !important; }
-[data-state="success"] { border-color: var(--color-success) !important; }
-[data-skin~="filled"][data-state="error"] { background: var(--color-danger); border-color: var(--color-danger); color: var(--text-on-accent); }
-[data-skin~="filled"][data-state="success"] { background: var(--color-success); border-color: var(--color-success); color: var(--text-on-accent); }
 
 /* GRID (§7) */
 @layer grid {
@@ -304,4 +286,12 @@
   [data-colspan="10"] { grid-column: span 10; }
   [data-colspan="11"] { grid-column: span 11; }
   [data-colspan="12"] { grid-column: span 12; }
+}
+
+/* OVERRIDES — signal state + filled skin combos (§6 + §7) */
+@layer overrides {
+  [data-state="error"] { border-color: var(--color-danger); }
+  [data-state="success"] { border-color: var(--color-success); }
+  [data-skin~="filled"][data-state="error"] { background: var(--color-danger); border-color: var(--color-danger); color: var(--text-on-accent); }
+  [data-skin~="filled"][data-state="success"] { background: var(--color-success); border-color: var(--color-success); color: var(--text-on-accent); }
 }
