@@ -167,7 +167,7 @@
   section > :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea):not(:placeholder-shown) + label[for] {
     inset-block-start: 0;
     transform: translateY(-50%);
-    font-size: var(--s);
+    font-size: var(--m);
     color: var(--accent);
     background: var(--neutral-mute);
     padding-inline: var(--xs);
