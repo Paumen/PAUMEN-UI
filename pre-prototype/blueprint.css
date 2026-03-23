@@ -143,6 +143,36 @@
     transition: all 0.15s ease;
   }
 
+  /* Floating labels (§6 :placeholder-shown) */
+  section:has(> :is(input, textarea) + label[for]) {
+    position: relative;
+  }
+
+  section > :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea) + label[for] {
+    position: absolute;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    inset-inline-start: calc(var(--s) + 1px);
+    color: var(--text-mute);
+    pointer-events: none;
+    transition: inset-block-start 0.2s ease, transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
+  }
+
+  section > textarea + label[for] {
+    inset-block-start: calc(var(--s) + 1px);
+    transform: none;
+  }
+
+  section > :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea):focus + label[for],
+  section > :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea):not(:placeholder-shown) + label[for] {
+    inset-block-start: 0;
+    transform: translateY(-50%);
+    font-size: var(--s);
+    color: var(--accent);
+    background: var(--neutral-mute);
+    padding-inline: var(--xs);
+  }
+
   /* Focus ring (§6) */
   :is(button, input, textarea, select, summary, a):focus-visible {
     outline: var(--xs) solid var(--accent);
