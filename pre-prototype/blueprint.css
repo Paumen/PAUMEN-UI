@@ -123,6 +123,7 @@
     gap: var(--m);
     place-items: center start;
     justify-self: stretch;
+    min-width: 0;
   }
 
   /* Summary and header are card header rows — larger font for icon buttons (§7) */
@@ -141,6 +142,7 @@
     color: var(--text);
     padding: var(--s);
     justify-self: stretch;
+    min-width: 0;
     transition: all 0.15s ease;
   }
 
