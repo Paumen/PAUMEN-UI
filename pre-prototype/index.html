@@ -99,11 +99,11 @@
       <small data-colspan="1" data-skin="mute">Required</small>
     </summary>
     <form @submit.prevent="saveSettings()">
-      <section data-colspan="12">
+      
         <input data-colspan="12" type="text" id="profile-name" placeholder=" " required
                x-model="profileName" autocomplete="name">
         <label for="profile-name">Name</label>
-      </section>
+  
       <section data-colspan="12">
         <input data-colspan="12" type="email" id="profile-email" placeholder=" " required
                x-model="profileEmail" autocomplete="email">
