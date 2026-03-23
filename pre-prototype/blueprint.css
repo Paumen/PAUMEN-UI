@@ -139,7 +139,7 @@
     background: var(--neutral);
     color: var(--text);
     padding: var(--s);
-    width: 100%;
+    justify-self: stretch;
     transition: all 0.15s ease;
   }
 
