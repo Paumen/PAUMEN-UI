@@ -122,6 +122,7 @@
     grid-template-columns: repeat(12, 1fr);
     gap: var(--m);
     place-items: center start;
+    justify-self: stretch;
   }
 
   /* Summary and header are card header rows — larger font for icon buttons (§7) */
