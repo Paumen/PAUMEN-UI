@@ -98,38 +98,43 @@
       </h3>
       <small data-colspan="1" data-skin="mute">Required</small>
     </summary>
-    <form @submit.prevent="saveSettings()">
-      
-        <input data-colspan="12" type="text" id="profile-name" placeholder=" " required
-               x-model="profileName" autocomplete="name">
-        <label for="profile-name">Name</label>
-  
-        <label for="profile-email" data-colspan="12">
-        <input type="email" id="profile-email" placeholder=" " required
-               x-model="profileEmail" autocomplete="email">
-          Email
-        </label>
-      <section data-colspan="12">
-        <input type="password" id="profile-password" placeholder=" "
-               minlength="8" autocomplete="new-password">
-        <label for="profile-password">Password</label>
-      </section>
-      <section>
-        <input data-colspan="12" type="url" id="profile-url" placeholder=" "
-               autocomplete="url">
-        <label for="profile-url">Website</label>
-      </section>
-      <section>
-        <input type="tel" id="profile-phone" placeholder=" "
-               autocomplete="tel">
-        <label for="profile-phone">Phone</label>
-      </section>
-      <section data-colspan="12">
-        <textarea data-colspan="12" id="profile-bio" placeholder=" " rows="3"
-                  x-model="profileBio"></textarea>
-        <label for="profile-bio">Bio</label>
-      </section>
-    </form>
+<form @submit.prevent="saveSettings()">
+  <section data-colspan="12">
+    <input data-colspan="12" type="text" id="profile-name" placeholder=" " required
+           x-model="profileName" autocomplete="name">
+    <label for="profile-name">Name</label>
+  </section>
+
+  <section data-colspan="12">
+    <input data-colspan="12" type="email" id="profile-email" placeholder=" " required
+           x-model="profileEmail" autocomplete="email">
+    <label for="profile-email">Email</label>
+  </section>
+
+  <section data-colspan="12">
+    <input data-colspan="12" type="password" id="profile-password" placeholder=" "
+           minlength="8" autocomplete="new-password">
+    <label for="profile-password">Password</label>
+  </section>
+
+  <section data-colspan="12">
+    <input data-colspan="12" type="url" id="profile-url" placeholder=" "
+           autocomplete="url">
+    <label for="profile-url">Website</label>
+  </section>
+
+  <section data-colspan="12">
+    <input data-colspan="12" type="tel" id="profile-phone" placeholder=" "
+           autocomplete="tel">
+    <label for="profile-phone">Phone</label>
+  </section>
+
+  <section data-colspan="12">
+    <textarea data-colspan="12" id="profile-bio" placeholder=" " rows="3"
+              x-model="profileBio"></textarea>
+    <label for="profile-bio">Bio</label>
+  </section>
+</form>
     <p data-skin="mute"><small>Your profile is visible to other users. See our <a href="#">privacy policy</a>.</small></p>
   </details>
 
