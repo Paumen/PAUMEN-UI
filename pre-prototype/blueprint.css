@@ -177,7 +177,6 @@
   /* Focus ring (§6) */
   :is(button, input, textarea, select, summary, a):focus-visible {
     outline: var(--xs) solid var(--accent);
-    outline-offset: var(--xs);
     position: relative;
     z-index: 1;
   }
