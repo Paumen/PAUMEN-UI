@@ -198,7 +198,7 @@
   }
 
   /* Readonly (§6) */
-  :is(input, textarea):read-only {
+  :is(input:not([type="range"]), textarea):read-only {
     background: var(--neutral-edge);
     border-style: dashed;
     color: var(--text-mute);
