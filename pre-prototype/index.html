@@ -54,19 +54,18 @@
 }">
 
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- CARD 1: Page Header (non-collapsible — details open, §2)  -->
+  <!-- CARD 1: Page Header  -->
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <details open data-fixed @toggle.prevent="$el.open = true">
-    <summary>
+  <article>
+    <header>
       <h1 data-colspan="10">Settings</h1>
       <!-- Popover trigger — nav popover = dropdown menu (§5 Layer 2) -->
       <button data-colspan="2" data-skin="ghost" popovertarget="nav-menu" aria-label="Menu" @click.stop>
         <i class="ph-bold ph-list" aria-hidden="true"></i>
         <i class="ph-duotone ph-list" aria-hidden="true" data-icon-fill></i>
       </button>
-    </summary>
-    <p>Manage your account, appearance, notifications, and more. Changes are saved when you click <strong>Save</strong>.</p>
-  </details>
+    </header>
+  </article>
 
   <!-- Dropdown menu popover — nav[popover] (§8 Popover Hosts) -->
   <nav popover id="nav-menu">
@@ -286,10 +285,10 @@
   <!-- Demonstrates: data-state="loading|success", filled/ghost   -->
   <!--   skins, gear/reset icon animations, x-bind:data-state    -->
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <details open data-fixed @toggle.prevent="$el.open = true">
-    <summary>
+  <article>
+    <header>
       <h3 data-colspan="12">Actions</h3>
-    </summary>
+    </header>
     <footer>
       <button data-colspan="4" data-skin="ghost" @click="
         profileName = ''; profileEmail = ''; profileBio = '';
@@ -313,7 +312,7 @@
         Save
       </button>
     </footer>
-  </details>
+  </article>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- CARD 7: Danger Zone (collapsible)                          -->
