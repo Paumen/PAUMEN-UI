@@ -244,7 +244,7 @@
   input[type="checkbox"],
   input[type="radio"] {
     border: none;
-    padding: var(--s);
+    padding: var(--m);
     background: transparent;
     accent-color: var(--accent);
   }
