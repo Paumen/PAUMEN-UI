@@ -57,7 +57,7 @@
   /* Body (§5 + §7) */
   body {
     display: grid;
-    gap: var(--l);
+    gap: var(--m);
     max-inline-size: 800px;
     margin-inline: auto;
     padding: var(--m);
