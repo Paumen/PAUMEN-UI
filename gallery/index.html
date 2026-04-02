@@ -4,221 +4,81 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Artifact Gallery — PAUMEN-UI</title>
-
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
     />
-
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-
     <link rel="stylesheet" href="../pre-prototype/blueprint.css" />
-
-    <!-- Alpine.js (§9) -->
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"
-    ></script>
-
-    <!--
-      NOTE: This gallery uses <iframe> to embed standalone HTML artifacts.
-      <iframe> is not part of the PAUMEN-UI element set (§1).
-      Flagged per CLAUDE.md: no spec-compliant alternative exists for
-      embedding complete HTML documents. PO approval needed if this
-      element must be formally added to the spec.
-    -->
   </head>
-  <body
-    x-data="{
-      current: null,
-      artifacts: [
-        {
-          id: 'settings',
-          title: 'Settings App',
-          description: 'Pre-prototype reference app. Forms, popovers, dialogs, collapsible cards, Alpine.js state.',
-          src: '../pre-prototype/index.html'
-        },
-        {
-          id: 'settings-v2',
-          title: 'Settings App v2',
-          description: 'Second iteration of the Settings reference app.',
-          src: '../pre-prototype/index-v2.html'
-        },
-        {
-          id: 'settings-v1',
-          title: 'Settings App v1',
-          description: 'First iteration of the Settings reference app.',
-          src: '../pre-prototype/index-v1.html'
-        },
-        {
-          id: 'daily-planner',
-          title: 'Daily Planner',
-          description: 'Pre-prototype reference app. Header, nav, task lists, schedule display.',
-          src: '../Research/Experiments/experiment_8_index.html'
-        },
-        {
-          id: 'exp-1',
-          title: 'Experiment 1 — Defaults + Skins',
-          description: 'Early exploration of default element styles and skin variations.',
-          src: '../Research/Experiments/blueprint_experiment_1.html'
-        },
-        {
-          id: 'exp-2',
-          title: 'Experiment 2 — Flattened Column Grid',
-          description: 'Testing the 12-column grid layout with flattened structure.',
-          src: '../Research/Experiments/blueprint_experiment_2.html'
-        },
-        {
-          id: 'exp-4',
-          title: 'Experiment 4 — F-Variants Comparison',
-          description: 'Head-to-head comparison of structural format variants.',
-          src: '../Research/Experiments/blueprint_experiment_4.html'
-        },
-        {
-          id: 'exp-5',
-          title: 'Experiment 5 — Colspan + Icon Buttons',
-          description: 'Testing colcount/colspan attribute patterns with input and icon button layouts.',
-          src: '../Research/Experiments/blueprint_experement_5.html'
-        },
-        {
-          id: 'exp-6',
-          title: 'Experiment 6 — F3 vs F4 Final Attributes',
-          description: 'Final attribute naming comparison with full OKLCH color system.',
-          src: '../Research/Experiments/blueprint_experiment_6.html'
-        },
-        {
-          id: 'exp-7',
-          title: 'Experiment 7 — Fluid Spacing Scale',
-          description: 'Testing fluid inline spacing tokens with container query units.',
-          src: '../Research/Experiments/blueprint_experiment_7_spacing.html'
-        }
-      ],
-      currentIndex() {
-        return this.artifacts.findIndex(a => a.id === this.current);
-      },
-      prev() {
-        let i = this.currentIndex();
-        if (i > 0) this.current = this.artifacts[i - 1].id;
-      },
-      next() {
-        let i = this.currentIndex();
-        if (i < this.artifacts.length - 1) this.current = this.artifacts[i + 1].id;
-      },
-      currentArtifact() {
-        return this.artifacts.find(a => a.id === this.current);
-      }
-    }"
-    @keydown.escape.window="current = null"
-  >
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- GALLERY LISTING                                            -->
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <template x-if="!current">
-      <article>
-        <header>
-          <h1 data-colspan="12">Artifact Gallery</h1>
-        </header>
-      </article>
-    </template>
+  <body>
+    <article>
+      <header>
+        <h1 data-colspan="12">Artifact Gallery</h1>
+      </header>
+      <p data-skin="mute">
+        <small>10 artifacts. Drop any self-contained HTML file into <code>gallery/</code> and re-run <code>generate-gallery.sh</code>.</small>
+      </p>
+    </article>
 
-    <template x-if="!current">
-      <article>
-        <p data-skin="mute">
-          <small>Browse PAUMEN-UI reference apps and experiments. Click any card to view.</small>
-        </p>
-      </article>
-    </template>
-
-    <template x-for="artifact in artifacts" :key="artifact.id">
-      <details
-        x-show="!current"
-        data-skin="elevated"
-        @click.prevent="current = artifact.id"
-      >
-        <summary>
-          <h3 data-colspan="10" x-text="artifact.title"></h3>
-          <button
-            data-colspan="2"
-            data-skin="ghost"
-            aria-label="View artifact"
-          >
-            <i class="ph-bold ph-arrow-right" aria-hidden="true"></i>
-          </button>
-        </summary>
-        <p x-text="artifact.description"></p>
-      </details>
-    </template>
-
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- ARTIFACT VIEWER                                            -->
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <template x-if="current">
-      <article>
-        <header>
-          <button
-            data-colspan="1"
-            data-skin="ghost"
-            @click="current = null"
-            aria-label="Back to gallery"
-          >
-            <i class="ph-bold ph-arrow-left" aria-hidden="true"></i>
-          </button>
-          <h2
-            data-colspan="7"
-            x-text="currentArtifact()?.title"
-          ></h2>
-          <button
-            data-colspan="2"
-            data-skin="ghost"
-            :disabled="currentIndex() === 0"
-            @click="prev()"
-            aria-label="Previous artifact"
-          >
-            <i class="ph-bold ph-caret-left" aria-hidden="true"></i>
-            Prev
-          </button>
-          <button
-            data-colspan="2"
-            data-skin="ghost"
-            :disabled="currentIndex() === artifacts.length - 1"
-            @click="next()"
-            aria-label="Next artifact"
-          >
-            Next
-            <i class="ph-bold ph-caret-right" aria-hidden="true"></i>
-          </button>
-        </header>
-      </article>
-    </template>
-
-    <template x-if="current">
-      <article data-skin="freeform">
-        <iframe
-          :src="currentArtifact()?.src"
-          width="100%"
-          height="800"
-          frameborder="0"
-          :title="currentArtifact()?.title"
-        ></iframe>
-      </article>
-    </template>
-
-    <template x-if="current">
-      <article>
-        <footer>
-          <p data-colspan="6" data-skin="mute">
-            <small x-text="(currentIndex() + 1) + ' of ' + artifacts.length"></small>
-          </p>
-          <a
-            data-colspan="6"
-            :href="currentArtifact()?.src"
-            target="_blank"
-          >
-            Open in new tab
-            <i class="ph-bold ph-arrow-square-out" aria-hidden="true"></i>
-          </a>
-        </footer>
-      </article>
-    </template>
+    <details data-skin="elevated">
+      <summary>
+        <h3 data-colspan="10"><a href="daily-planner.html">Daily Planner — PAUMEN-UI Pre-Prototype</a></h3>
+        <a data-colspan="2" href="daily-planner.html" aria-label="View Daily Planner — PAUMEN-UI Pre-Prototype">View</a>
+      </summary>
+    </details>
+    <details data-skin="elevated">
+      <summary>
+        <h3 data-colspan="10"><a href="experiment-1-defaults-skins.html">Blueprint Test — Defaults + Skins</a></h3>
+        <a data-colspan="2" href="experiment-1-defaults-skins.html" aria-label="View Blueprint Test — Defaults + Skins">View</a>
+      </summary>
+    </details>
+    <details data-skin="elevated">
+      <summary>
+        <h3 data-colspan="10"><a href="experiment-2-column-grid.html">Blueprint — Flattened Column Grid Test</a></h3>
+        <a data-colspan="2" href="experiment-2-column-grid.html" aria-label="View Blueprint — Flattened Column Grid Test">View</a>
+      </summary>
+    </details>
+    <details data-skin="elevated">
+      <summary>
+        <h3 data-colspan="10"><a href="experiment-4-f-variants.html">F-Variants Comparison</a></h3>
+        <a data-colspan="2" href="experiment-4-f-variants.html" aria-label="View F-Variants Comparison">View</a>
+      </summary>
+    </details>
+    <details data-skin="elevated">
+      <summary>
+        <h3 data-colspan="10"><a href="experiment-5-colspan-icons.html">colcount / colspan — input + icon buttons</a></h3>
+        <a data-colspan="2" href="experiment-5-colspan-icons.html" aria-label="View colcount / colspan — input + icon buttons">View</a>
+      </summary>
+    </details>
+    <details data-skin="elevated">
+      <summary>
+        <h3 data-colspan="10"><a href="experiment-6-f3-vs-f4.html">Experiment 6 — F3 vs F4 (Final Attribute Names)</a></h3>
+        <a data-colspan="2" href="experiment-6-f3-vs-f4.html" aria-label="View Experiment 6 — F3 vs F4 (Final Attribute Names)">View</a>
+      </summary>
+    </details>
+    <details data-skin="elevated">
+      <summary>
+        <h3 data-colspan="10"><a href="experiment-7-fluid-spacing.html">Experiment 7 — Fluid Inline Spacing Scale</a></h3>
+        <a data-colspan="2" href="experiment-7-fluid-spacing.html" aria-label="View Experiment 7 — Fluid Inline Spacing Scale">View</a>
+      </summary>
+    </details>
+    <details data-skin="elevated">
+      <summary>
+        <h3 data-colspan="10"><a href="settings-app-v1.html">Settings — PAUMEN App</a></h3>
+        <a data-colspan="2" href="settings-app-v1.html" aria-label="View Settings — PAUMEN App">View</a>
+      </summary>
+    </details>
+    <details data-skin="elevated">
+      <summary>
+        <h3 data-colspan="10"><a href="settings-app-v2.html">Settings — PAUMEN App</a></h3>
+        <a data-colspan="2" href="settings-app-v2.html" aria-label="View Settings — PAUMEN App">View</a>
+      </summary>
+    </details>
+    <details data-skin="elevated">
+      <summary>
+        <h3 data-colspan="10"><a href="settings-app.html">Settings — PAUMEN App</a></h3>
+        <a data-colspan="2" href="settings-app.html" aria-label="View Settings — PAUMEN App">View</a>
+      </summary>
+    </details>
   </body>
 </html>
