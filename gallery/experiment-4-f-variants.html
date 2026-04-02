@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>F-Variants Comparison</title>
+    <style>
+      :root {
+        --accent-hue: 250;
+        --accent-chroma: 0.14;
+        --surface-hue: 250;
+        --jump: 0.07;
+
+        --accent: oklch(58% var(--accent-chroma) var(--accent-hue));
+        --accent-dn: oklch(
+          calc(58% - var(--jump)) var(--accent-chroma) var(--accent-hue)
+        );
+        --neutral: oklch(96% 0.01 var(--surface-hue));
+        --neutral-mute: oklch(92% 0.01 var(--surface-hue));
+        --neutral-edge: oklch(85% 0.02 var(--surface-hue));
+        --text: oklch(20% 0.01 var(--surface-hue));
+        --text-mute: oklch(40% 0.01 var(--surface-hue));
+        --text-on-accent: oklch(98% 0.01 var(--accent-hue));
+
+        --xs: 3px;
+        --s: 6px;
+        --m: 14px;
+        --l: 20px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body,
+      h1,
+      h2,
+      h3,
+      h4,
+      p {
+        margin: 0;
+      }
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+        color: inherit;
+      }
+
+      body {
+        font-family: system-ui, sans-serif;
+        font-size: var(--m);
+        line-height: 1.5;
+        color: var(--text);
+        background: var(--neutral);
+        padding: var(--m);
+        display: grid;
+        gap: var(--l);
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      /* ── Shared section/control styles ── */
+
+      section {
+        background: var(--neutral-mute);
+        border: 1px solid var(--neutral-edge);
+        border-radius: var(--s);
+        padding: var(--s);
+        display: grid;
+        gap: var(--s);
+      }
+
+      h3 {
+        line-height: 1.2;
+        padding-block-end: var(--xs);
+        border-block-end: 1px solid var(--neutral-edge);
+      }
+
+      p {
+        color: var(--text);
+        font-size: var(--m);
+        line-height: 1.5;
+      }
+      small {
+        color: var(--text-mute);
+        font-size: 12px;
+      }
+
+      label {
+        cursor: pointer;
+        color: var(--text);
+        font-size: var(--m);
+        display: flex;
+        align-items: center;
+        gap: var(--xs);
+      }
+
+      button,
+      input,
+      textarea {
+        border: 1px solid var(--neutral-edge);
+        border-radius: var(--xs);
+        background: var(--neutral);
+        color: var(--text);
+        padding: var(--xs) var(--s);
+        font-size: var(--m);
+      }
+
+      button {
+        cursor: pointer;
+        font-weight: 600;
+        background: var(--neutral-mute);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--xs);
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      input[type="checkbox"] {
+        width: var(--m);
+        height: var(--m);
+        padding: 0;
+        cursor: pointer;
+        accent-color: var(--accent);
+      }
+
+      [data-skin~="emphasis"] {
+        background: var(--accent);
+        color: var(--text-on-accent);
+        border-color: var(--accent);
+      }
+      [data-skin~="ghost"] {
+        background: transparent;
+        border-color: transparent;
+      }
+      [data-skin~="square"] {
+        aspect-ratio: 1;
+        padding: var(--xs);
+      }
+
+      /* ── F3: section cols + span with defaults ── */
+      .f3 [data-cols="8"] {
+        grid-template-columns: repeat(8, 1fr);
+      }
+      .f3 [data-cols="8"] > h3 {
+        grid-column: span 8;
+      }
+      .f3 [data-cols="8"] > p {
+        grid-column: span 8;
+      }
+      .f3 [data-cols="8"] > label {
+        grid-column: span 8;
+      }
+      .f3 [data-cols="8"] > input {
+        grid-column: span 8;
+      }
+      .f3 [data-cols="8"] > textarea {
+        grid-column: span 8;
+      }
+      .f3 [data-cols="8"] > button {
+        grid-column: span 8;
+      }
+      .f3 [data-span="1"] {
+        grid-column: span 1 !important;
+      }
+      .f3 [data-span="2"] {
+        grid-column: span 2 !important;
+      }
+      .f3 [data-span="3"] {
+        grid-column: span 3 !important;
+      }
+      .f3 [data-span="4"] {
+        grid-column: span 4 !important;
+      }
+      .f3 [data-span="5"] {
+        grid-column: span 5 !important;
+      }
+      .f3 [data-span="6"] {
+        grid-column: span 6 !important;
+      }
+      .f3 [data-span="7"] {
+        grid-column: span 7 !important;
+      }
+
+      /* ── F4/F5: row wrappers ── */
+      .f4 article,
+      .f5 article,
+      .f8 article {
+        display: grid;
+        gap: var(--s);
+      }
+      .f4 article[data-row="2"],
+      .f5 article[data-row="2"],
+      .f8 article[data-row="2"] {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .f4 article[data-row="3"],
+      .f5 article[data-row="3"],
+      .f8 article[data-row="3"] {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .f4 article[data-row="4"],
+      .f5 article[data-row="4"],
+      .f8 article[data-row="4"] {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .f4 article[data-row="8"],
+      .f5 article[data-row="8"],
+      .f8 article[data-row="8"] {
+        grid-template-columns: repeat(8, 1fr);
+      }
+      .f4 article[data-row="7-1"],
+      .f5 article[data-row="7-1"],
+      .f8 article[data-row="7-1"] {
+        grid-template-columns: 7fr 1fr;
+      }
+      .f4 article[data-row="1-5-2"],
+      .f5 article[data-row="1-5-2"],
+      .f8 article[data-row="1-5-2"] {
+        grid-template-columns: 1fr 5fr 2fr;
+      }
+      .f4 article[data-row="7-1b"],
+      .f5 article[data-row="7-1b"],
+      .f8 article[data-row="7-1b"] {
+        grid-template-columns: 7fr 1fr;
+      }
+      .f4 article[data-row="4-4"],
+      .f5 article[data-row="4-4"],
+      .f8 article[data-row="4-4"] {
+        grid-template-columns: 4fr 4fr;
+      }
+      .f4 article[data-row="6-2"],
+      .f5 article[data-row="6-2"],
+      .f8 article[data-row="6-2"] {
+        grid-template-columns: 6fr 2fr;
+      }
+      .f4 article[data-row="1-5-2c"],
+      .f5 article[data-row="1-5-2c"],
+      .f8 article[data-row="1-5-2c"] {
+        grid-template-columns: 1fr 5fr 2fr;
+      }
+
+      /* F5 span inside rows */
+      .f5 [data-span="2"] {
+        grid-column: span 2 !important;
+      }
+      .f5 [data-span="5"] {
+        grid-column: span 5 !important;
+      }
+      .f5 [data-span="6"] {
+        grid-column: span 6 !important;
+      }
+
+      /* ── F-variant label ── */
+      .f-label {
+        background: var(--accent);
+        color: var(--text-on-accent);
+        padding: var(--xs) var(--s);
+        border-radius: var(--xs);
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .f-group {
+        display: grid;
+        gap: var(--s);
+      }
+
+      .chevron {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chevron::after {
+        content: "›";
+        font-size: 1.2em;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════════════════════════════════ -->
+    <!--                  F1                     -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <div class="f-group f1">
+      <!-- Section X -->
+      <section>
+        <h3>Section X · F1</h3>
+        <input type="text" placeholder="Input text" />
+        <button>Button</button>
+        <p>Static text paragraph for this section.</p>
+        <button>Button</button>
+        <button>Button</button>
+        <textarea rows="3" placeholder="Text area"></textarea>
+        <label><input type="checkbox" /> Option A</label>
+        <label><input type="checkbox" /> Option B</label>
+        <label><input type="checkbox" /> Option C</label>
+        <button data-skin="emphasis">Submit</button>
+      </section>
+
+      <!-- Section Y — F1 can't do proportions, everything stacks -->
+      <section>
+        <h3>Section Y · F1</h3>
+        <input type="text" placeholder="Input text full" />
+        <button>Button</button>
+        <p>Static text</p>
+        <button>Button</button>
+        <button>Button</button>
+        <textarea rows="3" placeholder="Text area"></textarea>
+        <label><input type="checkbox" /> Option A</label>
+        <small>1000</small>
+        <label><input type="checkbox" /> Option B</label>
+        <small>2000</small>
+        <label><input type="checkbox" /> Option C</label>
+        <small>3000</small>
+        <button data-skin="emphasis">Submit</button>
+      </section>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--                  F3                     -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <div class="f-group f3">
+      <!-- Section X — all defaults fire, zero span attrs needed -->
+      <section data-cols="8">
+        <h3>Section X · F3</h3>
+        <input type="text" placeholder="Input text" />
+        <button>Button</button>
+        <p>Static text paragraph for this section.</p>
+        <button>Button</button>
+        <button>Button</button>
+        <textarea rows="3" placeholder="Text area"></textarea>
+        <label><input type="checkbox" /> Option A</label>
+        <label><input type="checkbox" /> Option B</label>
+        <label><input type="checkbox" /> Option C</label>
+        <button data-skin="emphasis">Submit</button>
+      </section>
+
+      <!-- Section Y -->
+      <section data-cols="8">
+        <h3 data-span="7" style="border: none; padding: 0">Section Y · F3</h3>
+        <button data-span="1" data-skin="ghost square">
+          <span class="chevron"></span>
+        </button>
+        <input type="text" placeholder="Input text full" />
+        <button data-span="7">Button</button>
+        <button data-span="1" data-skin="ghost square">⚙</button>
+        <p data-span="4">Static text half width</p>
+        <button data-span="4">Button</button>
+        <button data-span="4">Button</button>
+        <textarea data-span="6" rows="3" placeholder="Text area 3/4"></textarea>
+        <label data-span="1"><input type="checkbox" /></label>
+        <label data-span="5">Option A</label>
+        <small data-span="2">1000</small>
+        <label data-span="1"><input type="checkbox" /></label>
+        <label data-span="5">Option B</label>
+        <small data-span="2">2000</small>
+        <label data-span="1"><input type="checkbox" /></label>
+        <label data-span="5">Option C</label>
+        <small data-span="2">3000</small>
+        <button data-span="2" data-skin="emphasis" style="grid-column-start: 7">
+          Submit
+        </button>
+      </section>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--                  F4                     -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <div class="f-group f4">
+      <!-- Section X — all single column, no rows needed -->
+      <section>
+        <h3>Section X · F4</h3>
+        <input type="text" placeholder="Input text" />
+        <button>Button</button>
+        <p>Static text paragraph for this section.</p>
+        <button>Button</button>
+        <button>Button</button>
+        <textarea rows="3" placeholder="Text area"></textarea>
+        <label><input type="checkbox" /> Option A</label>
+        <label><input type="checkbox" /> Option B</label>
+        <label><input type="checkbox" /> Option C</label>
+        <button data-skin="emphasis">Submit</button>
+      </section>
+
+      <!-- Section Y -->
+      <section>
+        <article data-row="7-1">
+          <h3 style="border: none; padding: 0">Section Y · F4</h3>
+          <button data-skin="ghost square">
+            <span class="chevron"></span>
+          </button>
+        </article>
+        <input type="text" placeholder="Input text full" />
+        <article data-row="7-1">
+          <button>Button</button>
+          <button data-skin="ghost square">⚙</button>
+        </article>
+        <article data-row="4-4">
+          <p>Static text half</p>
+          <p></p>
+        </article>
+        <article data-row="2">
+          <button>Button</button>
+          <button>Button</button>
+        </article>
+        <article data-row="6-2">
+          <textarea rows="3" placeholder="Text area 3/4"></textarea>
+          <p></p>
+        </article>
+        <article data-row="1-5-2c">
+          <label><input type="checkbox" /></label>
+          <label>Option A</label>
+          <small>1000</small>
+        </article>
+        <article data-row="1-5-2c">
+          <label><input type="checkbox" /></label>
+          <label>Option B</label>
+          <small>2000</small>
+        </article>
+        <article data-row="1-5-2c">
+          <label><input type="checkbox" /></label>
+          <label>Option C</label>
+          <small>3000</small>
+        </article>
+        <article data-row="6-2">
+          <p></p>
+          <button data-skin="emphasis">Submit</button>
+        </article>
+      </section>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--                  F5                     -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <div class="f-group f5">
+      <!-- Section X — identical to F4 -->
+      <section>
+        <h3>Section X · F5</h3>
+        <input type="text" placeholder="Input text" />
+        <button>Button</button>
+        <p>Static text paragraph for this section.</p>
+        <button>Button</button>
+        <button>Button</button>
+        <textarea rows="3" placeholder="Text area"></textarea>
+        <label><input type="checkbox" /> Option A</label>
+        <label><input type="checkbox" /> Option B</label>
+        <label><input type="checkbox" /> Option C</label>
+        <button data-skin="emphasis">Submit</button>
+      </section>
+
+      <!-- Section Y -->
+      <section>
+        <article data-row="7-1">
+          <h3 style="border: none; padding: 0">Section Y · F5</h3>
+          <button data-skin="ghost square">
+            <span class="chevron"></span>
+          </button>
+        </article>
+        <input type="text" placeholder="Input text full" />
+        <article data-row="7-1">
+          <button>Button</button>
+          <button data-skin="ghost square">⚙</button>
+        </article>
+        <article data-row="8">
+          <p data-span="4">Static text half</p>
+        </article>
+        <article data-row="2">
+          <button>Button</button>
+          <button>Button</button>
+        </article>
+        <article data-row="8">
+          <textarea
+            data-span="6"
+            rows="3"
+            placeholder="Text area 3/4"
+          ></textarea>
+        </article>
+        <article data-row="1-5-2c">
+          <label><input type="checkbox" /></label>
+          <label>Option A</label>
+          <small>1000</small>
+        </article>
+        <article data-row="1-5-2c">
+          <label><input type="checkbox" /></label>
+          <label>Option B</label>
+          <small>2000</small>
+        </article>
+        <article data-row="1-5-2c">
+          <label><input type="checkbox" /></label>
+          <label>Option C</label>
+          <small>3000</small>
+        </article>
+        <article data-row="8">
+          <button
+            data-span="2"
+            data-skin="emphasis"
+            style="grid-column-start: 7"
+          >
+            Submit
+          </button>
+        </article>
+      </section>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <!-- ═══════════════════════════════════════ -->
+    <!--                  F8                     -->
+    <!-- ═══════════════════════════════════════ -->
+    <div class="f-label">F8 — mandatory rows (article defaults row=1)</div>
+
+    <div class="f-group f8">
+      <!-- Section X -->
+      <section>
+        <article><h3>Section X · F8</h3></article>
+        <article><input type="text" placeholder="Input text" /></article>
+        <article><button>Button</button></article>
+        <article><p>Static text paragraph for this section.</p></article>
+        <article><button>Button</button></article>
+        <article><button>Button</button></article>
+        <article>
+          <textarea rows="3" placeholder="Text area"></textarea>
+        </article>
+        <article>
+          <label><input type="checkbox" /> Option A</label>
+        </article>
+        <article>
+          <label><input type="checkbox" /> Option B</label>
+        </article>
+        <article>
+          <label><input type="checkbox" /> Option C</label>
+        </article>
+        <article><button data-skin="emphasis">Submit</button></article>
+      </section>
+
+      <!-- Section Y -->
+      <section>
+        <article data-row="7-1">
+          <h3 style="border: none; padding: 0">Section Y · F8</h3>
+          <button data-skin="ghost square">
+            <span class="chevron"></span>
+          </button>
+        </article>
+        <article><input type="text" placeholder="Input text full" /></article>
+        <article data-row="7-1">
+          <button>Button</button>
+          <button data-skin="ghost square">⚙</button>
+        </article>
+        <article data-row="4-4">
+          <p>Static text half</p>
+          <p></p>
+        </article>
+        <article data-row="2">
+          <button>Button</button>
+          <button>Button</button>
+        </article>
+        <article data-row="6-2">
+          <textarea rows="3" placeholder="Text area 3/4"></textarea>
+          <p></p>
+        </article>
+        <article data-row="1-5-2c">
+          <label><input type="checkbox" /></label>
+          <label>Option A</label>
+          <small>1000</small>
+        </article>
+        <article data-row="1-5-2c">
+          <label><input type="checkbox" /></label>
+          <label>Option B</label>
+          <small>2000</small>
+        </article>
+        <article data-row="1-5-2c">
+          <label><input type="checkbox" /></label>
+          <label>Option C</label>
+          <small>3000</small>
+        </article>
+        <article data-row="6-2">
+          <p></p>
+          <button data-skin="emphasis">Submit</button>
+        </article>
+      </section>
+    </div>
+  </body>
+</html>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>F-Variants Comparison</title>
+    <style>
+      :root {
+        --accent-hue: 250;
+        --accent-chroma: 0.14;
+        --surface-hue: 250;
+        --jump: 0.07;
+
+        --accent: oklch(58% var(--accent-chroma) var(--accent-hue));
+        --accent-dn: oklch(
+          calc(58% - var(--jump)) var(--accent-chroma) var(--accent-hue)
+        );
+        --neutral: oklch(96% 0.01 var(--surface-hue));
+        --neutral-mute: oklch(92% 0.01 var(--surface-hue));
+        --neutral-edge: oklch(85% 0.02 var(--surface-hue));
+        --text: oklch(20% 0.01 var(--surface-hue));
+        --text-mute: oklch(40% 0.01 var(--surface-hue));
+        --text-on-accent: oklch(98% 0.01 var(--accent-hue));
+
+        --xs: 3px;
+        --s: 6px;
+        --m: 14px;
+        --l: 20px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body,
+      h1,
+      h2,
+      h3,
+      h4,
+      p {
+        margin: 0;
+      }
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+        color: inherit;
+      }
+
+      body {
+        font-family: system-ui, sans-serif;
+        font-size: var(--m);
+        line-height: 1.5;
+        color: var(--text);
+        background: var(--neutral);
+        padding: var(--m);
+        display: grid;
+        gap: var(--l);
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      /* ── Shared section/control styles ── */
+
+      section {
+        background: var(--neutral-mute);
+        border: 1px solid var(--neutral-edge);
+        border-radius: var(--s);
+        padding: var(--s);
+        display: grid;
+        gap: var(--s);
+      }
+
+      h3 {
+        line-height: 1.2;
+        padding-block-end: var(--xs);
+        border-block-end: 1px solid var(--neutral-edge);
+      }
+
+      p {
+        color: var(--text);
+        font-size: var(--m);
+        line-height: 1.5;
+      }
+      small {
+        color: var(--text-mute);
+        font-size: 12px;
+      }
+
+      label {
+        cursor: pointer;
+        color: var(--text);
+        font-size: var(--m);
+        display: flex;
+        align-items: center;
+        gap: var(--xs);
+      }
+
+      button,
+      input,
+      textarea {
+        border: 1px solid var(--neutral-edge);
+        border-radius: var(--xs);
+        background: var(--neutral);
+        color: var(--text);
+        padding: var(--xs) var(--s);
+        font-size: var(--m);
+      }
+
+      button {
+        cursor: pointer;
+        font-weight: 600;
+        background: var(--neutral-mute);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--xs);
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      input[type="checkbox"] {
+        width: var(--m);
+        height: var(--m);
+        padding: 0;
+        cursor: pointer;
+        accent-color: var(--accent);
+      }
+
+      [data-skin~="emphasis"] {
+        background: var(--accent);
+        color: var(--text-on-accent);
+        border-color: var(--accent);
+      }
+      [data-skin~="ghost"] {
+        background: transparent;
+        border-color: transparent;
+      }
+      [data-skin~="square"] {
+        aspect-ratio: 1;
+        padding: var(--xs);
+      }
+
+      /* ── F3: section cols + span with defaults ── */
+      .f3 [data-cols="8"] {
+        grid-template-columns: repeat(8, 1fr);
+      }
+      .f3 [data-cols="8"] > h3 {
+        grid-column: span 8;
+      }
+      .f3 [data-cols="8"] > p {
+        grid-column: span 8;
+      }
+      .f3 [data-cols="8"] > label {
+        grid-column: span 8;
+      }
+      .f3 [data-cols="8"] > input {
+        grid-column: span 8;
+      }
+      .f3 [data-cols="8"] > textarea {
+        grid-column: span 8;
+      }
+      .f3 [data-cols="8"] > button {
+        grid-column: span 8;
+      }
+      .f3 [data-span="1"] {
+        grid-column: span 1 !important;
+      }
+      .f3 [data-span="2"] {
+        grid-column: span 2 !important;
+      }
+      .f3 [data-span="3"] {
+        grid-column: span 3 !important;
+      }
+      .f3 [data-span="4"] {
+        grid-column: span 4 !important;
+      }
+      .f3 [data-span="5"] {
+        grid-column: span 5 !important;
+      }
+      .f3 [data-span="6"] {
+        grid-column: span 6 !important;
+      }
+      .f3 [data-span="7"] {
+        grid-column: span 7 !important;
+      }
+
+      /* ── F4/F5: row wrappers ── */
+      .f4 article,
+      .f5 article,
+      .f8 article {
+        display: grid;
+        gap: var(--s);
+      }
+      .f4 article[data-row="2"],
+      .f5 article[data-row="2"],
+      .f8 article[data-row="2"] {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .f4 article[data-row="3"],
+      .f5 article[data-row="3"],
+      .f8 article[data-row="3"] {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .f4 article[data-row="4"],
+      .f5 article[data-row="4"],
+      .f8 article[data-row="4"] {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .f4 article[data-row="8"],
+      .f5 article[data-row="8"],
+      .f8 article[data-row="8"] {
+        grid-template-columns: repeat(8, 1fr);
+      }
+      .f4 article[data-row="7-1"],
+      .f5 article[data-row="7-1"],
+      .f8 article[data-row="7-1"] {
+        grid-template-columns: 7fr 1fr;
+      }
+      .f4 article[data-row="1-5-2"],
+      .f5 article[data-row="1-5-2"],
+      .f8 article[data-row="1-5-2"] {
+        grid-template-columns: 1fr 5fr 2fr;
+      }
+      .f4 article[data-row="7-1b"],
+      .f5 article[data-row="7-1b"],
+      .f8 article[data-row="7-1b"] {
+        grid-template-columns: 7fr 1fr;
+      }
+      .f4 article[data-row="4-4"],
+      .f5 article[data-row="4-4"],
+      .f8 article[data-row="4-4"] {
+        grid-template-columns: 4fr 4fr;
+      }
+      .f4 article[data-row="6-2"],
+      .f5 article[data-row="6-2"],
+      .f8 article[data-row="6-2"] {
+        grid-template-columns: 6fr 2fr;
+      }
+      .f4 article[data-row="1-5-2c"],
+      .f5 article[data-row="1-5-2c"],
+      .f8 article[data-row="1-5-2c"] {
+        grid-template-columns: 1fr 5fr 2fr;
+      }
+
+      /* F5 span inside rows */
+      .f5 [data-span="2"] {
+        grid-column: span 2 !important;
+      }
+      .f5 [data-span="5"] {
+        grid-column: span 5 !important;
+      }
+      .f5 [data-span="6"] {
+        grid-column: span 6 !important;
+      }
+
+      /* ── F-variant label ── */
+      .f-label {
+        background: var(--accent);
+        color: var(--text-on-accent);
+        padding: var(--xs) var(--s);
+        border-radius: var(--xs);
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .f-group {
+        display: grid;
+        gap: var(--s);
+      }
+
+      .chevron {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chevron::after {
+        content: "›";
+        font-size: 1.2em;
+      }
+    </style>
+  </head>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!--                  F1                     -->
+  <!-- ═══════════════════════════════════════ -->
+
+  <div class="f-group f1">
+    <!-- Section X -->
+    <section>
+      <h3>Section X · F1</h3>
+      <input type="text" placeholder="Input text" />
+      <button>Button</button>
+      <p>Static text paragraph for this section.</p>
+      <button>Button</button>
+      <button>Button</button>
+      <textarea rows="3" placeholder="Text area"></textarea>
+      <label><input type="checkbox" /> Option A</label>
+      <label><input type="checkbox" /> Option B</label>
+      <label><input type="checkbox" /> Option C</label>
+      <button data-skin="emphasis">Submit</button>
+    </section>
+
+    <!-- Section Y — F1 can't do proportions, everything stacks -->
+    <section>
+      <h3>Section Y · F1</h3>
+      <button data-skin="ghost square"><span class="chevron"></span></button>
+      <input type="text" placeholder="Input text full" />
+      <button>Button</button>
+      <button data-skin="ghost square">⚙</button>
+      <p>Static text</p>
+      <button>Button</button>
+      <button>Button</button>
+      <textarea rows="3" placeholder="Text area"></textarea>
+      <label><input type="checkbox" /> Option A</label>
+      <small>1000</small>
+      <label><input type="checkbox" /> Option B</label>
+      <small>2000</small>
+      <label><input type="checkbox" /> Option C</label>
+      <small>3000</small>
+      <button data-skin="emphasis">Submit</button>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!--                  F3                     -->
+  <!-- ═══════════════════════════════════════ -->
+
+  <div class="f-group f3">
+    <!-- Section X — all defaults fire, zero span attrs needed -->
+    <section data-cols="8">
+      <h3>Section X · F3</h3>
+      <input type="text" placeholder="Input text" />
+      <button>Button</button>
+      <p>Static text paragraph for this section.</p>
+      <button>Button</button>
+      <button>Button</button>
+      <textarea rows="3" placeholder="Text area"></textarea>
+      <label><input type="checkbox" /> Option A</label>
+      <label><input type="checkbox" /> Option B</label>
+      <label><input type="checkbox" /> Option C</label>
+      <button data-skin="emphasis">Submit</button>
+    </section>
+
+    <!-- Section Y -->
+    <section data-cols="8">
+      <h3 data-span="7" style="border: none; padding: 0">Section Y · F3</h3>
+      <button data-span="1" data-skin="ghost square">
+        <span class="chevron"></span>
+      </button>
+      <input type="text" placeholder="Input text full" />
+      <button data-span="7">Button</button>
+      <button data-span="1" data-skin="ghost square">⚙</button>
+      <p data-span="4">Static text half width</p>
+      <button data-span="4">Button</button>
+      <button data-span="4">Button</button>
+      <textarea data-span="6" rows="3" placeholder="Text area 3/4"></textarea>
+      <label data-span="1"><input type="checkbox" /></label>
+      <label data-span="5">Option A</label>
+      <small data-span="2">1000</small>
+      <label data-span="1"><input type="checkbox" /></label>
+      <label data-span="5">Option B</label>
+      <small data-span="2">2000</small>
+      <label data-span="1"><input type="checkbox" /></label>
+      <label data-span="5">Option C</label>
+      <small data-span="2">3000</small>
+      <button data-span="2" data-skin="emphasis" style="grid-column-start: 7">
+        Submit
+      </button>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!--                  F4                     -->
+  <!-- ═══════════════════════════════════════ -->
+
+  <div class="f-group f4">
+    <!-- Section X — all single column, no rows needed -->
+    <section>
+      <h3>Section X · F4</h3>
+      <input type="text" placeholder="Input text" />
+      <button>Button</button>
+      <p>Static text paragraph for this section.</p>
+      <button>Button</button>
+      <button>Button</button>
+      <textarea rows="3" placeholder="Text area"></textarea>
+      <label><input type="checkbox" /> Option A</label>
+      <label><input type="checkbox" /> Option B</label>
+      <label><input type="checkbox" /> Option C</label>
+      <button data-skin="emphasis">Submit</button>
+    </section>
+
+    <!-- Section Y -->
+    <section>
+      <article data-row="7-1">
+        <h3 style="border: none; padding: 0">Section Y · F4</h3>
+        <button data-skin="ghost square"><span class="chevron"></span></button>
+      </article>
+      <input type="text" placeholder="Input text full" />
+      <article data-row="7-1">
+        <button>Button</button>
+        <button data-skin="ghost square">⚙</button>
+      </article>
+      <article data-row="4-4">
+        <p>Static text half</p>
+        <p></p>
+      </article>
+      <article data-row="2">
+        <button>Button</button>
+        <button>Button</button>
+      </article>
+      <article data-row="6-2">
+        <textarea rows="3" placeholder="Text area 3/4"></textarea>
+        <p></p>
+      </article>
+      <article data-row="1-5-2c">
+        <label><input type="checkbox" /></label>
+        <label>Option A</label>
+        <small>1000</small>
+      </article>
+      <article data-row="1-5-2c">
+        <label><input type="checkbox" /></label>
+        <label>Option B</label>
+        <small>2000</small>
+      </article>
+      <article data-row="1-5-2c">
+        <label><input type="checkbox" /></label>
+        <label>Option C</label>
+        <small>3000</small>
+      </article>
+      <article data-row="6-2">
+        <p></p>
+        <button data-skin="emphasis">Submit</button>
+      </article>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!--                  F5                     -->
+  <!-- ═══════════════════════════════════════ -->
+
+  <div class="f-group f5">
+    <!-- Section X — identical to F4 -->
+    <section>
+      <h3>Section X · F5</h3>
+      <input type="text" placeholder="Input text" />
+      <button>Button</button>
+      <p>Static text paragraph for this section.</p>
+      <button>Button</button>
+      <button>Button</button>
+      <textarea rows="3" placeholder="Text area"></textarea>
+      <label><input type="checkbox" /> Option A</label>
+      <label><input type="checkbox" /> Option B</label>
+      <label><input type="checkbox" /> Option C</label>
+      <button data-skin="emphasis">Submit</button>
+    </section>
+
+    <!-- Section Y -->
+    <section>
+      <article data-row="7-1">
+        <h3 style="border: none; padding: 0">Section Y · F5</h3>
+        <button data-skin="ghost square"><span class="chevron"></span></button>
+      </article>
+      <input type="text" placeholder="Input text full" />
+      <article data-row="7-1">
+        <button>Button</button>
+        <button data-skin="ghost square">⚙</button>
+      </article>
+      <article data-row="8">
+        <p data-span="4">Static text half</p>
+      </article>
+      <article data-row="2">
+        <button>Button</button>
+        <button>Button</button>
+      </article>
+      <article data-row="8">
+        <textarea data-span="6" rows="3" placeholder="Text area 3/4"></textarea>
+      </article>
+      <article data-row="1-5-2c">
+        <label><input type="checkbox" /></label>
+        <label>Option A</label>
+        <small>1000</small>
+      </article>
+      <article data-row="1-5-2c">
+        <label><input type="checkbox" /></label>
+        <label>Option B</label>
+        <small>2000</small>
+      </article>
+      <article data-row="1-5-2c">
+        <label><input type="checkbox" /></label>
+        <label>Option C</label>
+        <small>3000</small>
+      </article>
+      <article data-row="8">
+        <button data-span="2" data-skin="emphasis" style="grid-column-start: 7">
+          Submit
+        </button>
+      </article>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!--                  F8                     -->
+  <!-- ═══════════════════════════════════════ -->
+
+  <div class="f-group f8">
+    <!-- Section X -->
+    <section>
+      <article><h3>Section X · F8</h3></article>
+      <article><input type="text" placeholder="Input text" /></article>
+      <article><button>Button</button></article>
+      <article><p>Static text paragraph for this section.</p></article>
+      <article><button>Button</button></article>
+      <article><button>Button</button></article>
+      <article><textarea rows="3" placeholder="Text area"></textarea></article>
+      <article>
+        <label><input type="checkbox" /> Option A</label>
+      </article>
+      <article>
+        <label><input type="checkbox" /> Option B</label>
+      </article>
+      <article>
+        <label><input type="checkbox" /> Option C</label>
+      </article>
+      <article><button data-skin="emphasis">Submit</button></article>
+    </section>
+
+    <!-- Section Y -->
+    <section>
+      <article data-row="7-1">
+        <h3 style="border: none; padding: 0">Section Y · F8</h3>
+        <button data-skin="ghost square"><span class="chevron"></span></button>
+      </article>
+      <article><input type="text" placeholder="Input text full" /></article>
+      <article data-row="7-1">
+        <button>Button</button>
+        <button data-skin="ghost square">⚙</button>
+      </article>
+      <article data-row="4-4">
+        <p>Static text half</p>
+        <p></p>
+      </article>
+      <article data-row="2">
+        <button>Button</button>
+        <button>Button</button>
+      </article>
+      <article data-row="6-2">
+        <textarea rows="3" placeholder="Text area 3/4"></textarea>
+        <p></p>
+      </article>
+      <article data-row="1-5-2c">
+        <label><input type="checkbox" /></label>
+        <label>Option A</label>
+        <small>1000</small>
+      </article>
+      <article data-row="1-5-2c">
+        <label><input type="checkbox" /></label>
+        <label>Option B</label>
+        <small>2000</small>
+      </article>
+      <article data-row="1-5-2c">
+        <label><input type="checkbox" /></label>
+        <label>Option C</label>
+        <small>3000</small>
+      </article>
+      <article data-row="6-2">
+        <p></p>
+        <button data-skin="emphasis">Submit</button>
+      </article>
+    </section>
+  </div>
+</html>

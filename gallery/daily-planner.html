@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Planner — PAUMEN-UI Pre-Prototype</title>
+    <link rel="stylesheet" href="../Research/Experiments/experiment_8_paumen.css" />
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+  </head>
+  <body>
+    <!-- ══════════════════════════════════════════════
+       CARD 1 — App Header
+       Patterns: header row (h1 + svg + button), nav row with links
+       NOTE: header used here because it has 3 children (h1 + svg + button).
+             Single elements are direct card children — no row wrapper.
+       ══════════════════════════════════════════════ -->
+
+    <article>
+      <header>
+        <h2 data-colspan="9">
+          <i class="ph-duotone ph-calendar" aria-hidden="true"></i> Daily
+          Planner
+        </h2>
+        <button
+          data-colspan="3"
+          data-skin="ghost"
+          popovertarget="settings-menu"
+        >
+          <i class="ph-bold ph-gear" aria-hidden="true"></i
+          ><i class="ph-duotone ph-gear" aria-hidden="true" data-icon-fill></i>
+          Settings
+        </button>
+      </header>
+      <nav>
+        <button data-colspan="4" href="#">Today</button>
+        <button data-colspan="4" href="#">This Week</button>
+        <button data-colspan="4" href="#">Archive</button>
+      </nav>
+      <form role="search">
+        <input type="search" placeholder="Search tasks…" data-colspan="10" />
+        <button data-skin="ghost" aria-label="Clear search">
+          <i class="ph-bold ph-x" aria-hidden="true"></i
+          ><i class="ph-duotone ph-x" aria-hidden="true" data-icon-fill></i>
+        </button>
+        <button data-skin="filled" aria-label="Search">
+          <i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i
+          ><i
+            class="ph-duotone ph-magnifying-glass"
+            aria-hidden="true"
+            data-icon-fill
+          ></i>
+        </button>
+      </form>
+    </article>
+
+    <!-- ══════════════════════════════════════════════
+       CARD 3 — Add Task Form
+       Patterns: form display:contents, direct card children,
+                 section 6+6, footer 6+6
+       ══════════════════════════════════════════════ -->
+
+    <article>
+      <h3>Add Task</h3>
+      <form>
+        <input type="text" placeholder="Task title…" />
+        <textarea placeholder="Notes (optional)…"></textarea>
+        <section>
+          <input type="date" data-colspan="6" />
+          <select data-colspan="6">
+            <option value="">Priority…</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </section>
+        <footer>
+          <button data-colspan="6" data-skin="ghost" type="reset">Clear</button>
+          <button data-colspan="6" data-skin="filled" type="submit">
+            <i class="ph-bold ph-plus" aria-hidden="true"></i
+            ><i
+              class="ph-duotone ph-plus"
+              aria-hidden="true"
+              data-icon-fill
+            ></i>
+            Add Task
+          </button>
+        </footer>
+      </form>
+    </article>
+
+    <!-- ══════════════════════════════════════════════
+       CARD 4 — Task List (collapsible)
+       Patterns: details + summary, checkbox rows (1+9+2)
+       ══════════════════════════════════════════════ -->
+
+    <details open>
+      <summary>
+        <h3 data-colspan="12">Today's Tasks</h3>
+      </summary>
+
+      <ul>
+        <li class="task-row">
+          <input type="checkbox" id="task-1" />
+          <label for="task-1" data-colspan="10"
+            >Review project proposal and leave comments</label
+          >
+          <button data-colspan="1" data-skin="ghost" aria-label="Delete task">
+            <i class="ph-bold ph-trash" aria-hidden="true"></i
+            ><i
+              class="ph-duotone ph-trash"
+              aria-hidden="true"
+              data-icon-fill
+            ></i>
+          </button>
+        </li>
+
+        <li class="task-row">
+          <input type="checkbox" id="task-2" />
+          <label for="task-2" data-colspan="10"
+            >Schedule team sync for Q2 planning</label
+          >
+          <button data-colspan="1" data-skin="ghost" aria-label="Delete task">
+            <i class="ph-bold ph-trash" aria-hidden="true"></i
+            ><i
+              class="ph-duotone ph-trash"
+              aria-hidden="true"
+              data-icon-fill
+            ></i>
+          </button>
+        </li>
+
+        <li class="task-row">
+          <input type="checkbox" id="task-3" checked />
+          <label for="task-3" data-colspan="10" data-skin="mute"
+            ><s>Send weekly status update email</s></label
+          >
+          <button data-colspan="1" data-skin="ghost" aria-label="Delete task">
+            <i class="ph-bold ph-trash" aria-hidden="true"></i
+            ><i
+              class="ph-duotone ph-trash"
+              aria-hidden="true"
+              data-icon-fill
+            ></i>
+          </button>
+        </li>
+      </ul>
+    </details>
+
+    <!-- ══════════════════════════════════════════════
+       CARD 5 — Weekly Stats
+       Patterns: elevated skin, h2 heading, 3+3+3+3 stat grid
+       ══════════════════════════════════════════════ -->
+
+    <article data-skin="elevated">
+      <h3>This Week</h3>
+      <section>
+        <output data-colspan="3">12</output>
+        <output data-colspan="3">8</output>
+        <output data-colspan="3">3</output>
+        <output data-colspan="3">1</output>
+      </section>
+      <section>
+        <small data-colspan="3"
+          ><i class="ph-bold ph-check-circle" aria-hidden="true"></i>
+          Completed</small
+        >
+        <small data-colspan="3"
+          ><i class="ph-bold ph-clock" aria-hidden="true"></i> In
+          progress</small
+        >
+        <small data-colspan="3"
+          ><i class="ph-bold ph-warning-circle" aria-hidden="true"></i>
+          Overdue</small
+        >
+        <small data-colspan="3"
+          ><i class="ph-bold ph-pause-circle" aria-hidden="true"></i> On
+          hold</small
+        >
+      </section>
+    </article>
+
+    <!-- ══════════════════════════════════════════════
+       CARD 6 — Quick Settings
+       Patterns: label+control rows (3+9), range, checkbox,
+                 email input, radio group
+       ══════════════════════════════════════════════ -->
+
+    <article>
+      <h3>Quick Settings</h3>
+
+      <section>
+        <label for="theme-select" data-colspan="2">Theme</label>
+        <select id="theme-select" data-colspan="10">
+          <option>System default</option>
+          <option>Light</option>
+          <option>Dark</option>
+        </select>
+      </section>
+
+      <section>
+        <label for="font-range" data-colspan="2">Font size</label>
+        <input
+          type="range"
+          id="font-range"
+          min="12"
+          max="24"
+          value="16"
+          data-colspan="10"
+        />
+      </section>
+
+      <section>
+        <label for="email-input" data-colspan="2">Email</label>
+        <input
+          type="email"
+          id="email-input"
+          placeholder="you@example.com"
+          data-colspan="10"
+        />
+      </section>
+
+      <section role="radiogroup" aria-labelledby="reminder-label">
+        <label id="reminder-label" data-colspan="3">Reminder</label>
+        <input type="radio" name="reminder" id="r-15" />
+        <label for="r-15" data-colspan="2">15 min</label>
+        <input type="radio" name="reminder" id="r-30" />
+        <label for="r-30" data-colspan="2">30 min</label>
+        <input type="radio" name="reminder" id="r-60" />
+        <label for="r-60" data-colspan="2">1 hour</label>
+      </section>
+
+      <footer>
+        <button data-colspan="6" data-skin="ghost">Reset to defaults</button>
+        <button data-colspan="6" data-skin="filled">
+          <i class="ph-bold ph-floppy-disk" aria-hidden="true"></i
+          ><i
+            class="ph-duotone ph-floppy-disk"
+            aria-hidden="true"
+            data-icon-fill
+          ></i>
+          Save
+        </button>
+      </footer>
+    </article>
+
+    <!-- ══════════════════════════════════════════════
+       CARD 7 — Skin Reference
+       Patterns: all 5 skins, h4 sub-headings within card
+       ══════════════════════════════════════════════ -->
+
+    <article>
+      <h3>Skin Reference</h3>
+      <p data-skin="mute">
+        Skins are composable via <code>data-skin</code> (space-separated).
+        Conflict group: <code>filled</code> and <code>ghost</code> are mutually
+        exclusive.
+      </p>
+
+      <h4>filled · outlined (default) · ghost</h4>
+      <section>
+        <button data-colspan="4" data-skin="filled">filled</button>
+        <button data-colspan="4">outlined</button>
+        <button data-colspan="4" data-skin="ghost">ghost</button>
+      </section>
+
+      <h4>mute · elevated · disabled</h4>
+      <section>
+        <button data-colspan="4" data-skin="mute">mute</button>
+        <button data-colspan="4" data-skin="elevated">elevated</button>
+        <button data-colspan="4" disabled>disabled</button>
+      </section>
+
+      <h4>freeform (card skin — escape hatch)</h4>
+      <p data-skin="mute">
+        Removes all PAUMEN constraints from the card interior. Used for game
+        canvases, third-party embeds, and data visualisations.
+      </p>
+    </article>
+
+    <!-- ══════════════════════════════════════════════
+       CARD 8 — Color Test Controls
+       Live-tweak OKLCH variables + light/dark toggle
+       ══════════════════════════════════════════════ -->
+
+    <article>
+      <h3>
+        <i class="ph-duotone ph-palette" aria-hidden="true"></i> Color Test
+        Controls
+      </h3>
+
+      <section>
+        <label for="mode-toggle" data-colspan="9">Dark mode</label>
+        <input type="checkbox" id="mode-toggle" data-colspan="3" />
+      </section>
+
+      <section>
+        <label for="accent-hue" data-colspan="3">Accent hue</label>
+        <input
+          type="range"
+          id="accent-hue"
+          min="0"
+          max="360"
+          value="200"
+          data-colspan="7"
+        />
+        <input
+          type="number"
+          id="accent-hue-num"
+          min="0"
+          max="360"
+          value="200"
+          data-colspan="2"
+        />
+      </section>
+
+      <section>
+        <label for="accent-chroma" data-colspan="3">Accent chroma</label>
+        <input
+          type="range"
+          id="accent-chroma"
+          min="0"
+          max="0.4"
+          step="0.005"
+          value="0.14"
+          data-colspan="7"
+        />
+        <input
+          type="number"
+          id="accent-chroma-num"
+          min="0"
+          max="0.4"
+          step="0.005"
+          value="0.14"
+          data-colspan="2"
+        />
+      </section>
+
+      <section>
+        <label for="surface-hue" data-colspan="3">Surface hue</label>
+        <input
+          type="range"
+          id="surface-hue"
+          min="0"
+          max="360"
+          value="250"
+          data-colspan="7"
+        />
+        <input
+          type="number"
+          id="surface-hue-num"
+          min="0"
+          max="360"
+          value="250"
+          data-colspan="2"
+        />
+      </section>
+
+      <section>
+        <label for="jump-val" data-colspan="3">Jump (step)</label>
+        <input
+          type="range"
+          id="jump-val"
+          min="0"
+          max="0.2"
+          step="0.005"
+          value="0.07"
+          data-colspan="7"
+        />
+        <input
+          type="number"
+          id="jump-val-num"
+          min="0"
+          max="0.2"
+          step="0.005"
+          value="0.07"
+          data-colspan="2"
+        />
+      </section>
+
+      <footer>
+        <button data-colspan="6" data-skin="ghost" id="color-reset">
+          Reset to defaults
+        </button>
+        <button data-colspan="6" data-skin="filled" id="color-copy">
+          <i class="ph-bold ph-copy" aria-hidden="true"></i
+          ><i class="ph-duotone ph-copy" aria-hidden="true" data-icon-fill></i>
+          Copy CSS vars
+        </button>
+      </footer>
+    </article>
+
+    <script>
+      (() => {
+        const root = document.documentElement;
+
+        // Slider ↔ number sync helper
+        function linkPair(sliderId, numId, cssProp, fmt) {
+          const slider = document.getElementById(sliderId);
+          const num = document.getElementById(numId);
+          const update = (v) => {
+            root.style.setProperty(cssProp, fmt ? fmt(v) : v);
+            slider.value = v;
+            num.value = v;
+          };
+          slider.addEventListener("input", () => update(slider.value));
+          num.addEventListener("input", () => update(num.value));
+        }
+
+        linkPair("accent-hue", "accent-hue-num", "--accent-hue");
+        linkPair("accent-chroma", "accent-chroma-num", "--accent-chroma");
+        linkPair("surface-hue", "surface-hue-num", "--surface-hue");
+        linkPair("jump-val", "jump-val-num", "--jump");
+
+        // Light / dark toggle
+        const toggle = document.getElementById("mode-toggle");
+        toggle.addEventListener("change", () => {
+          root.style.colorScheme = toggle.checked ? "dark" : "light";
+        });
+        // init: match system preference
+        if (matchMedia("(prefers-color-scheme: dark)").matches) {
+          toggle.checked = true;
+          root.style.colorScheme = "dark";
+        }
+
+        // Reset
+        document.getElementById("color-reset").addEventListener("click", () => {
+          [
+            "--accent-hue",
+            "--accent-chroma",
+            "--surface-hue",
+            "--jump",
+          ].forEach((p) => root.style.removeProperty(p));
+          root.style.removeProperty("color-scheme");
+          document.getElementById("accent-hue").value = 250;
+          document.getElementById("accent-hue-num").value = 250;
+          document.getElementById("accent-chroma").value = 0.14;
+          document.getElementById("accent-chroma-num").value = 0.14;
+          document.getElementById("surface-hue").value = 250;
+          document.getElementById("surface-hue-num").value = 250;
+          document.getElementById("jump-val").value = 0.07;
+          document.getElementById("jump-val-num").value = 0.07;
+          toggle.checked = matchMedia("(prefers-color-scheme: dark)").matches;
+        });
+
+        // Copy CSS vars
+        document.getElementById("color-copy").addEventListener("click", () => {
+          const vars = [
+            `--accent-hue: ${document.getElementById("accent-hue").value};`,
+            `--accent-chroma: ${document.getElementById("accent-chroma").value};`,
+            `--surface-hue: ${document.getElementById("surface-hue").value};`,
+            `--jump: ${document.getElementById("jump-val").value};`,
+          ].join("\n");
+          navigator.clipboard.writeText(vars).then(() => {
+            const btn = document.getElementById("color-copy");
+            const [stroke, fill] = btn.querySelectorAll("i");
+            btn.textContent = " Copied!";
+            btn.prepend(fill);
+            btn.prepend(stroke);
+            setTimeout(() => {
+              btn.textContent = " Copy CSS vars";
+              btn.prepend(fill);
+              btn.prepend(stroke);
+            }, 1500);
+          });
+        });
+      })();
+    </script>
+
+    <!-- ══════════════════════════════════════════════
+       CARD 9 — Freeform Escape Hatch
+       Pattern: data-skin="freeform" on a card
+       ══════════════════════════════════════════════ -->
+
+    <article data-skin="freeform">
+      <div
+        style="
+          padding: 1.25rem;
+          background: oklch(12% 0.03 250);
+          border-radius: 0.5rem;
+          font-family: monospace;
+          font-size: 0.85em;
+          color: oklch(75% 0.12 200);
+          line-height: 1.7;
+        "
+      >
+        &lt;article data-skin="freeform"&gt;<br />
+        &nbsp;&nbsp;<!-- All PAUMEN constraints removed from this card's interior --><br />
+        &nbsp;&nbsp;<!-- Custom CSS, third-party widgets, canvas elements go here --><br />
+        &lt;/article&gt;
+      </div>
+    </article>
+  </body>
+</html>

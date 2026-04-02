@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings — PAUMEN App</title>
+
+    <!-- Font: Nunito (§7 — body font-family) -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+    />
+
+    <!-- Icons: Phosphor (§8 — optional icon layer) -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+
+    <!-- Blueprint CSS -->
+    <link rel="stylesheet" href="../pre-prototype/blueprint-v1.css" />
+
+    <!-- Alpine.js (§9 — interactivity) -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body
+    x-data="{
+  profileName: '',
+  profileEmail: '',
+  profileBio: '',
+  accentHue: 200,
+  fontSize: 'medium',
+  notifyEmail: true,
+  notifyPush: false,
+  notifyDigest: 'daily',
+  scheduleDate: '',
+  scheduleTime: '',
+  volume: 50,
+  saveState: '',
+  deleteState: '',
+  tags: ['Work', 'Personal', 'Urgent'],
+  newTag: '',
+  addTag() {
+    if (this.newTag.trim() && !this.tags.includes(this.newTag.trim())) {
+      this.tags.push(this.newTag.trim());
+      this.newTag = '';
+    }
+  },
+  removeTag(tag) { this.tags = this.tags.filter(t => t !== tag); },
+  async saveSettings() {
+    this.saveState = 'loading';
+    await new Promise(r => setTimeout(r, 1500));
+    this.saveState = 'success';
+    setTimeout(() => this.saveState = '', 2000);
+  },
+  async deleteAccount() {
+    this.deleteState = 'loading';
+    await new Promise(r => setTimeout(r, 2000));
+    this.deleteState = 'error';
+  }
+}"
+  >
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- CARD 1: Page Header (non-collapsible — details open, §2)  -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <details open data-fixed @toggle.prevent="$el.open = true">
+      <summary>
+        <h1 data-colspan="10">Settings</h1>
+        <!-- Popover trigger — nav popover = dropdown menu (§5 Layer 2) -->
+        <button
+          data-colspan="2"
+          data-skin="ghost"
+          popovertarget="nav-menu"
+          aria-label="Menu"
+          @click.stop
+        >
+          <i class="ph-bold ph-list" aria-hidden="true"></i>
+          <i class="ph-duotone ph-list" aria-hidden="true" data-icon-fill></i>
+        </button>
+      </summary>
+      <p>
+        Manage your account, appearance, notifications, and more. Changes are
+        saved when you click <strong>Save</strong>.
+      </p>
+    </details>
+
+    <!-- Dropdown menu popover — nav[popover] (§8 Popover Hosts) -->
+    <nav popover id="nav-menu">
+      <button data-skin="ghost" onclick="navTo('profile-card')">Profile</button>
+      <button data-skin="ghost" onclick="navTo('appearance-card')">
+        Appearance
+      </button>
+      <button data-skin="ghost" onclick="navTo('notifications-card')">
+        Notifications
+      </button>
+      <button data-skin="ghost" onclick="navTo('schedule-card')">
+        Schedule
+      </button>
+      <button data-skin="ghost" onclick="navTo('danger-card')">
+        Danger Zone
+      </button>
+    </nav>
+    <script>
+      function navTo(id) {
+        document.getElementById("nav-menu").hidePopover();
+        document
+          .querySelectorAll('details[id$="-card"]')
+          .forEach((d) => (d.open = d.id === id));
+      }
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- CARD 2: Profile Settings (collapsible — details, §1/§2)   -->
+    <!-- Demonstrates: form, text/email/password/url/tel inputs,    -->
+    <!--   textarea, label, a, strong, small, data-colspan, x-model -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <details id="profile-card">
+      <summary>
+        <h3 data-colspan="11">
+          <i class="ph-bold ph-user" aria-hidden="true"></i>
+          Profile
+        </h3>
+        <small data-colspan="1" data-skin="mute">Required</small>
+      </summary>
+      <form @submit.prevent="saveSettings()">
+        <section>
+          <label data-colspan="3" for="profile-name">Full Name</label>
+          <input
+            data-colspan="9"
+            type="text"
+            id="profile-name"
+            placeholder="Jane Doe"
+            required
+            x-model="profileName"
+            autocomplete="name"
+          />
+        </section>
+        <section>
+          <label data-colspan="3" for="profile-email">Email</label>
+          <input
+            data-colspan="9"
+            type="email"
+            id="profile-email"
+            placeholder="jane@example.com"
+            required
+            x-model="profileEmail"
+            autocomplete="email"
+          />
+        </section>
+        <section>
+          <label data-colspan="3" for="profile-password">Password</label>
+          <input
+            data-colspan="9"
+            type="password"
+            id="profile-password"
+            placeholder="••••••••"
+            minlength="8"
+            autocomplete="new-password"
+          />
+        </section>
+        <section>
+          <label data-colspan="3" for="profile-url">Website</label>
+          <input
+            data-colspan="9"
+            type="url"
+            id="profile-url"
+            placeholder="https://example.com"
+            autocomplete="url"
+          />
+        </section>
+        <section>
+          <label data-colspan="3" for="profile-phone">Phone</label>
+          <input
+            data-colspan="9"
+            type="tel"
+            id="profile-phone"
+            placeholder="+1 555 000 0000"
+            autocomplete="tel"
+          />
+        </section>
+        <section>
+          <label data-colspan="3" for="profile-bio">Bio</label>
+          <textarea
+            data-colspan="9"
+            id="profile-bio"
+            placeholder="Tell us about yourself…"
+            rows="3"
+            x-model="profileBio"
+          ></textarea>
+        </section>
+        <p data-skin="mute">
+          <small
+            >Your profile is visible to other users. See our
+            <a href="#">privacy policy</a>.</small
+          >
+        </p>
+      </form>
+    </details>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- CARD 3: Appearance Settings (collapsible)                  -->
+    <!-- Demonstrates: range, select, radio, data-skin="elevated", -->
+    <!--   x-bind, x-text, aside (tooltip via popover)             -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <details id="appearance-card">
+      <summary>
+        <h3 data-colspan="10">
+          <i class="ph-bold ph-paint-brush" aria-hidden="true"></i>
+          Appearance
+        </h3>
+        <!-- Tooltip trigger — aside[popover] (§5 Layer 2) -->
+        <button
+          data-colspan="2"
+          data-skin="ghost"
+          popovertarget="tooltip-appearance"
+          aria-label="Help"
+          @click.stop
+        >
+          <i class="ph-bold ph-question" aria-hidden="true"></i>
+          <i
+            class="ph-duotone ph-question"
+            aria-hidden="true"
+            data-icon-fill
+          ></i>
+        </button>
+      </summary>
+
+      <section>
+        <label data-colspan="4" for="accent-hue">Accent Hue</label>
+        <input
+          data-colspan="6"
+          type="range"
+          id="accent-hue"
+          min="0"
+          max="360"
+          step="1"
+          x-model="accentHue"
+          @input="document.documentElement.style.setProperty('--accent-hue', accentHue)"
+        />
+        <p data-colspan="2" data-skin="mute">
+          <small x-text="accentHue + '°'"></small>
+        </p>
+      </section>
+
+      <section>
+        <label data-colspan="4" for="font-size">Font Size</label>
+        <select data-colspan="8" id="font-size" x-model="fontSize">
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="large">Large</option>
+        </select>
+      </section>
+
+      <section>
+        <label data-colspan="12">Color Scheme</label>
+      </section>
+      <section>
+        <label data-colspan="4">
+          <input type="radio" name="color-scheme" value="light" checked /> Light
+        </label>
+        <label data-colspan="4">
+          <input type="radio" name="color-scheme" value="dark" /> Dark
+        </label>
+        <label data-colspan="4">
+          <input type="radio" name="color-scheme" value="auto" /> Auto
+        </label>
+      </section>
+    </details>
+
+    <!-- Tooltip popover — aside[popover] (moved outside details so it works when card is closed) -->
+    <aside popover id="tooltip-appearance">
+      <p>
+        <strong>Tip:</strong> Accent hue controls the primary color across the
+        entire app. Try different values to find your style.
+      </p>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- CARD 4: Notifications (collapsible)                        -->
+    <!-- Demonstrates: checkbox, :checked, :indeterminate,          -->
+    <!--   x-for (list rendering), x-bind:disabled, code, s        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <details id="notifications-card">
+      <summary>
+        <h3 data-colspan="12">
+          <i class="ph-bold ph-bell" aria-hidden="true"></i>
+          Notifications
+        </h3>
+      </summary>
+
+      <section>
+        <label data-colspan="6">
+          <input type="checkbox" x-model="notifyEmail" /> Email notifications
+        </label>
+        <label data-colspan="6">
+          <input type="checkbox" x-model="notifyPush" /> Push notifications
+        </label>
+      </section>
+
+      <section>
+        <label data-colspan="3">Digest Frequency</label>
+        <label data-colspan="3">
+          <input
+            type="radio"
+            name="digest"
+            value="daily"
+            x-model="notifyDigest"
+          />
+          Daily
+        </label>
+        <label data-colspan="3">
+          <input
+            type="radio"
+            name="digest"
+            value="weekly"
+            x-model="notifyDigest"
+          />
+          Weekly
+        </label>
+        <label data-colspan="3">
+          <input
+            type="radio"
+            name="digest"
+            value="never"
+            x-model="notifyDigest"
+          />
+          Never
+        </label>
+      </section>
+
+      <p>
+        Currently: <strong x-text="notifyDigest"></strong> digest.
+        <s>Hourly was deprecated.</s>
+      </p>
+      <p data-skin="mute">
+        <small
+          >Digest emails use the <code>notifications@app.example</code> sender
+          address.</small
+        >
+      </p>
+    </details>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- CARD 5: Schedule & Tags (collapsible)                      -->
+    <!-- Demonstrates: date, time, number, search, x-for on        -->
+    <!--   template, x-bind, :read-only, data-skin="elevated"      -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <details id="schedule-card" data-skin="elevated">
+      <summary>
+        <h3 data-colspan="12">
+          <i class="ph-bold ph-calendar" aria-hidden="true"></i>
+          Schedule &amp; Tags
+        </h3>
+      </summary>
+
+      <section>
+        <label data-colspan="3" for="sched-date">Start Date</label>
+        <input
+          data-colspan="4"
+          type="date"
+          id="sched-date"
+          x-model="scheduleDate"
+        />
+        <label data-colspan="2" for="sched-time">Time</label>
+        <input
+          data-colspan="3"
+          type="time"
+          id="sched-time"
+          x-model="scheduleTime"
+        />
+      </section>
+
+      <section>
+        <label data-colspan="4" for="volume">Volume</label>
+        <input
+          data-colspan="6"
+          type="range"
+          id="volume"
+          min="0"
+          max="100"
+          x-model="volume"
+        />
+        <p data-colspan="2" data-skin="mute">
+          <small x-text="volume + '%'"></small>
+        </p>
+      </section>
+
+      <section>
+        <label data-colspan="4" for="max-items">Max Items</label>
+        <input
+          data-colspan="8"
+          type="number"
+          id="max-items"
+          value="10"
+          min="1"
+          max="100"
+          readonly
+          tabindex="-1"
+        />
+      </section>
+
+      <h4>Tags</h4>
+      <section>
+        <input
+          data-colspan="9"
+          type="search"
+          placeholder="Add a tag…"
+          x-model="newTag"
+          @keydown.enter.prevent="addTag()"
+        />
+        <button data-colspan="3" data-skin="filled" @click="addTag()">
+          Add
+        </button>
+      </section>
+
+      <!-- x-for list rendering (§9) on template element -->
+      <template x-for="tag in tags" :key="tag">
+        <section>
+          <p data-colspan="9" x-text="tag"></p>
+          <button
+            data-colspan="3"
+            data-skin="ghost"
+            @click="removeTag(tag)"
+            aria-label="Remove tag"
+          >
+            <i class="ph-bold ph-x" aria-hidden="true"></i>
+          </button>
+        </section>
+      </template>
+    </details>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- CARD 6: Save Actions (non-collapsible — details open)      -->
+    <!-- Demonstrates: data-state="loading|success", filled/ghost   -->
+    <!--   skins, gear/reset icon animations, x-bind:data-state    -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <details open data-fixed @toggle.prevent="$el.open = true">
+      <summary>
+        <h3 data-colspan="12">Actions</h3>
+      </summary>
+      <section>
+        <button
+          data-colspan="4"
+          data-skin="ghost"
+          @click="
+        profileName = ''; profileEmail = ''; profileBio = '';
+        accentHue = 200; fontSize = 'medium';
+        document.documentElement.style.setProperty('--accent-hue', 200);
+      "
+        >
+          <i class="ph-bold ph-arrow-counter-clockwise" aria-hidden="true"></i>
+          <i
+            class="ph-duotone ph-arrow-counter-clockwise"
+            aria-hidden="true"
+            data-icon-fill
+          ></i>
+          Reset
+        </button>
+        <button data-colspan="4" data-skin="ghost">
+          <i class="ph-bold ph-gear" aria-hidden="true"></i>
+          <i class="ph-duotone ph-gear" aria-hidden="true" data-icon-fill></i>
+          Advanced
+        </button>
+        <button
+          data-colspan="4"
+          data-skin="filled"
+          :data-state="saveState"
+          :disabled="saveState === 'loading'"
+          @click="saveSettings()"
+          x-text="saveState === 'loading' ? 'Saving…' : saveState === 'success' ? 'Saved!' : 'Save'"
+        >
+          Save
+        </button>
+      </section>
+    </details>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- CARD 7: Danger Zone (collapsible)                          -->
+    <!-- Demonstrates: data-state="error", disabled, dialog modal,  -->
+    <!--   trash icon animation, ::backdrop, focus trap, Escape     -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <details id="danger-card">
+      <summary>
+        <h3 data-colspan="12">
+          <i class="ph-bold ph-warning" aria-hidden="true"></i>
+          Danger Zone
+        </h3>
+      </summary>
+      <p>
+        These actions are <strong>irreversible</strong>. Proceed with caution.
+      </p>
+      <section>
+        <button data-colspan="6" disabled>Export Data</button>
+        <button
+          data-colspan="6"
+          data-skin="filled"
+          :data-state="deleteState"
+          @click="$refs.confirmDialog.showModal()"
+        >
+          <i class="ph-bold ph-trash" aria-hidden="true"></i>
+          <i class="ph-duotone ph-trash" aria-hidden="true" data-icon-fill></i>
+          Delete Account
+        </button>
+      </section>
+      <aside data-skin="mute">
+        <p>
+          <small
+            >Account deletion is permanent. All data including tags, schedules,
+            and preferences will be erased.</small
+          >
+        </p>
+      </aside>
+    </details>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- DIALOG: Confirm Delete (§1 — modal overlay card)           -->
+    <!-- Demonstrates: dialog, ::backdrop, focus trap, Escape,      -->
+    <!--   showModal(), form method="dialog", button pair            -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <dialog x-ref="confirmDialog">
+      <h2>Delete Account?</h2>
+      <p>
+        This will permanently delete your account and all associated data. This
+        action <strong>cannot</strong> be undone.
+      </p>
+      <form method="dialog">
+        <section>
+          <button data-colspan="6" value="cancel">Cancel</button>
+          <button
+            data-colspan="6"
+            data-skin="filled"
+            value="confirm"
+            @click.prevent="$refs.confirmDialog.close(); deleteAccount()"
+          >
+            Confirm Delete
+          </button>
+        </section>
+      </form>
+    </dialog>
+  </body>
+</html>
