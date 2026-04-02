@@ -12,18 +12,21 @@ Target apps: single or few-page tools, mostly client-side. Productivity tools, d
 
 **Core architecture complete.** The spec (element set, skins, color system, layout model, CSS architecture) is locked. A canonical stylesheet (`pre-prototype/paumen.css`) and working reference app (Daily Planner) exist. Signal states (`data-state="error|loading|success"`) are defined but not yet implemented in CSS. Alpine.js is the only permitted JS framework (see §9 of the spec).
 
-**Next priority:** LLM validation with diverse reference apps. 
+**Next priority:** LLM validation with diverse reference apps.
 
 **No tooling scaffolding yet.** Skills, hooks, linters, permissions, workflows — all far future. The blueprint itself must be strong enough to work without soft enforcement. If it needs guardrails to function, that's a design smell.
 
 ## Coding Contract
+
 Below invariants are non-negotionable under any circumstances:
+
 - The use of `<div>` in html or js is strictly forbidden.
 - The use of `<span>` in html or js is strictly forbidden.
 - The use of `!important` in html, js, or css is strictly forbidden.
 - The use of inline styles in html or js is strictly forbidden.
 
 Below rules are non-negotionable except if there's an explicit exception included in the spec:
+
 - The use of css classes in html or js is not allowed.
 - Only the html elements mentioned in the spec are allowed.
 - Only the attributes mentioned in the spec are allowed.

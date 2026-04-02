@@ -1,243 +1,329 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Experiment 7 — Fluid Inline Spacing Scale</title>
-<style>
-  /* ── Isolated token definitions for testing ── */
-  :root {
-    --size-min: 0.5rem;
-    --size-val: 1cqi;
-    --size-max: 0.75rem;
-    --size-ratio: 1.8;
-    --sp-block-ratio: 0.75;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Experiment 7 — Fluid Inline Spacing Scale</title>
+    <style>
+      /* ── Isolated token definitions for testing ── */
+      :root {
+        --size-min: 0.5rem;
+        --size-val: 1cqi;
+        --size-max: 0.75rem;
+        --size-ratio: 1.8;
+        --sp-block-ratio: 0.75;
 
-    --sp-1: round(nearest,
-      clamp(
-        calc(var(--size-min) * pow(var(--size-ratio), -2)),
-        calc(var(--size-val) * pow(var(--size-ratio), -2)),
-        calc(var(--size-max) * pow(var(--size-ratio), -2))
-      ), 0.125rem);
+        --sp-1: round(
+          nearest,
+          clamp(
+            calc(var(--size-min) * pow(var(--size-ratio), -2)),
+            calc(var(--size-val) * pow(var(--size-ratio), -2)),
+            calc(var(--size-max) * pow(var(--size-ratio), -2))
+          ),
+          0.125rem
+        );
 
-    --sp-2: round(nearest,
-      clamp(
-        calc(var(--size-min) * pow(var(--size-ratio), -1)),
-        calc(var(--size-val) * pow(var(--size-ratio), -1)),
-        calc(var(--size-max) * pow(var(--size-ratio), -1))
-      ), 0.125rem);
+        --sp-2: round(
+          nearest,
+          clamp(
+            calc(var(--size-min) * pow(var(--size-ratio), -1)),
+            calc(var(--size-val) * pow(var(--size-ratio), -1)),
+            calc(var(--size-max) * pow(var(--size-ratio), -1))
+          ),
+          0.125rem
+        );
 
-    --sp-3: round(nearest,
-      clamp(
-        var(--size-min),
-        var(--size-val),
-        var(--size-max)
-      ), 0.25rem);
+        --sp-3: round(
+          nearest,
+          clamp(var(--size-min), var(--size-val), var(--size-max)),
+          0.25rem
+        );
 
-    --sp-4: round(nearest,
-      clamp(
-        calc(var(--size-min) * var(--size-ratio)),
-        calc(var(--size-val) * var(--size-ratio)),
-        calc(var(--size-max) * var(--size-ratio))
-      ), 0.25rem);
+        --sp-4: round(
+          nearest,
+          clamp(
+            calc(var(--size-min) * var(--size-ratio)),
+            calc(var(--size-val) * var(--size-ratio)),
+            calc(var(--size-max) * var(--size-ratio))
+          ),
+          0.25rem
+        );
 
-    --sp-5: round(nearest,
-      clamp(
-        calc(var(--size-min) * pow(var(--size-ratio), 2)),
-        calc(var(--size-val) * pow(var(--size-ratio), 2)),
-        calc(var(--size-max) * pow(var(--size-ratio), 2))
-      ), 0.25rem);
+        --sp-5: round(
+          nearest,
+          clamp(
+            calc(var(--size-min) * pow(var(--size-ratio), 2)),
+            calc(var(--size-val) * pow(var(--size-ratio), 2)),
+            calc(var(--size-max) * pow(var(--size-ratio), 2))
+          ),
+          0.25rem
+        );
 
-    /* Reference colors */
-    --c-bg: #f4f4f8;
-    --c-swatch: oklch(58% 0.14 200);
-    --c-swatch-light: oklch(90% 0.06 200);
-    --c-text: #1a1a2e;
-    --c-mute: #666;
-  }
+        /* Reference colors */
+        --c-bg: #f4f4f8;
+        --c-swatch: oklch(58% 0.14 200);
+        --c-swatch-light: oklch(90% 0.06 200);
+        --c-text: #1a1a2e;
+        --c-mute: #666;
+      }
 
-  * { box-sizing: border-box; margin: 0; }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
 
-  body {
-    font-family: system-ui, sans-serif;
-    background: var(--c-bg);
-    color: var(--c-text);
-    padding: 2rem;
-    container-type: inline-size;
-  }
+      body {
+        font-family: system-ui, sans-serif;
+        background: var(--c-bg);
+        color: var(--c-text);
+        padding: 2rem;
+        container-type: inline-size;
+      }
 
-  h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-  h2 { font-size: 1.1rem; margin: 1.5rem 0 0.75rem; color: var(--c-mute); }
-  p.note { font-size: 0.85rem; color: var(--c-mute); margin-bottom: 1.5rem; }
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+        margin: 1.5rem 0 0.75rem;
+        color: var(--c-mute);
+      }
+      p.note {
+        font-size: 0.85rem;
+        color: var(--c-mute);
+        margin-bottom: 1.5rem;
+      }
 
-  /* ── Swatch rows ── */
-  .scale-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
-  }
-  .scale-label {
-    width: 4rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-align: right;
-    flex-shrink: 0;
-  }
-  .scale-bar {
-    height: 2rem;
-    background: var(--c-swatch);
-    border-radius: 4px;
-    position: relative;
-  }
-  .scale-bar::after {
-    content: attr(data-label);
-    position: absolute;
-    right: -0.5rem;
-    top: 50%;
-    transform: translate(100%, -50%);
-    font-size: 0.75rem;
-    color: var(--c-mute);
-    white-space: nowrap;
-  }
-  .scale-bar[data-step="1"] { width: var(--sp-1); }
-  .scale-bar[data-step="2"] { width: var(--sp-2); }
-  .scale-bar[data-step="3"] { width: var(--sp-3); }
-  .scale-bar[data-step="4"] { width: var(--sp-4); }
-  .scale-bar[data-step="5"] { width: var(--sp-5); }
+      /* ── Swatch rows ── */
+      .scale-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      .scale-label {
+        width: 4rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .scale-bar {
+        height: 2rem;
+        background: var(--c-swatch);
+        border-radius: 4px;
+        position: relative;
+      }
+      .scale-bar::after {
+        content: attr(data-label);
+        position: absolute;
+        right: -0.5rem;
+        top: 50%;
+        transform: translate(100%, -50%);
+        font-size: 0.75rem;
+        color: var(--c-mute);
+        white-space: nowrap;
+      }
+      .scale-bar[data-step="1"] {
+        width: var(--sp-1);
+      }
+      .scale-bar[data-step="2"] {
+        width: var(--sp-2);
+      }
+      .scale-bar[data-step="3"] {
+        width: var(--sp-3);
+      }
+      .scale-bar[data-step="4"] {
+        width: var(--sp-4);
+      }
+      .scale-bar[data-step="5"] {
+        width: var(--sp-5);
+      }
 
-  /* ── Padding demo boxes ── */
-  .demo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem;
-    container-type: inline-size;
-  }
-  .demo-box {
-    background: var(--c-swatch-light);
-    border: 1px solid var(--c-swatch);
-    border-radius: 6px;
-    font-size: 0.8rem;
-    color: var(--c-text);
-  }
-  .demo-box .inner {
-    background: white;
-    border-radius: 3px;
-    padding: 0.25rem;
-    text-align: center;
-    font-size: 0.75rem;
-    color: var(--c-mute);
-  }
-  .demo-box[data-demo="1"] { padding: calc(var(--sp-1) * var(--sp-block-ratio)) var(--sp-1); }
-  .demo-box[data-demo="2"] { padding: calc(var(--sp-2) * var(--sp-block-ratio)) var(--sp-2); }
-  .demo-box[data-demo="3"] { padding: calc(var(--sp-3) * var(--sp-block-ratio)) var(--sp-3); }
-  .demo-box[data-demo="4"] { padding: calc(var(--sp-4) * var(--sp-block-ratio)) var(--sp-4); }
-  .demo-box[data-demo="5"] { padding: calc(var(--sp-5) * var(--sp-block-ratio)) var(--sp-5); }
+      /* ── Padding demo boxes ── */
+      .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+        container-type: inline-size;
+      }
+      .demo-box {
+        background: var(--c-swatch-light);
+        border: 1px solid var(--c-swatch);
+        border-radius: 6px;
+        font-size: 0.8rem;
+        color: var(--c-text);
+      }
+      .demo-box .inner {
+        background: white;
+        border-radius: 3px;
+        padding: 0.25rem;
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--c-mute);
+      }
+      .demo-box[data-demo="1"] {
+        padding: calc(var(--sp-1) * var(--sp-block-ratio)) var(--sp-1);
+      }
+      .demo-box[data-demo="2"] {
+        padding: calc(var(--sp-2) * var(--sp-block-ratio)) var(--sp-2);
+      }
+      .demo-box[data-demo="3"] {
+        padding: calc(var(--sp-3) * var(--sp-block-ratio)) var(--sp-3);
+      }
+      .demo-box[data-demo="4"] {
+        padding: calc(var(--sp-4) * var(--sp-block-ratio)) var(--sp-4);
+      }
+      .demo-box[data-demo="5"] {
+        padding: calc(var(--sp-5) * var(--sp-block-ratio)) var(--sp-5);
+      }
 
-  /* ── Gap demo ── */
-  .gap-demo {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    padding: 0.75rem;
-    background: var(--c-swatch-light);
-    border-radius: 6px;
-  }
-  .gap-demo .chip {
-    background: var(--c-swatch);
-    color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 3px;
-    font-size: 0.75rem;
-  }
-  .gap-demo[data-gap="1"] { gap: var(--sp-1); }
-  .gap-demo[data-gap="2"] { gap: var(--sp-2); }
-  .gap-demo[data-gap="3"] { gap: var(--sp-3); }
-  .gap-demo[data-gap="4"] { gap: var(--sp-4); }
-  .gap-demo[data-gap="5"] { gap: var(--sp-5); }
+      /* ── Gap demo ── */
+      .gap-demo {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 0.75rem;
+        background: var(--c-swatch-light);
+        border-radius: 6px;
+      }
+      .gap-demo .chip {
+        background: var(--c-swatch);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 3px;
+        font-size: 0.75rem;
+      }
+      .gap-demo[data-gap="1"] {
+        gap: var(--sp-1);
+      }
+      .gap-demo[data-gap="2"] {
+        gap: var(--sp-2);
+      }
+      .gap-demo[data-gap="3"] {
+        gap: var(--sp-3);
+      }
+      .gap-demo[data-gap="4"] {
+        gap: var(--sp-4);
+      }
+      .gap-demo[data-gap="5"] {
+        gap: var(--sp-5);
+      }
 
-  /* ── Readout ── */
-  #readout {
-    font-size: 0.8rem;
-    color: var(--c-mute);
-    background: white;
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    font-family: monospace;
-    line-height: 1.8;
-  }
-</style>
-</head>
-<body>
+      /* ── Readout ── */
+      #readout {
+        font-size: 0.8rem;
+        color: var(--c-mute);
+        background: white;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        font-family: monospace;
+        line-height: 1.8;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Fluid Inline Spacing Scale</h1>
+    <p class="note">
+      Resize the viewport to see tokens respond. Scale: geometric ratio 1.8,
+      base at step 3, cqi-fluid.
+    </p>
 
-<h1>Fluid Inline Spacing Scale</h1>
-<p class="note">Resize the viewport to see tokens respond. Scale: geometric ratio 1.8, base at step 3, cqi-fluid.</p>
+    <h2>Token widths (visual)</h2>
+    <div class="scale-row">
+      <span class="scale-label">--sp-1</span>
+      <div class="scale-bar" data-step="1" data-label="tightest"></div>
+    </div>
+    <div class="scale-row">
+      <span class="scale-label">--sp-2</span>
+      <div class="scale-bar" data-step="2" data-label="snug"></div>
+    </div>
+    <div class="scale-row">
+      <span class="scale-label">--sp-3</span>
+      <div class="scale-bar" data-step="3" data-label="base"></div>
+    </div>
+    <div class="scale-row">
+      <span class="scale-label">--sp-4</span>
+      <div class="scale-bar" data-step="4" data-label="comfortable"></div>
+    </div>
+    <div class="scale-row">
+      <span class="scale-label">--sp-5</span>
+      <div class="scale-bar" data-step="5" data-label="spacious"></div>
+    </div>
 
-<h2>Token widths (visual)</h2>
-<div class="scale-row"><span class="scale-label">--sp-1</span><div class="scale-bar" data-step="1" data-label="tightest"></div></div>
-<div class="scale-row"><span class="scale-label">--sp-2</span><div class="scale-bar" data-step="2" data-label="snug"></div></div>
-<div class="scale-row"><span class="scale-label">--sp-3</span><div class="scale-bar" data-step="3" data-label="base"></div></div>
-<div class="scale-row"><span class="scale-label">--sp-4</span><div class="scale-bar" data-step="4" data-label="comfortable"></div></div>
-<div class="scale-row"><span class="scale-label">--sp-5</span><div class="scale-bar" data-step="5" data-label="spacious"></div></div>
+    <h2>Padding demo (inline + block ratio)</h2>
+    <div class="demo-grid">
+      <div class="demo-box" data-demo="1"><div class="inner">sp-1</div></div>
+      <div class="demo-box" data-demo="2"><div class="inner">sp-2</div></div>
+      <div class="demo-box" data-demo="3"><div class="inner">sp-3</div></div>
+      <div class="demo-box" data-demo="4"><div class="inner">sp-4</div></div>
+      <div class="demo-box" data-demo="5"><div class="inner">sp-5</div></div>
+    </div>
 
-<h2>Padding demo (inline + block ratio)</h2>
-<div class="demo-grid">
-  <div class="demo-box" data-demo="1"><div class="inner">sp-1</div></div>
-  <div class="demo-box" data-demo="2"><div class="inner">sp-2</div></div>
-  <div class="demo-box" data-demo="3"><div class="inner">sp-3</div></div>
-  <div class="demo-box" data-demo="4"><div class="inner">sp-4</div></div>
-  <div class="demo-box" data-demo="5"><div class="inner">sp-5</div></div>
-</div>
+    <h2>Gap demo</h2>
+    <div style="display: grid; gap: 0.75rem">
+      <div class="gap-demo" data-gap="1">
+        <span class="chip">A</span><span class="chip">B</span
+        ><span class="chip">C</span><span class="chip">D</span
+        ><span class="chip">E</span>
+        <span style="font-size: 0.7rem; color: var(--c-mute); margin-left: auto"
+          >gap: sp-1</span
+        >
+      </div>
+      <div class="gap-demo" data-gap="3">
+        <span class="chip">A</span><span class="chip">B</span
+        ><span class="chip">C</span><span class="chip">D</span
+        ><span class="chip">E</span>
+        <span style="font-size: 0.7rem; color: var(--c-mute); margin-left: auto"
+          >gap: sp-3</span
+        >
+      </div>
+      <div class="gap-demo" data-gap="5">
+        <span class="chip">A</span><span class="chip">B</span
+        ><span class="chip">C</span><span class="chip">D</span
+        ><span class="chip">E</span>
+        <span style="font-size: 0.7rem; color: var(--c-mute); margin-left: auto"
+          >gap: sp-5</span
+        >
+      </div>
+    </div>
 
-<h2>Gap demo</h2>
-<div style="display:grid; gap:0.75rem;">
-  <div class="gap-demo" data-gap="1">
-    <span class="chip">A</span><span class="chip">B</span><span class="chip">C</span><span class="chip">D</span><span class="chip">E</span>
-    <span style="font-size:0.7rem;color:var(--c-mute);margin-left:auto;">gap: sp-1</span>
-  </div>
-  <div class="gap-demo" data-gap="3">
-    <span class="chip">A</span><span class="chip">B</span><span class="chip">C</span><span class="chip">D</span><span class="chip">E</span>
-    <span style="font-size:0.7rem;color:var(--c-mute);margin-left:auto;">gap: sp-3</span>
-  </div>
-  <div class="gap-demo" data-gap="5">
-    <span class="chip">A</span><span class="chip">B</span><span class="chip">C</span><span class="chip">D</span><span class="chip">E</span>
-    <span style="font-size:0.7rem;color:var(--c-mute);margin-left:auto;">gap: sp-5</span>
-  </div>
-</div>
+    <h2>Computed values</h2>
+    <div id="readout">Resize viewport to update...</div>
 
-<h2>Computed values</h2>
-<div id="readout">Resize viewport to update...</div>
+    <script>
+      function measure() {
+        const el = document.createElement("div");
+        el.style.position = "absolute";
+        el.style.visibility = "hidden";
+        document.body.appendChild(el);
 
-<script>
-function measure() {
-  const el = document.createElement('div');
-  el.style.position = 'absolute';
-  el.style.visibility = 'hidden';
-  document.body.appendChild(el);
+        const vals = {};
+        for (let i = 1; i <= 5; i++) {
+          el.style.width = `var(--sp-${i})`;
+          vals[`sp-${i}`] = parseFloat(getComputedStyle(el).width) || "?";
+        }
+        el.style.width = `calc(var(--sp-3) * var(--sp-block-ratio))`;
+        vals["sp-3-block"] = parseFloat(getComputedStyle(el).width) || "?";
 
-  const vals = {};
-  for (let i = 1; i <= 5; i++) {
-    el.style.width = `var(--sp-${i})`;
-    vals[`sp-${i}`] = parseFloat(getComputedStyle(el).width) || '?';
-  }
-  el.style.width = `calc(var(--sp-3) * var(--sp-block-ratio))`;
-  vals['sp-3-block'] = parseFloat(getComputedStyle(el).width) || '?';
+        document.body.removeChild(el);
 
-  document.body.removeChild(el);
-
-  const vw = window.innerWidth;
-  const lines = [
-    `viewport: ${vw}px`,
-    ...Object.entries(vals).map(([k, v]) => `${k}: ${typeof v === 'number' ? v.toFixed(1) + 'px' : v}`),
-    `ratio sp-3/sp-2: ${(vals['sp-3']/vals['sp-2']).toFixed(2)}`,
-    `ratio sp-4/sp-3: ${(vals['sp-4']/vals['sp-3']).toFixed(2)}`,
-  ];
-  document.getElementById('readout').textContent = lines.join('\n');
-}
-measure();
-window.addEventListener('resize', measure);
-</script>
-
-</body>
+        const vw = window.innerWidth;
+        const lines = [
+          `viewport: ${vw}px`,
+          ...Object.entries(vals).map(
+            ([k, v]) =>
+              `${k}: ${typeof v === "number" ? v.toFixed(1) + "px" : v}`,
+          ),
+          `ratio sp-3/sp-2: ${(vals["sp-3"] / vals["sp-2"]).toFixed(2)}`,
+          `ratio sp-4/sp-3: ${(vals["sp-4"] / vals["sp-3"]).toFixed(2)}`,
+        ];
+        document.getElementById("readout").textContent = lines.join("\n");
+      }
+      measure();
+      window.addEventListener("resize", measure);
+    </script>
+  </body>
 </html>
