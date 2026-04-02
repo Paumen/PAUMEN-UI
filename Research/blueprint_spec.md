@@ -78,6 +78,7 @@ Canonical row-wrapper list: `<section>`, `<summary>`, `<header>`, `<form>`, `<fi
 - `<select>` — dropdown choice.
 
 ### Content / Text
+
 - `<p>` — paragraph text. Direct card child (full width) — not a row wrapper.
 - `<h1>` through `<h4>` — per default `<summary>` and `<header>` are first rows in containers and already apply same formatting as `<h3>`, only use h1-h4 if specific reason to deviate from this heading hierarchy.
 - `<label>` — ties text to a control.
@@ -94,14 +95,14 @@ Canonical row-wrapper list: `<section>`, `<summary>`, `<header>`, `<form>`, `<fi
 
 ### Category → Display Type
 
-| Category    | Display       | Role                            | Elements                                                                  |
-| ----------- | ------------- | ------------------------------- | ------------------------------------------------------------------------- |
-| Container   | grid          | Holds and arranges children     | details, article, dialog                                                  |
-| Row Wrapper | grid (12-col) | Groups elements into rows       | section, summary, header, form, fieldset, footer, ul, ol                  |
-| Row Child   | (grid cell)   | Content inside row wrappers     | li, and all components when placed in a row                               |
-| Component   | inline-block  | Self-contained interactive unit | button, text inputs, textarea, select, range                              |
-| Content     | block         | Text and informational elements | p, h1–h4, label, aside                                                   |
-| Popover     | (API-managed) | Out-of-flow overlay             | aside[popover], nav[popover]                                              |
+| Category    | Display       | Role                            | Elements                                                 |
+| ----------- | ------------- | ------------------------------- | -------------------------------------------------------- |
+| Container   | grid          | Holds and arranges children     | details, article, dialog                                 |
+| Row Wrapper | grid (12-col) | Groups elements into rows       | section, summary, header, form, fieldset, footer, ul, ol |
+| Row Child   | (grid cell)   | Content inside row wrappers     | li, and all components when placed in a row              |
+| Component   | inline-block  | Self-contained interactive unit | button, text inputs, textarea, select, range             |
+| Content     | block         | Text and informational elements | p, h1–h4, label, aside                                   |
+| Popover     | (API-managed) | Out-of-flow overlay             | aside[popover], nav[popover]                             |
 
 ---
 
@@ -123,7 +124,7 @@ body                                  depth 1  (grid, gap --l, max 800px centere
     ├ button                          depth 4  (6-col)
     └ button                          depth 4  (6-col)
 ```
- 
+
 Max structural depth: 4 (html → body → container → content). Depth 5 for row children, inline content (icons inside buttons), and HTML-mandated nesting (svg inside button, small inside p).
 
 ### Rules
@@ -155,13 +156,13 @@ How many of the 12 columns a child occupies inside a row wrapper. Children witho
 
 ```html
 <details open>
-  <summary>
-    Search
-  </summary>
+  <summary>Search</summary>
   <section>
     <input type="text" placeholder="Search…" data-colspan="10" />
     <button><i class="ph-bold ph-x" aria-hidden="true"></i></button>
-    <button data-skin="filled"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i></button>
+    <button data-skin="filled">
+      <i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i>
+    </button>
   </section>
 </details>
 ```
@@ -259,12 +260,12 @@ See §6 for the full state reference: all pseudo-classes, recommended CSS proper
 
 ### Visual Depth Model
 
-| Layer       | Background       | Elements                        |
-| ----------- | ---------------- | ------------------------------- |
-| Body        | `--neutral`      | body                            |
-| Container   | `--neutral-mute` | details, article, dialog, [popover]* |
-| Row wrapper | transparent      | section, summary, header        |
-| Control     | `--neutral`      | button, input, textarea, select |
+| Layer       | Background       | Elements                              |
+| ----------- | ---------------- | ------------------------------------- |
+| Body        | `--neutral`      | body                                  |
+| Container   | `--neutral-mute` | details, article, dialog, [popover]\* |
+| Row wrapper | transparent      | section, summary, header              |
+| Control     | `--neutral`      | button, input, textarea, select       |
 
 \* **Popover dual nature:** Popovers are visually cards (same background, border, radius) but positionally overlays (out-of-flow). They appear in the Visual Depth Model at the Container layer for styling, and in the Layout Model (§5) at Layer 2 for positioning.
 
@@ -308,9 +309,7 @@ Row wrappers (see canonical list in §1) wrap 2+ elements that share a horizonta
 
 ```html
 <details open>
-  <summary>
-    Settings
-  </summary>
+  <summary>Settings</summary>
   <section>
     <button data-colspan="6">Cancel</button>
     <button data-colspan="6" data-skin="filled">Save</button>
@@ -343,7 +342,9 @@ Body is a grid with `gap: var(--l)`, `max-inline-size: 800px`, `margin-inline: a
   background: transparent;
   border: none;
   padding: 0;
-  transition: opacity 0.2s, display 0.2s allow-discrete;
+  transition:
+    opacity 0.2s,
+    display 0.2s allow-discrete;
 }
 [popover]:popover-open {
   opacity: 1;
@@ -376,31 +377,31 @@ Claude never writes state styles. All states are derived from element default + 
 
 ### Native Interactive States (pseudo-classes — all automated)
 
-| State | Selector | CSS properties | Applies to |
-|-------|----------|---------------|------------|
-| **Hover** | `:hover:not(:disabled)` | `background: var(--neutral-mute)` | button (default), button (ghost), summary (ghost) |
-| | `:hover:not(:disabled)` | `background: var(--accent-dn); border-color: var(--accent-dn)` | button (filled) |
-| | `:hover` | `text-decoration: underline` | `a` |
-| **Active** | `:active:not(:disabled)` | `transform: scale(0.98)` | button |
-| **Focus** | `:focus-visible` | `outline: var(--xs) solid var(--accent); outline-offset: var(--xs)` | button, input, textarea, select, a, summary |
-| **Disabled** | `:disabled` | `opacity: 0.38; cursor: not-allowed; filter: grayscale(0.4)` | button, input, textarea, select |
-| **Checked** | `:checked` | `accent-color: var(--accent)` (native rendering) | input[type="checkbox"], input[type="radio"] |
+| State        | Selector                 | CSS properties                                                      | Applies to                                        |
+| ------------ | ------------------------ | ------------------------------------------------------------------- | ------------------------------------------------- |
+| **Hover**    | `:hover:not(:disabled)`  | `background: var(--neutral-mute)`                                   | button (default), button (ghost), summary (ghost) |
+|              | `:hover:not(:disabled)`  | `background: var(--accent-dn); border-color: var(--accent-dn)`      | button (filled)                                   |
+|              | `:hover`                 | `text-decoration: underline`                                        | `a`                                               |
+| **Active**   | `:active:not(:disabled)` | `transform: scale(0.98)`                                            | button                                            |
+| **Focus**    | `:focus-visible`         | `outline: var(--xs) solid var(--accent); outline-offset: var(--xs)` | button, input, textarea, select, a, summary       |
+| **Disabled** | `:disabled`              | `opacity: 0.38; cursor: not-allowed; filter: grayscale(0.4)`        | button, input, textarea, select                   |
+| **Checked**  | `:checked`               | `accent-color: var(--accent)` (native rendering)                    | input[type="checkbox"], input[type="radio"]       |
 
 ### Native Content & Validation States (pseudo-classes)
 
 These pseudo-classes detect state natively — no JS, no data attributes. Only states relevant to PAUMEN's target apps (forms, dashboards, small tools) are listed.
 
-| State | Selector | Recommended CSS | Why it matters |
-|-------|----------|----------------|----------------|
-| **Empty container** | `:empty`, `:not(:has(> li))` | `display: none` or placeholder via `::before` | Empty lists, empty card bodies. Eliminates `data-empty`. Variant `:not(:has(> *))` ignores whitespace. |
-| **Semantic emptiness (CSS workaround)** | `:has(> *:not(.ignore))` | `display: none` or placeholder | Detects containers that have DOM children but are semantically empty (e.g., wrapper with only visual structure). Use sparingly; prefer `:empty` or Alpine `x-show`/`x-if` when possible. |
-| **Unfilled input** | `:placeholder-shown` | `border-color: var(--neutral-edge)` (or muted label) | Detect inputs the user hasn't touched. Useful for floating labels or "incomplete" styling. |
-| **Invalid (after interaction)** | `:user-invalid` | `border-color: var(--color-danger); outline-color: var(--color-danger)` | HTML validation failed AND user has interacted. Covers `required`, `pattern`, `type`, `min`/`max` — no JS. Prefer over `:invalid` which fires on page load before user acts. **Implemented in CSS.** |
-| **Valid (after interaction)** | `:user-valid` | `border-color: var(--color-success)` | Positive confirmation after user fills a field correctly. Subtle — don't overuse. |
-| **Read-only** | `:read-only` | `background: var(--neutral-edge); border-style: dashed; color: var(--text-mute); cursor: default; outline: none; pointer-events: none;` | Non-editable inputs displaying computed/locked values. Must use `tabindex="-1"` in HTML to remove from tab order. Background must differ from card (`--neutral-mute`) — uses `--neutral-edge` for contrast. `pointer-events: none` prevents clicks/focus (note: may hinder text selection). |
-| **Indeterminate** | `:indeterminate` | `opacity: 0.6` (native rendering) | Checkbox "select all" when some items checked. Common in dashboard list patterns. |
-| **Details expanded** | `[open]` | (already handled — summary arrow rotates) | `<details>` is the primary card type; open/closed is core to the layout. |
-| **Popover visible** | `:popover-open` | `opacity: 1` (with transition from 0) | Tooltips (`aside[popover]`) and menus (`nav[popover]`). Enables enter/exit animations. |
+| State                                   | Selector                     | Recommended CSS                                                                                                                         | Why it matters                                                                                                                                                                                                                                                                              |
+| --------------------------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Empty container**                     | `:empty`, `:not(:has(> li))` | `display: none` or placeholder via `::before`                                                                                           | Empty lists, empty card bodies. Eliminates `data-empty`. Variant `:not(:has(> *))` ignores whitespace.                                                                                                                                                                                      |
+| **Semantic emptiness (CSS workaround)** | `:has(> *:not(.ignore))`     | `display: none` or placeholder                                                                                                          | Detects containers that have DOM children but are semantically empty (e.g., wrapper with only visual structure). Use sparingly; prefer `:empty` or Alpine `x-show`/`x-if` when possible.                                                                                                    |
+| **Unfilled input**                      | `:placeholder-shown`         | `border-color: var(--neutral-edge)` (or muted label)                                                                                    | Detect inputs the user hasn't touched. Useful for floating labels or "incomplete" styling.                                                                                                                                                                                                  |
+| **Invalid (after interaction)**         | `:user-invalid`              | `border-color: var(--color-danger); outline-color: var(--color-danger)`                                                                 | HTML validation failed AND user has interacted. Covers `required`, `pattern`, `type`, `min`/`max` — no JS. Prefer over `:invalid` which fires on page load before user acts. **Implemented in CSS.**                                                                                        |
+| **Valid (after interaction)**           | `:user-valid`                | `border-color: var(--color-success)`                                                                                                    | Positive confirmation after user fills a field correctly. Subtle — don't overuse.                                                                                                                                                                                                           |
+| **Read-only**                           | `:read-only`                 | `background: var(--neutral-edge); border-style: dashed; color: var(--text-mute); cursor: default; outline: none; pointer-events: none;` | Non-editable inputs displaying computed/locked values. Must use `tabindex="-1"` in HTML to remove from tab order. Background must differ from card (`--neutral-mute`) — uses `--neutral-edge` for contrast. `pointer-events: none` prevents clicks/focus (note: may hinder text selection). |
+| **Indeterminate**                       | `:indeterminate`             | `opacity: 0.6` (native rendering)                                                                                                       | Checkbox "select all" when some items checked. Common in dashboard list patterns.                                                                                                                                                                                                           |
+| **Details expanded**                    | `[open]`                     | (already handled — summary arrow rotates)                                                                                               | `<details>` is the primary card type; open/closed is core to the layout.                                                                                                                                                                                                                    |
+| **Popover visible**                     | `:popover-open`              | `opacity: 1` (with transition from 0)                                                                                                   | Tooltips (`aside[popover]`) and menus (`nav[popover]`). Enables enter/exit animations.                                                                                                                                                                                                      |
 
 **Intentionally excluded:** `:valid`/`:invalid` (fire before user interacts — bad UX; use `:user-valid`/`:user-invalid`), `:required`/`:optional` (over-engineering for small tools — context makes this obvious), `:in-range`/`:out-of-range` (subsumed by `:user-invalid`), `:target` (hash navigation irrelevant to SPA-like tools).
 
@@ -408,11 +409,11 @@ These pseudo-classes detect state natively — no JS, no data attributes. Only s
 
 For application-level states that no CSS pseudo-class can detect — specifically, outcomes of async operations or server responses.
 
-| State | Selector | CSS properties | When to use (and not) |
-|-------|----------|----------------|----------------------|
-| **Error** | `[data-state="error"]` | `border-color: var(--color-danger); color: var(--color-danger)` | API failure, server error, custom async validation. **Not** for HTML validation — use `required`/`pattern` + `:user-invalid` instead. |
-| **Loading** | `[data-state="loading"]` | `animation: pulse 1.5s ease-in-out infinite; opacity: 0.6` | Async operation in progress (fetch, save, compute). No native pseudo-class for this. |
-| **Success** | `[data-state="success"]` | `border-color: var(--color-success)` | Action confirmed (save, submit, delete). Typically shown briefly then cleared. Distinct from `:user-valid` which is per-field. |
+| State       | Selector                 | CSS properties                                                  | When to use (and not)                                                                                                                 |
+| ----------- | ------------------------ | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Error**   | `[data-state="error"]`   | `border-color: var(--color-danger); color: var(--color-danger)` | API failure, server error, custom async validation. **Not** for HTML validation — use `required`/`pattern` + `:user-invalid` instead. |
+| **Loading** | `[data-state="loading"]` | `animation: pulse 1.5s ease-in-out infinite; opacity: 0.6`      | Async operation in progress (fetch, save, compute). No native pseudo-class for this.                                                  |
+| **Success** | `[data-state="success"]` | `border-color: var(--color-success)`                            | Action confirmed (save, submit, delete). Typically shown briefly then cleared. Distinct from `:user-valid` which is per-field.        |
 
 **Filled + signal state interaction:** When `data-skin="filled"` and `data-state` are both present, the signal state replaces the entire filled appearance — background, border-color, and text all shift to the signal color. These overrides are placed in a dedicated `@layer overrides` to ensure they win over the skin layer.
 
@@ -603,13 +604,13 @@ Icons have two variants inline: a stroke (bold) version shown by default, and a 
 
 ## 9. Interactivity — Alpine.js Directives
 
-| Directive | Role |
-|-----------|------|
-| `x-data` | State declaration — defines reactive state on an element |
-| `x-on` | Event binding — binds DOM events to expressions. Shorthand `@click` permitted |
-| `x-text` | Text output — sets `textContent` reactively |
-| `x-for` | List rendering — renders arrays. Must be on a `<template>` element |
-| `x-bind` | Attribute binding — dynamically sets attributes (`disabled`, `data-skin`, `data-state`, `aria-*`). Shorthand `:attr` permitted |
+| Directive | Role                                                                                                                           |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `x-data`  | State declaration — defines reactive state on an element                                                                       |
+| `x-on`    | Event binding — binds DOM events to expressions. Shorthand `@click` permitted                                                  |
+| `x-text`  | Text output — sets `textContent` reactively                                                                                    |
+| `x-for`   | List rendering — renders arrays. Must be on a `<template>` element                                                             |
+| `x-bind`  | Attribute binding — dynamically sets attributes (`disabled`, `data-skin`, `data-state`, `aria-*`). Shorthand `:attr` permitted |
 
 ---
 

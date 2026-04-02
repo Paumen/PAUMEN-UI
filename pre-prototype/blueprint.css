@@ -5,17 +5,44 @@
 
 /* RESET (§7) */
 @layer reset {
-  *, *::before, *::after { box-sizing: border-box; }
-  body, h1, h2, h3, h4, p, ul, ol { margin: 0; }
-  ul, ol { padding: 0; }
-  button, input, textarea, select { font: inherit; color: inherit; }
-  li { list-style: none; }
-  fieldset { border: none; padding: 0; margin: 0; }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  ul,
+  ol {
+    margin: 0;
+  }
+  ul,
+  ol {
+    padding: 0;
+  }
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+  li {
+    list-style: none;
+  }
+  fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
 }
 
 /* DEFAULT (§4 Color + §5 Layout + §6 States + §7 Architecture) */
 @layer default {
-
   /* Base Inputs — 5 values (§4) */
   :root {
     --accent-hue: 200;
@@ -26,24 +53,47 @@
 
     /* Accent (§4) */
     --accent: oklch(58% var(--accent-chroma) var(--accent-hue));
-    --accent-up: oklch(calc(58% + var(--jump)) var(--accent-chroma) var(--accent-hue));
-    --accent-dn: oklch(calc(58% - var(--jump)) var(--accent-chroma) var(--accent-hue));
+    --accent-up: oklch(
+      calc(58% + var(--jump)) var(--accent-chroma) var(--accent-hue)
+    );
+    --accent-dn: oklch(
+      calc(58% - var(--jump)) var(--accent-chroma) var(--accent-hue)
+    );
 
     /* Surface levels (§4) */
-    --neutral: light-dark(oklch(96% 0.01 var(--surface-hue)), oklch(16% 0.01 var(--surface-hue)));
-    --neutral-mute: light-dark(oklch(90% 0.01 var(--surface-hue)), oklch(22% 0.01 var(--surface-hue)));
-    --neutral-edge: light-dark(oklch(82% 0.02 var(--surface-hue)), oklch(34% 0.02 var(--surface-hue)));
+    --neutral: light-dark(
+      oklch(96% 0.01 var(--surface-hue)),
+      oklch(16% 0.01 var(--surface-hue))
+    );
+    --neutral-mute: light-dark(
+      oklch(90% 0.01 var(--surface-hue)),
+      oklch(22% 0.01 var(--surface-hue))
+    );
+    --neutral-edge: light-dark(
+      oklch(82% 0.02 var(--surface-hue)),
+      oklch(34% 0.02 var(--surface-hue))
+    );
 
     /* Text (§4) */
-    --text: light-dark(oklch(20% 0.01 var(--surface-hue)), oklch(92% 0.01 var(--surface-hue)));
-    --text-mute: light-dark(oklch(40% 0.01 var(--surface-hue)), oklch(72% 0.01 var(--surface-hue)));
+    --text: light-dark(
+      oklch(20% 0.01 var(--surface-hue)),
+      oklch(92% 0.01 var(--surface-hue))
+    );
+    --text-mute: light-dark(
+      oklch(40% 0.01 var(--surface-hue)),
+      oklch(72% 0.01 var(--surface-hue))
+    );
     --text-on-accent: oklch(96% 0.01 var(--accent-hue));
 
     /* Signal hues — chroma floor ensures visibility regardless of accent theme (§6) */
     --danger-hue: 25;
     --success-hue: 145;
-    --color-danger: oklch(58% max(var(--accent-chroma), 0.12) var(--danger-hue));
-    --color-success: oklch(58% max(var(--accent-chroma), 0.12) var(--success-hue));
+    --color-danger: oklch(
+      58% max(var(--accent-chroma), 0.12) var(--danger-hue)
+    );
+    --color-success: oklch(
+      58% max(var(--accent-chroma), 0.12) var(--success-hue)
+    );
 
     /* Scale (§4) */
     --0: 0;
@@ -68,7 +118,9 @@
   }
 
   /* Containers — shared card-layer styling (§4 Visual Depth + §5 + §7) */
-  details, article, dialog {
+  details,
+  article,
+  dialog {
     display: grid;
     gap: var(--l);
     background: var(--neutral-mute);
@@ -80,7 +132,9 @@
   }
 
   /* Dialog specifics (§7) */
-  dialog:not([open]) { display: none; }
+  dialog:not([open]) {
+    display: none;
+  }
   dialog {
     padding: var(--l);
     max-inline-size: min(600px, 90vw);
@@ -96,7 +150,9 @@
     background: transparent;
     border: none;
     padding: 0;
-    transition: opacity 0.2s, display 0.2s allow-discrete;
+    transition:
+      opacity 0.2s,
+      display 0.2s allow-discrete;
   }
 
   /* Popover: card styling only when open (§4 Visual Depth + §5) */
@@ -108,16 +164,27 @@
     border-radius: var(--m);
     padding: var(--m);
     opacity: 1;
-    box-shadow: 0 4px 16px oklch(20% 0 0 / 0.2), 0 8px 32px oklch(20% 0 0 / 0.12);
+    box-shadow:
+      0 4px 16px oklch(20% 0 0 / 0.2),
+      0 8px 32px oklch(20% 0 0 / 0.12);
     z-index: 10;
   }
 
   @starting-style {
-    [popover]:popover-open { opacity: 0; }
+    [popover]:popover-open {
+      opacity: 0;
+    }
   }
 
   /* Row wrappers — canonical list (§1 + §5 + §7) */
-  section, summary, header, form, fieldset, footer, ul, ol {
+  section,
+  summary,
+  header,
+  form,
+  fieldset,
+  footer,
+  ul,
+  ol {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: var(--m);
@@ -127,15 +194,28 @@
   }
 
   /* Summary and header are card header rows — larger font for icon buttons (§7) */
-  summary, header { font-size: var(--l); }
+  summary,
+  header {
+    font-size: var(--l);
+  }
 
   /* Headings (§7) */
-  h1, h2 { font-size: var(--xl); }
-  h3 { font-size: var(--l); }
-  h4 { font-size: var(--m); }
+  h1,
+  h2 {
+    font-size: var(--xl);
+  }
+  h3 {
+    font-size: var(--l);
+  }
+  h4 {
+    font-size: var(--m);
+  }
 
   /* Shared control base (§7) */
-  button, input, textarea, select {
+  button,
+  input,
+  textarea,
+  select {
     border: 1px solid var(--neutral-edge);
     border-radius: var(--s);
     background: var(--neutral);
@@ -151,14 +231,23 @@
     position: relative;
   }
 
-  section > :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea) + label[for] {
+  section
+    > :is(
+      input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      textarea
+    )
+    + label[for] {
     position: absolute;
     inset-block-start: 50%;
     transform: translateY(-50%);
     inset-inline-start: calc(var(--s) + 1px);
     color: var(--text-mute);
     pointer-events: none;
-    transition: inset-block-start 0.2s ease, transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
+    transition:
+      inset-block-start 0.2s ease,
+      transform 0.2s ease,
+      font-size 0.2s ease,
+      color 0.2s ease;
   }
 
   section > textarea + label[for] {
@@ -166,8 +255,18 @@
     transform: none;
   }
 
-  section > :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea):focus + label[for],
-  section > :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea):not(:placeholder-shown) + label[for] {
+  section
+    > :is(
+      input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      textarea
+    ):focus
+    + label[for],
+  section
+    > :is(
+      input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      textarea
+    ):not(:placeholder-shown)
+    + label[for] {
     inset-block-start: 0;
     transform: translateY(-50%);
     font-size: var(--m);
@@ -220,12 +319,21 @@
     gap: var(--xs);
   }
 
-  button:hover:not(:disabled) { background: var(--neutral-mute); }
-  button:active:not(:disabled) { transform: scale(0.98); }
+  button:hover:not(:disabled) {
+    background: var(--neutral-mute);
+  }
+  button:active:not(:disabled) {
+    transform: scale(0.98);
+  }
 
   /* Links (§6) */
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
 
   /* Select — custom dropdown arrow (§7) */
   select {
@@ -257,10 +365,16 @@
   }
 
   /* Icon stroke/fill swap (§8) */
-  [data-icon-fill] { display: none; }
+  [data-icon-fill] {
+    display: none;
+  }
 
-  :is(a, button):is(:hover, :focus-visible) [data-icon-fill] { display: inline-block; }
-  :is(a, button):is(:hover, :focus-visible) i:has(~ [data-icon-fill]) { display: none; }
+  :is(a, button):is(:hover, :focus-visible) [data-icon-fill] {
+    display: inline-block;
+  }
+  :is(a, button):is(:hover, :focus-visible) i:has(~ [data-icon-fill]) {
+    display: none;
+  }
 
   /* Icon animations — scoped per icon (§8) */
   :is(a, button):is(:hover, :focus-visible) .ph-gear {
@@ -276,55 +390,141 @@
     animation: sweep-ccw 0.5s ease-out;
   }
 
-  @keyframes spin { to { rotate: 360deg; } }
-  @keyframes bounce { 0%, 100% { translate: 0 0; } 50% { translate: 0 -4px; } }
-  @keyframes sweep-ccw { to { rotate: -360deg; } }
+  @keyframes spin {
+    to {
+      rotate: 360deg;
+    }
+  }
+  @keyframes bounce {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -4px;
+    }
+  }
+  @keyframes sweep-ccw {
+    to {
+      rotate: -360deg;
+    }
+  }
 
   @media (prefers-reduced-motion: reduce) {
-    :is(a, button):is(:hover, :focus-visible) :is(.ph-gear, .ph-trash, .ph-arrow-counter-clockwise) {
+    :is(a, button):is(:hover, :focus-visible)
+      :is(.ph-gear, .ph-trash, .ph-arrow-counter-clockwise) {
       animation: none;
     }
   }
 
   /* Signal States (§6) */
-  [data-state="error"] { border-color: var(--color-danger); color: var(--color-danger); }
-  [data-state="loading"] { animation: pulse 1.5s ease-in-out infinite; opacity: 0.6; }
-  [data-state="success"] { border-color: var(--color-success); }
+  [data-state="error"] {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+  }
+  [data-state="loading"] {
+    animation: pulse 1.5s ease-in-out infinite;
+    opacity: 0.6;
+  }
+  [data-state="success"] {
+    border-color: var(--color-success);
+  }
 
-  @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 0.3; } }
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
 }
 
 /* SKIN (§3 + §7) */
 @layer skin {
-  [data-skin~="filled"] { background: var(--accent); color: var(--text-on-accent); border-color: var(--accent); }
-  [data-skin~="filled"]:hover:not(:disabled) { background: var(--accent-dn); border-color: var(--accent-dn); }
+  [data-skin~="filled"] {
+    background: var(--accent);
+    color: var(--text-on-accent);
+    border-color: var(--accent);
+  }
+  [data-skin~="filled"]:hover:not(:disabled) {
+    background: var(--accent-dn);
+    border-color: var(--accent-dn);
+  }
 
-  [data-skin~="ghost"] { background: transparent; border-color: transparent; }
-  :is(button, a, summary)[data-skin~="ghost"]:hover { background: var(--neutral-mute); }
+  [data-skin~="ghost"] {
+    background: transparent;
+    border-color: transparent;
+  }
+  :is(button, a, summary)[data-skin~="ghost"]:hover {
+    background: var(--neutral-mute);
+  }
 
-  [data-skin~="mute"] { color: var(--text-mute); }
-  [data-skin~="elevated"] { box-shadow: 0 1px 3px oklch(0% 0 0 / 0.15), 0 4px 12px oklch(0% 0 0 / 0.12), 0 0 0 1px oklch(50% 0 0 / 0.06); }
-  [data-skin~="freeform"] > *:not(summary):not(header) { all: revert; }
+  [data-skin~="mute"] {
+    color: var(--text-mute);
+  }
+  [data-skin~="elevated"] {
+    box-shadow:
+      0 1px 3px oklch(0% 0 0 / 0.15),
+      0 4px 12px oklch(0% 0 0 / 0.12),
+      0 0 0 1px oklch(50% 0 0 / 0.06);
+  }
+  [data-skin~="freeform"] > *:not(summary):not(header) {
+    all: revert;
+  }
 }
 
 /* GRID (§7) */
 @layer grid {
-  [data-colspan="1"]  { grid-column: span 1; }
-  [data-colspan="2"]  { grid-column: span 2; }
-  [data-colspan="3"]  { grid-column: span 3; }
-  [data-colspan="4"]  { grid-column: span 4; }
-  [data-colspan="6"]  { grid-column: span 6; }
-  [data-colspan="8"]  { grid-column: span 8; }
-  [data-colspan="9"]  { grid-column: span 9; }
-  [data-colspan="10"] { grid-column: span 10; }
-  [data-colspan="11"] { grid-column: span 11; }
-  [data-colspan="12"] { grid-column: span 12; }
+  [data-colspan="1"] {
+    grid-column: span 1;
+  }
+  [data-colspan="2"] {
+    grid-column: span 2;
+  }
+  [data-colspan="3"] {
+    grid-column: span 3;
+  }
+  [data-colspan="4"] {
+    grid-column: span 4;
+  }
+  [data-colspan="6"] {
+    grid-column: span 6;
+  }
+  [data-colspan="8"] {
+    grid-column: span 8;
+  }
+  [data-colspan="9"] {
+    grid-column: span 9;
+  }
+  [data-colspan="10"] {
+    grid-column: span 10;
+  }
+  [data-colspan="11"] {
+    grid-column: span 11;
+  }
+  [data-colspan="12"] {
+    grid-column: span 12;
+  }
 }
 
 /* OVERRIDES — signal state + filled skin combos (§6 + §7) */
 @layer overrides {
-  [data-state="error"] { border-color: var(--color-danger); }
-  [data-state="success"] { border-color: var(--color-success); }
-  [data-skin~="filled"][data-state="error"] { background: var(--color-danger); border-color: var(--color-danger); color: var(--text-on-accent); }
-  [data-skin~="filled"][data-state="success"] { background: var(--color-success); border-color: var(--color-success); color: var(--text-on-accent); }
+  [data-state="error"] {
+    border-color: var(--color-danger);
+  }
+  [data-state="success"] {
+    border-color: var(--color-success);
+  }
+  [data-skin~="filled"][data-state="error"] {
+    background: var(--color-danger);
+    border-color: var(--color-danger);
+    color: var(--text-on-accent);
+  }
+  [data-skin~="filled"][data-state="success"] {
+    background: var(--color-success);
+    border-color: var(--color-success);
+    color: var(--text-on-accent);
+  }
 }
