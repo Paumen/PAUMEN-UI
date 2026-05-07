@@ -145,6 +145,7 @@ Applied to any element. Selected via `[data-skin~="value"]`.
 - **`filled`** — accent background, light text, accent border. Hover darkens to `--accent-dn`.
 - **`ghost`** — transparent background, no border. Interactive elements: hover shows `--neutral-mute` background. Non-interactive: static.
 - **`mute`** — `--text-mute` color.
+- **`toggle`** — radio group rendered as direct-color toggle buttons. Apply to a row wrapper containing `<label>`s with radio inputs (nested or sibling). Native radio circles are visually hidden; each label becomes the toggle button. Selected option carries four visual cues (accent text, accent-tinted background, bold label, 2px accent border); unselected option is minimal (muted text, 1px neutral edge, neutral background) to accentuate contrast.
 - **`elevated`** — `box-shadow` for visual lift. Shadow base uses `oklch(0% 0 0)` (pure black) — not a lighter value, which is invisible against dark backgrounds. Includes a subtle `0 0 0 1px` ring for edge definition in dark mode.
 - **`freeform`** — escape hatch. Removes system constraints from card interior via `all: revert` on children (`[data-skin~="freeform"] > * { all: revert; }`). The card itself retains grid participation, font inheritance, and color tokens. Cards only. The author takes full responsibility for interior styling.
 
